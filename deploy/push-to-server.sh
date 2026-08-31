@@ -3,7 +3,7 @@
 # Usage: ./deploy/push-to-server.sh [user@host]
 set -euo pipefail
 
-REMOTE="${1:-"Taksha Thosani@192.168.4.31"}"
+REMOTE="${1:-user@your-server}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 REMOTE_DIR="D:/lumen-stream-lab"
 SSH_OPTS=(-F "${HOME}/.ssh/config" -o ConnectTimeout=15)
