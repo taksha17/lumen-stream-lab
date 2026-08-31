@@ -202,9 +202,7 @@ Winning configs: `soup-7b-stream.yaml`, `soup-3b-stream-s07.yaml`, dataset `data
 
 ## Open work (prioritized)
 
-1. **Domain E12** — system prompt injected on domain route (implemented); run `win-domain-smoke-gate.ps1` on server. S10 micro-train scaffold ready if needed.
-2. **Router eval with `-Full`**
-3. **llama.cpp vs Ollama** resident bench
+1. **llama.cpp vs Ollama** resident bench
 
 ---
 

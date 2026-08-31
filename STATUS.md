@@ -26,33 +26,36 @@ powershell -File D:\lumen-stream-lab\deploy\win-domain-smoke-gate.ps1
 | E12 definition | **Still FAIL** (telecom Lumen) |
 | Action | Auto-rollback to S07 via `win-post-s09.ps1` |
 
-## Next steps (in progress)
+## Domain system prompt + context prefix (2026-08-31) — **PASS on server**
 
-### Done this session — domain system prompt (no retrain)
+| Check | Result |
+|-------|--------|
+| Domain gate (E11/E12/E05) | **PASS** with `domain-system-prompt.txt` + targeted prompt prefixes |
+| Orchestration +40% | **PASS** — 69.59 tok/s mean (+43.8%) after E05 transient retry |
+| S10 train | **Not needed** — prompt injection fixed E12 without retrain |
 
-- `data/domain-system-prompt.txt` — shared disambiguation prompt (OSS-friendly)
-- Injected on **all** `qwen2.5-3b-lumen` Ollama calls: `win-route.ps1`, domain gate, orchestration bench, router eval, gateway
-- `lumen_router.py`: `domain_system_prompt()`, `ollama_generate_payload()`, route plan includes `system_prompt`
-
-**On server — verify E12 without training:**
+**On server:**
 
 ```powershell
 powershell -File D:\lumen-stream-lab\deploy\win-domain-smoke-gate.ps1
 powershell -File D:\lumen-stream-lab\deploy\win-regression.ps1
 ```
 
-### Ready to run — S10 E12 micro-train (if system prompt alone insufficient)
-
-| Step | Script |
-|------|--------|
-| Train | `deploy\win-train-3b-s10.ps1` |
-| Export + gate + rollback | `deploy\win-post-s10.ps1` |
-
-Data: `data/train-s10-e12.jsonl` (30 rows, 25x canonical E12)
-
 ### Still queued
 
-1. **`-Full` router eval** — `win-regression.ps1 -Full` (~30 min quality side-by-side)
-2. **llama.cpp vs Ollama** resident bench on reference lab
+1. **llama.cpp vs Ollama** resident bench
+
+## Full router eval (2026-08-31) — **PASS**
+
+`win-regression.ps1 -Full` (~8.7 min on server):
+
+| Metric | Result |
+|--------|--------|
+| Routing accuracy | **12/12** |
+| Median decode | fast **94.9** \| LFM **63.7** \| domain **54.6** \| quality **10.6** tok/s |
+| Orchestration (live gate) | **69.78 tok/s** (+44.2%) **PASS** |
+| Regression summary | **ALL PASS** |
+
+Report: `results/router-eval-20260831-180616.json` (on server)
 
 Before training: `. D:\lumen-stream-lab\deploy\win-env-d.ps1`

@@ -1,74 +1,115 @@
 # Lumen Stream Lab
 
-> **Orchestrate Soup, AirLLM, and Colibri — measure everything — beat always-3B by ≥40% decode tok/s via hybrid routing.**
+> **Hybrid LLM orchestration — route each prompt to the right model, measure everything, beat always-3B by ≥40% decode tok/s.**
 
-Open-source orchestration playbook. We **tune and CI-test on a reference lab** (GTX 1650 4GB) but the tool is **not limited to that hardware** — contributors with stronger GPUs should probe locally, set their own baselines, and PR better tier defaults. See [**SCALING.md**](./SCALING.md) and [**CONTRIBUTING.md**](./CONTRIBUTING.md).
+Lumen is a thin **decision layer** between your app and inference backends (Ollama, llama.cpp, Soup, AirLLM, Colibri). It does not replace a model server — it answers: *which model, which backend, which speed stack* for this hardware and this prompt.
 
-## Status (2026-08-31)
+Open source and **hardware-agnostic**. We CI-test on a modest reference rig (GTX 1650 4GB); contributors on stronger GPUs probe locally and tune tiers. See [SCALING.md](./SCALING.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+---
+
+## Real-world use cases
+
+Most teams running local LLMs hit the same wall: the model is fine, but **routing and tuning** are tribal. Lumen makes that **measured, reproducible, and auditable** — the same pattern used in production gateways (tiered routing, A/B, regression gates), scoped to one box or your fleet.
+
+| Problem | What Lumen does |
+|---------|-----------------|
+| **"Ollama is slow for our 8B"** | Benchmark backends per model; route to the fastest path for *that* model on *this* GPU — not a blind tool swap |
+| **"We need cheap + quality tiers"** | Route short/simple prompts to 1B (~110 tok/s); domain questions to a fine-tuned 3B; long/complex to 7B opt-in |
+| **"Fine-tuned GGUF still feels slow"** | Orchestration wins by **picking the right model size per query**, not making one 3B kernel 2× faster |
+| **"Agent loops need latency budgets"** | Plan JSON per request (`tier`, `model`, `reason`) — gateway or agent can force `fast` under deadline |
+| **Train → serve pipeline** | Soup trains LoRA → export GGUF → Ollama deploy → Lumen routes and **proves** +40% vs always-3B baseline |
+
+### Where it plugs in
+
+```
+   client / app
+        │
+        ▼
+   API gateway (auth, rate limit)     ← your existing layer
+        │
+        ▼
+   Lumen router (lumen.py route)     ← tier + model + speed stack plan
+        │
+        ▼
+   Backend pool (Ollama / llama.cpp / stream path)
+```
+
+**Reference HTTP gateway in this repo:** [`scripts/lumen_gateway.py`](./scripts/lumen_gateway.py) — `POST /v1/chat`, `POST /v1/plan`, `GET /v1/health` (stdlib only).
+
+**Full enterprise integration guide:** [ENTERPRISE.md](./ENTERPRISE.md) — gateway topology, agent frameworks, MLOps loop, tiered cost/quality, A/B routing, VRAM fall-back, CI regression gates.
+
+---
+
+## Proven results (reference lab)
+
+Numbers from [`hardware/reference-lab.json`](./hardware/reference-lab.json) — **your machine will differ**; measure your own baseline.
 
 | Metric | Result |
 |--------|--------|
-| Baseline | `llama3.2:3b` @ **48.38 tok/s** (always one model) |
-| **Lumen hybrid orchestration** | **68.03 tok/s** mean (**+40.6% PASS**) |
-| Router | 1B fast / LFM general / qwen domain / 7B opt-in |
-
-## Hybrid router tiers
+| Baseline (always `llama3.2:3b`) | **48.38 tok/s** |
+| **Lumen hybrid orchestration** | **~70 tok/s** mean (**+42–45% PASS**) |
+| Router eval routing accuracy | **12/12** prompts |
+| Domain quality (E11/E12) | PASS with domain system prompt |
 
 | Tier | Model | When |
 |------|-------|------|
 | `fast` | `llama3.2:1b` | Arithmetic, greetings, short facts |
 | `balanced` | `lfm-balanced` | General explain/coding (~65 tok/s) |
-| `balanced` (domain) | `qwen2.5-3b-lumen` | Lumen Stream Lab / Soup / routing keywords |
+| `balanced` (domain) | `qwen2.5-3b-lumen` | Lumen / Soup / routing keywords |
 | `quality` | `qwen2.5-7b-lumen` | Prompt >50 words or `-Tier quality` |
 
-## Reference lab (optional — our CI rig)
+---
 
-The numbers below are from `hardware/reference-lab.json`. Your machine will differ; run `python3 lumen.py probe` and bench your own baseline.
-
-### Windows reference server (`192.168.4.31`, `D:\lumen-stream-lab`)
-
-```powershell
-. D:\lumen-stream-lab\deploy\win-env-d.ps1
-
-# Route a prompt
-.\deploy\win-route.ps1 -Prompt "What is Lumen Stream Lab?"
-
-# Regression gate (speed + domain smoke)
-powershell -File D:\lumen-stream-lab\deploy\win-regression.ps1
-
-# Full gate including router quality eval (~30 min)
-powershell -File D:\lumen-stream-lab\deploy\win-regression.ps1 -Full
-```
-
-## Any machine (portable path)
+## Quick start
 
 ```bash
-git clone <repo-url> && cd lumen-stream-lab
+git clone https://github.com/taksha17/lumen-stream-lab.git
+cd lumen-stream-lab
 
-# Profile YOUR hardware (writes hardware.json)
+# Profile your hardware (writes hardware.json — gitignored)
 python3 lumen.py probe
 
-# Hybrid routing plan (JSON) — logic is GPU-agnostic
+# See routing plan for a prompt (JSON)
 python3 lumen.py route --prompt "Explain TCP vs UDP"
+python3 lumen.py route --prompt "What is Lumen Stream Lab?"
 
-# +40% check vs YOUR baseline (reference lab example: 48.38 → 68.03)
-python3 scripts/compare.py --baseline <your-3b-tok-s> --optimized <your-orchestration-mean> --min-gain 0.40
+# Check +40% vs YOUR baseline
+python3 scripts/compare.py --baseline 48.38 --optimized 70.0 --min-gain 0.40
+
+# Optional: HTTP gateway on :8080
+python3 scripts/lumen_gateway.py --port 8080
 ```
 
-Copy `lumen.yaml.example` → `lumen.yaml` and set `hardware.profile`, tiers, and paths for your environment.
+Copy [`lumen.yaml.example`](./lumen.yaml.example) → `lumen.yaml` and set tiers, paths, and `target_improvement` for your environment.
 
-## Documentation
+**Requirements:** Python 3.10+, [Ollama](https://ollama.com) for inference. Soup optional for training path.
 
-| File | Contents |
-|------|----------|
-| [**RESULTS.md**](./RESULTS.md) | Benchmark log (+40% PASS) |
-| [**VISION.md**](./VISION.md) | Goal and strategy |
-| [**ARCHITECTURE.md**](./ARCHITECTURE.md) | Orchestrator design |
-| [**PLAYBOOK.md**](./PLAYBOOK.md) | Soup / AirLLM / Colibri limits |
-| [**benchmarks/PROTOCOL.md**](./benchmarks/PROTOCOL.md) | Fair measurement rules |
-| [**SCALING.md**](./SCALING.md) | Hardware profiles, OSS scaling model |
-| [**CONTRIBUTING.md**](./CONTRIBUTING.md) | How to contribute benches and profiles |
-| [**hardware/reference-lab.json**](./hardware/reference-lab.json) | Reference CI rig (not a global default) |
+---
+
+## Integration API
+
+```bash
+lumen probe                              # hardware.json
+lumen bench --model llama3.2:3b          # benchmark a model
+lumen route --prompt "..."               # hybrid tier plan (JSON)
+lumen compare --baseline X --optimized Y # CI gate (+40%)
+```
+
+Example plan (`lumen route`):
+
+```json
+{
+  "tier": "balanced",
+  "model": "qwen2.5-3b-lumen",
+  "reason": "balanced/domain (Lumen keywords)",
+  "backend": "ollama",
+  "path": "resident",
+  "system_prompt": "..."
+}
+```
+
+---
 
 ## Key idea
 
@@ -77,3 +118,25 @@ Copy `lumen.yaml.example` → `lumen.yaml` and set `hardware.profile`, tiers, an
 Lumen wins by routing each prompt to the right model size (1B / LFM / fine-tuned 3B / 7B), not by making one 3B kernel 40% faster.
 
 Soup: **train** → export GGUF → Lumen **serves** via hybrid router.
+
+---
+
+## Documentation
+
+| File | Contents |
+|------|----------|
+| [**ENTERPRISE.md**](./ENTERPRISE.md) | Real production topologies, agent/MLOps integration, what Lumen is *not* |
+| [**RESULTS.md**](./RESULTS.md) | Benchmark log and training history |
+| [**VISION.md**](./VISION.md) | Goals and honest expectations |
+| [**ARCHITECTURE.md**](./ARCHITECTURE.md) | Orchestrator design, speed vs I/O stack |
+| [**PLAYBOOK.md**](./PLAYBOOK.md) | Soup / AirLLM / Colibri reference |
+| [**SCALING.md**](./SCALING.md) | Hardware profiles, OSS scaling |
+| [**CONTRIBUTING.md**](./CONTRIBUTING.md) | How to contribute benches and profiles |
+| [**benchmarks/PROTOCOL.md**](./benchmarks/PROTOCOL.md) | Fair measurement rules |
+| [**deploy/DEPLOY.md**](./deploy/DEPLOY.md) | Optional Windows reference-lab deploy |
+
+---
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

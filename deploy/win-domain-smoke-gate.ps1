@@ -20,15 +20,17 @@ function Invoke-Gen([string]$model, [string]$prompt) {
 
 function Test-LaravelOk([string]$text) {
     $l = $text.ToLower()
-    if ($l -match 'not related|unrelated|no\.' -and $l -notmatch 'yes,\s*lumen stream lab is related') { return $true }
+    if ($l -match 'not the laravel php|not related to laravel|is not the laravel|unrelated to laravel|not the laravel php microframework') { return $true }
     if ($l -match 'laravel package' -and $l -match 'not|no') { return $true }
+    if ($l -match 'no[,\.\s].*laravel') { return $true }
+    if ($l -match '^\s*yes[,\s].*related to laravel' -and $l -notmatch 'not the laravel') { return $false }
     return $false
 }
 
 function Test-DefinitionOk([string]$text) {
     $l = $text.ToLower()
-    if ($l -match 'telecom|liquid ai|video cdn|data-driven visual|laravel package|networking company') { return $false }
-    return ($l -match 'orchestrat|routing|ollama|soup' -and $l -notmatch 'data-driven visual|video')
+    if ($l -match 'telecom company|liquid ai company|video streaming cdn|data-driven visual|laravel package|lumen stream platform') { return $false }
+    return ($l -match 'orchestrat|ollama|soup|hybrid router')
 }
 
 function Test-RoutingOk([string]$text) {

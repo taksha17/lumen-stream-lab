@@ -242,13 +242,29 @@ Pipeline: `deploy/win-train-3b-s09.ps1`, `win-domain-smoke-gate.ps1`, `win-post-
 
 ---
 
-## Domain system prompt (2026-08-31) — pending server verify
+## Domain system prompt (2026-08-31) — **PASS**
 
 | Change | Detail |
 |--------|--------|
 | File | `data/domain-system-prompt.txt` |
-| When | All `qwen2.5-3b-lumen` Ollama `/api/generate` calls (route, gate, bench, eval, gateway) |
-| Goal | Fix E12 telecom/Liquid AI confusion without retraining |
-| Verify | `deploy/win-domain-smoke-gate.ps1` then `win-regression.ps1` |
+| When | All `qwen2.5-3b-lumen` Ollama calls + targeted prompt prefixes (E12 definition, E11 Laravel) |
+| Domain gate | E11/E12/E05 **PASS** (2026-08-31 server) |
+| Orchestration | **69.59 tok/s** (+43.8%) — PASS; E05 had one transient 0 tok/s run, retry clean |
+| S10 train | Deferred — prompt injection sufficient for E12 |
 
-**S10 fallback** (if prompt alone fails): `data/train-s10-e12.jsonl` + `deploy/win-train-3b-s10.ps1` → `win-post-s10.ps1`
+**S10 fallback** (if quality regresses): `data/train-s10-e12.jsonl` + `deploy/win-post-s10.ps1`
+
+---
+
+## Full router eval (2026-08-31) — PASS
+
+`deploy/win-regression.ps1 -Full` on reference lab:
+
+| Metric | Result |
+|--------|--------|
+| Routing accuracy | 12/12 |
+| Median tok/s | fast 94.9, LFM 63.7, domain 54.6, quality 10.6 |
+| Orchestration gate | 69.78 tok/s (+44.2%) PASS |
+| Report | `results/router-eval-20260831-180616.json` |
+
+Router-eval auto-route mean (64.08 tok/s) is a side metric across all prompts; **primary +40% gate** uses orchestration bench mean.

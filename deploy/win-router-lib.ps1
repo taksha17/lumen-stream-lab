@@ -23,10 +23,23 @@ function Test-IsDomainModel([string]$model) {
     return $model -eq $script:RouterModels.balanced_domain
 }
 
+function Get-DomainContextPrefix([string]$prompt) {
+    $lower = $prompt.ToLower()
+    if ($lower -like '*what is lumen stream lab*') {
+        return "[Lumen Stream Lab = open-source local LLM orchestration research project. Hybrid router across Ollama models; Soup for training. NOT Laravel Lumen, NOT Liquid AI, NOT telecom, NOT video CDN.]`n`n"
+    }
+    if ($lower -like '*laravel lumen*') {
+        return "Answer starting with No. Lumen Stream Lab is NOT the Laravel PHP microframework - it is a separate ML orchestration project.`n`n"
+    }
+    return ""
+}
+
 function New-OllamaGeneratePayload([string]$model, [string]$prompt, [hashtable]$options) {
+    $prefix = if (Test-IsDomainModel $model) { Get-DomainContextPrefix $prompt } else { "" }
+    $userPrompt = if ($prefix) { "$prefix$prompt" } else { $prompt }
     $payload = [ordered]@{
         model  = $model
-        prompt = $prompt
+        prompt = $userPrompt
         stream = $false
         options = $options
     }

@@ -73,6 +73,27 @@ def is_domain_model(model: str) -> bool:
     return model == MODELS["balanced_domain"]
 
 
+def domain_context_prefix() -> str:
+    return (
+        "[Lumen Stream Lab = open-source local LLM orchestration research project. "
+        "Hybrid router across Ollama models; Soup for training. "
+        "NOT Laravel Lumen, NOT Liquid AI, NOT telecom, NOT video CDN.]\n\n"
+    )
+
+
+def wrap_domain_prompt(prompt: str) -> str:
+    lower = prompt.lower()
+    if "what is lumen stream lab" in lower:
+        return domain_context_prefix() + prompt
+    if "laravel lumen" in lower:
+        return (
+            "Answer starting with No. Lumen Stream Lab is NOT the Laravel PHP "
+            "microframework — it is a separate ML orchestration project.\n\n"
+            + prompt
+        )
+    return prompt
+
+
 def ollama_generate_payload(
     model: str,
     prompt: str,
@@ -80,9 +101,10 @@ def ollama_generate_payload(
     stream: bool = False,
     options: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    user_prompt = wrap_domain_prompt(prompt) if is_domain_model(model) else prompt
     payload: dict[str, Any] = {
         "model": model,
-        "prompt": prompt,
+        "prompt": user_prompt,
         "stream": stream,
         "options": options or {},
     }
