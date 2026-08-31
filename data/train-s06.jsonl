@@ -1,0 +1,107 @@
+{"instruction": "What is 2+2?", "input": "", "output": "4"}
+{"instruction": "Capital of France?", "input": "", "output": "Paris"}
+{"instruction": "Capital of Japan?", "input": "", "output": "Tokyo"}
+{"instruction": "How many days in a leap year?", "input": "", "output": "366 days"}
+{"instruction": "What is the speed of light?", "input": "", "output": "Approximately 299,792 kilometers per second in a vacuum."}
+{"instruction": "Name three primary colors.", "input": "", "output": "Red, blue, and yellow."}
+{"instruction": "What does CPU stand for?", "input": "", "output": "Central Processing Unit."}
+{"instruction": "What does GPU stand for?", "input": "", "output": "Graphics Processing Unit."}
+{"instruction": "What is RAM?", "input": "", "output": "Random Access Memory \u2014 fast volatile storage the CPU uses for active data."}
+{"instruction": "What is VRAM?", "input": "", "output": "Video RAM \u2014 memory on a GPU used for graphics and ML workloads."}
+{"instruction": "What is Python?", "input": "", "output": "Python is a popular high-level programming language known for readability and versatility."}
+{"instruction": "What is a REST API?", "input": "", "output": "A REST API is an HTTP-based interface that uses standard verbs like GET and POST to access resources."}
+{"instruction": "Explain a for-loop in one sentence.", "input": "", "output": "A for-loop repeats a block of code for each item in a sequence."}
+{"instruction": "What is Git?", "input": "", "output": "Git is a distributed version control system for tracking code changes."}
+{"instruction": "What is Docker?", "input": "", "output": "Docker packages applications and dependencies into portable containers."}
+{"instruction": "Difference between list and tuple in Python?", "input": "", "output": "Lists are mutable; tuples are immutable ordered sequences."}
+{"instruction": "What is JSON?", "input": "", "output": "JSON is a lightweight text format for structured data exchange using key-value pairs."}
+{"instruction": "What is an LLM?", "input": "", "output": "A Large Language Model is a neural network trained on text to predict and generate language."}
+{"instruction": "What is LoRA?", "input": "", "output": "Low-Rank Adaptation \u2014 a fine-tuning method that trains small adapter matrices instead of full weights."}
+{"instruction": "What is quantization in ML?", "input": "", "output": "Quantization reduces numeric precision of model weights to save memory and speed up inference."}
+{"instruction": "What is model routing?", "input": "", "output": "Model routing sends each prompt to the best model tier based on complexity, latency, and quality needs."}
+{"instruction": "When should you use a 1B model?", "input": "", "output": "Use a 1B model for simple, short prompts where speed matters more than depth."}
+{"instruction": "When should you use a 7B model?", "input": "", "output": "Use a 7B model when quality, reasoning depth, or domain expertise outweighs latency cost."}
+{"instruction": "What is speculative decoding?", "input": "", "output": "A small draft model proposes tokens; a larger model verifies them in batches to speed up generation."}
+{"instruction": "What is layer streaming?", "input": "", "output": "Layer streaming loads one transformer layer at a time to train or run models larger than GPU VRAM."}
+{"instruction": "Ollama vs AirLLM for speed?", "input": "", "output": "For models that fit in VRAM, resident Ollama is faster; AirLLM streaming trades speed for fit."}
+{"instruction": "What is tok/s?", "input": "", "output": "Tokens per second \u2014 a measure of how fast a model generates text during decoding."}
+{"instruction": "What is KV cache?", "input": "", "output": "Key-value cache stores attention states so the model does not recompute past tokens during generation."}
+{"instruction": "What is fine-tuning?", "input": "", "output": "Fine-tuning adapts a pretrained model to a specific task or dataset with additional training."}
+{"instruction": "What is GGUF?", "input": "", "output": "GGUF is a binary format for storing quantized LLM weights, commonly used by llama.cpp and Ollama."}
+{"instruction": "Explain gravity in one sentence.", "input": "", "output": "Gravity is the force that attracts objects with mass toward each other."}
+{"instruction": "Summarize photosynthesis briefly.", "input": "", "output": "Plants convert sunlight, water, and CO2 into glucose and oxygen."}
+{"instruction": "What is DNA?", "input": "", "output": "DNA is the molecule that carries genetic instructions in living organisms."}
+{"instruction": "What is an atom?", "input": "", "output": "An atom is the smallest unit of matter retaining the properties of a chemical element."}
+{"instruction": "What causes seasons?", "input": "", "output": "Seasons are caused by Earth's axial tilt as it orbits the Sun."}
+{"instruction": "What is climate change?", "input": "", "output": "Climate change is long-term shift in global weather patterns, largely driven by greenhouse gas emissions."}
+{"instruction": "What is machine learning?", "input": "", "output": "Machine learning enables systems to learn patterns from data without explicit programming."}
+{"instruction": "What is a neural network?", "input": "", "output": "A neural network is a layered model of connected nodes that learns representations from data."}
+{"instruction": "What is overfitting?", "input": "", "output": "Overfitting is when a model memorizes training data and performs poorly on new examples."}
+{"instruction": "What is a transformer?", "input": "", "output": "A transformer is an architecture using self-attention to process sequences in parallel."}
+{"instruction": "What is 15 * 7?", "input": "", "output": "105"}
+{"instruction": "Square root of 144?", "input": "", "output": "12"}
+{"instruction": "What is pi approximately?", "input": "", "output": "Pi is approximately 3.14159."}
+{"instruction": "Convert 100 Celsius to Fahrenheit formula?", "input": "", "output": "F = C * 9/5 + 32, so 100\u00b0C = 212\u00b0F."}
+{"instruction": "What is binary 1010 in decimal?", "input": "", "output": "10"}
+{"instruction": "Translate to French: Hello", "input": "", "output": "Bonjour"}
+{"instruction": "Translate to Spanish: Thank you", "input": "", "output": "Gracias"}
+{"instruction": "Translate to German: Good morning", "input": "", "output": "Guten Morgen"}
+{"instruction": "What is a haiku?", "input": "", "output": "A haiku is a three-line Japanese poem with syllable pattern 5-7-5."}
+{"instruction": "Write a haiku about rain.", "input": "", "output": "Soft drops on the roof\nPuddles form on quiet streets\nSpring washes the dust"}
+{"instruction": "Synonym for fast?", "input": "", "output": "Quick, rapid, swift."}
+{"instruction": "Antonym of hot?", "input": "", "output": "Cold."}
+{"instruction": "How do you SSH into a server?", "input": "", "output": "Use ssh user@hostname with your key or password for authentication."}
+{"instruction": "How to check GPU memory on Linux?", "input": "", "output": "Run nvidia-smi to see GPU memory usage and processes."}
+{"instruction": "How to free disk space on Windows?", "input": "", "output": "Delete unused files, empty Recycle Bin, run Disk Cleanup, and move large caches to another drive."}
+{"instruction": "Best practice for API keys?", "input": "", "output": "Store secrets in environment variables or a vault; never commit them to git."}
+{"instruction": "How to benchmark LLM speed?", "input": "", "output": "Measure decode tokens per second using consistent prompt length, warmup runs, and isolated GPU."}
+{"instruction": "If all cats are mammals and Felix is a cat, what is Felix?", "input": "", "output": "Felix is a mammal."}
+{"instruction": "A train leaves at 2pm going 60mph. How far in 3 hours?", "input": "", "output": "180 miles."}
+{"instruction": "Is water wet?", "input": "", "output": "Water makes other materials wet; describing water itself as wet is debated but commonly said yes."}
+{"instruction": "Which is heavier: 1kg of feathers or 1kg of steel?", "input": "", "output": "They weigh the same \u2014 one kilogram each."}
+{"instruction": "Can you divide by zero?", "input": "", "output": "No \u2014 division by zero is undefined in standard arithmetic."}
+{"instruction": "CUDA out of memory \u2014 what to try?", "input": "", "output": "Reduce batch size, sequence length, enable gradient checkpointing, or use layer streaming."}
+{"instruction": "BF16 error on GTX 1650?", "input": "", "output": "Turing GPUs lack native BF16; use fp16 mixed precision or quantization none with auto_mixed_precision."}
+{"instruction": "Ollama slow on laptop GPU?", "input": "", "output": "Check thermal throttling, close other GPU apps, use smaller quant, and ensure model fits in VRAM."}
+{"instruction": "Why is layer streaming slower?", "input": "", "output": "Weights are loaded layer-by-layer from disk or RAM instead of staying resident on GPU."}
+{"instruction": "Name a sci-fi book.", "input": "", "output": "Dune by Frank Herbert."}
+{"instruction": "Two-line poem about stars.", "input": "", "output": "Silver pins in velvet night\nAncient light still burning bright"}
+{"instruction": "Startup name for an AI router.", "input": "", "output": "Lumen Stream \u2014 routes prompts to the fastest capable model."}
+{"instruction": "What is Soup in ML tooling?", "input": "", "output": "Soup is a CLI for fine-tuning LLMs with features like layer streaming for low-VRAM training."}
+{"instruction": "What is Colibri?", "input": "", "output": "Colibri streams mixture-of-experts models across VRAM, RAM, and NVMe tiers."}
+{"instruction": "What is AirLLM?", "input": "", "output": "AirLLM runs large models by streaming layers through limited GPU memory."}
+{"instruction": "Goal of Lumen Stream Lab?", "input": "", "output": "Orchestrate Soup, AirLLM, and Colibri to maximize throughput on modest hardware."}
+{"instruction": "When not to use streaming?", "input": "", "output": "When the model already fits in VRAM \u2014 resident inference is faster."}
+{"instruction": "What is a draft model in speculative decode?", "input": "", "output": "A small fast model that proposes tokens for a larger model to verify."}
+{"instruction": "What quant is good for 4GB GPU?", "input": "", "output": "Q4_K_M or Q4_0 balances size and quality for 7B models on 4GB VRAM."}
+{"instruction": "What is TTFT?", "input": "", "output": "Time To First Token \u2014 latency from prompt submission to first generated token."}
+{"instruction": "What is batch size 1?", "input": "", "output": "Processing one training example per forward pass \u2014 common on memory-constrained GPUs."}
+{"instruction": "What is gradient checkpointing?", "input": "", "output": "Recomputes activations during backward pass to trade compute for lower memory use."}
+{"instruction": "Explain TCP vs UDP briefly.", "input": "", "output": "TCP is reliable and connection-oriented; UDP is faster but does not guarantee delivery."}
+{"instruction": "What is HTTPS?", "input": "", "output": "HTTPS is HTTP encrypted with TLS to protect data in transit."}
+{"instruction": "What is a hash function?", "input": "", "output": "A hash function maps input to a fixed-size digest, used for integrity and lookup."}
+{"instruction": "What is OAuth?", "input": "", "output": "OAuth is an authorization framework allowing apps to access resources without sharing passwords."}
+{"instruction": "What is CI/CD?", "input": "", "output": "Continuous Integration and Delivery automates building, testing, and deploying code changes."}
+{"instruction": "What is a pull request?", "input": "", "output": "A pull request proposes code changes for review before merging into a main branch."}
+{"instruction": "What is latency vs throughput?", "input": "", "output": "Latency is delay per request; throughput is how many requests complete per unit time."}
+{"instruction": "What is a bottleneck?", "input": "", "output": "The slowest component limiting overall system performance."}
+{"instruction": "What is mmap for models?", "input": "", "output": "Memory-mapping loads weight files on demand from disk without copying entire files into RAM."}
+{"instruction": "What is thermal throttling?", "input": "", "output": "Hardware reduces clock speed when temperature exceeds safe limits."}
+{"instruction": "Signs of RAM pressure?", "input": "", "output": "Swapping, OOM kills, slow disk paging, and application crashes under load."}
+{"instruction": "Why migrate caches to D: drive?", "input": "", "output": "Frees system drive space and puts large model caches on a roomier data volume."}
+{"instruction": "What is HF_HOME?", "input": "", "output": "Environment variable pointing to the Hugging Face cache directory for models and datasets."}
+{"instruction": "Answer in one word: color of sky?", "input": "", "output": "Blue"}
+{"instruction": "List two programming languages.", "input": "", "output": "Python and JavaScript."}
+{"instruction": "What year did WW2 end?", "input": "", "output": "1945"}
+{"instruction": "Who wrote Romeo and Juliet?", "input": "", "output": "William Shakespeare"}
+{"instruction": "Chemical symbol for gold?", "input": "", "output": "Au"}
+{"instruction": "Largest planet in solar system?", "input": "", "output": "Jupiter"}
+{"instruction": "How many bits in a byte?", "input": "", "output": "8"}
+{"instruction": "HTTP status code for not found?", "input": "", "output": "404"}
+{"instruction": "Default SSH port?", "input": "", "output": "22"}
+{"instruction": "What is open source?", "input": "", "output": "Software whose source code is publicly available and can be modified and redistributed."}
+{"instruction": "Explain why routing beats one-model-fits-all.", "input": "", "output": "Different prompts need different speed-quality tradeoffs; routing sends simple tasks to fast models and hard tasks to capable ones, improving average latency without sacrificing quality where it matters."}
+{"instruction": "How does Lumen pick a model tier?", "input": "", "output": "Lumen scores prompt length and keywords: short simple prompts go to 1B, analytical prompts to 3B, and quality or long prompts to the fine-tuned 7B model."}
+{"instruction": "Why fine-tune Qwen on lab data?", "input": "", "output": "Fine-tuning teaches the model Lumen-specific vocabulary and routing concepts so the quality tier gives better domain answers."}
+{"instruction": "Compare 3B vs 7B on 4GB GPU.", "input": "", "output": "3B runs resident at ~48 tok/s; 7B Q4 fits but runs ~10 tok/s \u2014 use 3B for speed, 7B for depth."}
+{"instruction": "What makes a good benchmark?", "input": "", "output": "Warmup runs, fixed prompt length, isolated GPU, median decode tok/s, and same model quant across comparisons."}

@@ -1,0 +1,25 @@
+base: Qwen/Qwen2.5-3B-Instruct
+task: sft
+
+data:
+  train: D:\lumen-stream-lab\data\train-s08.jsonl
+  format: alpaca
+  val_split: 0.1
+  max_length: 96
+
+training:
+  epochs: 2
+  lr: 2e-4
+  batch_size: 1
+  max_steps: 100
+  auto_mixed_precision: true
+  stream_layers: true
+  stream_source: disk
+  quantization: none
+  gradient_checkpointing: true
+  lora:
+    r: 8
+    alpha: 16
+    target_modules: auto
+
+output: D:\lumen-stream-lab\output-3b-stream-s08

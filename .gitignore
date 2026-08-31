@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Runtime artifacts (regenerated on demand)
+hardware.json
+results/*.json
+results/*.jsonl
+results/bench-last.json
+results/baseline.json
+results/gpu-*.txt
+results/router-eval-*.json
+results/orchestration-bench-*.json
+results/phase-d2/
+
+# Model weights / exports (large binaries — never in git)
+exports/
+*.gguf
+*.bin
+*.safetensors
+output-*/
+cache/
+
+# Ollama / HF / Soup caches
+.ollama/
+models/
+*.tmp
+
+# Secrets & local config (copy .example instead)
+.env
+.env.*
+lumen.yaml
+*.key
+*.pem
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log

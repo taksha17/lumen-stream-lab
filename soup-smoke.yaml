@@ -1,0 +1,18 @@
+base: Qwen/Qwen2.5-0.5B-Instruct
+task: sft
+data:
+  train: D:\lumen-stream-lab\data\train.jsonl
+  format: alpaca
+  val_split: 0.1
+training:
+  epochs: 1
+  lr: 2e-4
+  batch_size: 1
+  max_steps: 5
+  auto_mixed_precision: true
+  quantization: none
+  gradient_checkpointing: false
+  lora:
+    r: 8
+    alpha: 16
+output: D:\lumen-stream-lab\output-smoke

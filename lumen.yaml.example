@@ -1,0 +1,56 @@
+# Lumen orchestrator config — copy to lumen.yaml and edit
+# Paths and baselines are PER-MACHINE. See hardware/reference-lab.json for CI reference only.
+
+goal: speed  # speed | fit | train
+
+hardware:
+  # Your machine (from: python3 lumen.py probe  OR  ./scripts/probe.sh)
+  profile: hardware.json
+  # Optional: compare against the GTX 1650 reference lab in docs/CI
+  reference_profile: hardware/reference-lab.json
+  # auto | low (<=6GB) | mid (8-16GB) | high (24GB+) — informs train defaults
+  vram_class: auto
+
+routing:
+  mode: hybrid_speed_first
+  prefer: ollama            # ollama | llamacpp | auto
+  force_stream: false       # true only when model exceeds VRAM (fit path)
+  tiers:
+    # Override per machine — these are reference-lab defaults
+    fast: llama3.2:1b
+    balanced: lfm-balanced
+    balanced_domain: qwen2.5-3b-lumen
+    quality: qwen2.5-7b-lumen
+  quality_min_words: 50     # on 24GB+ you may lower this or add quality_keywords
+
+speed_stack:
+  speculative:
+    enabled: false          # re-bench on your GPU; reference lab saw ~1% on 3B
+    draft: llama3.2:1b
+    min_acceptance: 0.60
+  kv_cache:
+    type: auto
+  context: 2048
+  gpu_layers: -1
+  cpu_threads: auto         # or integer; reference lab uses 6 on 5600H
+
+benchmark:
+  prompts: data/router-eval-prompts.json
+  baseline_model: llama3.2:3b
+  # +40% vs YOUR baseline on YOUR hardware (reference lab: 48.38 -> 67.73)
+  target_improvement: 0.40
+  warmup_runs: 2
+  measured_runs: 5
+  max_new_tokens: 128
+
+train_pipeline:
+  tool: soup
+  # Pick recipe by vram_class — reference 4GB uses soup-3b-stream-s07.yaml
+  config: soup-3b-stream-s07.yaml
+  export_format: gguf
+
+paths:
+  # Use env LUMEN_LAB_ROOT or repo root; avoid hardcoding D:\ or server IPs
+  lab_root: ${LUMEN_LAB_ROOT:-.}
+  ollama_models: ${OLLAMA_MODELS:-~/.ollama/models}
+  results: results

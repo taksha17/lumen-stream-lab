@@ -1,0 +1,220 @@
+{"instruction": "What is 2+2?", "input": "", "output": "4"}
+{"instruction": "Capital of France?", "input": "", "output": "Paris"}
+{"instruction": "Capital of Japan?", "input": "", "output": "Tokyo"}
+{"instruction": "How many days in a leap year?", "input": "", "output": "366 days"}
+{"instruction": "What is the speed of light?", "input": "", "output": "Approximately 299,792 kilometers per second in a vacuum."}
+{"instruction": "Name three primary colors.", "input": "", "output": "Red, blue, and yellow."}
+{"instruction": "What does CPU stand for?", "input": "", "output": "Central Processing Unit."}
+{"instruction": "What does GPU stand for?", "input": "", "output": "Graphics Processing Unit."}
+{"instruction": "What is RAM?", "input": "", "output": "Random Access Memory — fast volatile storage the CPU uses for active data."}
+{"instruction": "What is VRAM?", "input": "", "output": "Video RAM — memory on a GPU used for graphics and ML workloads."}
+{"instruction": "What is Python?", "input": "", "output": "Python is a popular high-level programming language known for readability and versatility."}
+{"instruction": "What is a REST API?", "input": "", "output": "A REST API is an HTTP-based interface that uses standard verbs like GET and POST to access resources."}
+{"instruction": "Explain a for-loop in one sentence.", "input": "", "output": "A for-loop repeats a block of code for each item in a sequence."}
+{"instruction": "What is Git?", "input": "", "output": "Git is a distributed version control system for tracking code changes."}
+{"instruction": "What is Docker?", "input": "", "output": "Docker packages applications and dependencies into portable containers."}
+{"instruction": "Difference between list and tuple in Python?", "input": "", "output": "Lists are mutable; tuples are immutable ordered sequences."}
+{"instruction": "What is JSON?", "input": "", "output": "JSON is a lightweight text format for structured data exchange using key-value pairs."}
+{"instruction": "What is an LLM?", "input": "", "output": "A Large Language Model is a neural network trained on text to predict and generate language."}
+{"instruction": "What is LoRA?", "input": "", "output": "Low-Rank Adaptation — a fine-tuning method that trains small adapter matrices instead of full weights."}
+{"instruction": "What is quantization in ML?", "input": "", "output": "Quantization reduces numeric precision of model weights to save memory and speed up inference."}
+{"instruction": "What is model routing?", "input": "", "output": "Model routing sends each prompt to the best model tier based on complexity, latency, and quality needs."}
+{"instruction": "When should you use a 1B model?", "input": "", "output": "Use a 1B model for simple, short prompts where speed matters more than depth."}
+{"instruction": "When should you use a 7B model?", "input": "", "output": "Use a 7B model when quality, reasoning depth, or domain expertise outweighs latency cost."}
+{"instruction": "What is speculative decoding?", "input": "", "output": "A small draft model proposes tokens; a larger model verifies them in batches to speed up generation."}
+{"instruction": "What is layer streaming?", "input": "", "output": "Layer streaming loads one transformer layer at a time to train or run models larger than GPU VRAM."}
+{"instruction": "Ollama vs AirLLM for speed?", "input": "", "output": "For models that fit in VRAM, resident Ollama is faster; AirLLM streaming trades speed for fit."}
+{"instruction": "What is tok/s?", "input": "", "output": "Tokens per second — a measure of how fast a model generates text during decoding."}
+{"instruction": "What is KV cache?", "input": "", "output": "Key-value cache stores attention states so the model does not recompute past tokens during generation."}
+{"instruction": "What is fine-tuning?", "input": "", "output": "Fine-tuning adapts a pretrained model to a specific task or dataset with additional training."}
+{"instruction": "What is GGUF?", "input": "", "output": "GGUF is a binary format for storing quantized LLM weights, commonly used by llama.cpp and Ollama."}
+{"instruction": "Explain gravity in one sentence.", "input": "", "output": "Gravity is the force that attracts objects with mass toward each other."}
+{"instruction": "Summarize photosynthesis briefly.", "input": "", "output": "Plants convert sunlight, water, and CO2 into glucose and oxygen."}
+{"instruction": "What is DNA?", "input": "", "output": "DNA is the molecule that carries genetic instructions in living organisms."}
+{"instruction": "What is an atom?", "input": "", "output": "An atom is the smallest unit of matter retaining the properties of a chemical element."}
+{"instruction": "What causes seasons?", "input": "", "output": "Seasons are caused by Earth's axial tilt as it orbits the Sun."}
+{"instruction": "What is climate change?", "input": "", "output": "Climate change is long-term shift in global weather patterns, largely driven by greenhouse gas emissions."}
+{"instruction": "What is machine learning?", "input": "", "output": "Machine learning enables systems to learn patterns from data without explicit programming."}
+{"instruction": "What is a neural network?", "input": "", "output": "A neural network is a layered model of connected nodes that learns representations from data."}
+{"instruction": "What is overfitting?", "input": "", "output": "Overfitting is when a model memorizes training data and performs poorly on new examples."}
+{"instruction": "What is a transformer?", "input": "", "output": "A transformer is an architecture using self-attention to process sequences in parallel."}
+{"instruction": "What is 15 * 7?", "input": "", "output": "105"}
+{"instruction": "Square root of 144?", "input": "", "output": "12"}
+{"instruction": "What is pi approximately?", "input": "", "output": "Pi is approximately 3.14159."}
+{"instruction": "Convert 100 Celsius to Fahrenheit formula?", "input": "", "output": "F = C * 9/5 + 32, so 100°C = 212°F."}
+{"instruction": "What is binary 1010 in decimal?", "input": "", "output": "10"}
+{"instruction": "Translate to French: Hello", "input": "", "output": "Bonjour"}
+{"instruction": "Translate to Spanish: Thank you", "input": "", "output": "Gracias"}
+{"instruction": "Translate to German: Good morning", "input": "", "output": "Guten Morgen"}
+{"instruction": "What is a haiku?", "input": "", "output": "A haiku is a three-line Japanese poem with syllable pattern 5-7-5."}
+{"instruction": "Write a haiku about rain.", "input": "", "output": "Soft drops on the roof\nPuddles form on quiet streets\nSpring washes the dust"}
+{"instruction": "Synonym for fast?", "input": "", "output": "Quick, rapid, swift."}
+{"instruction": "Antonym of hot?", "input": "", "output": "Cold."}
+{"instruction": "How do you SSH into a server?", "input": "", "output": "Use ssh user@hostname with your key or password for authentication."}
+{"instruction": "How to check GPU memory on Linux?", "input": "", "output": "Run nvidia-smi to see GPU memory usage and processes."}
+{"instruction": "How to free disk space on Windows?", "input": "", "output": "Delete unused files, empty Recycle Bin, run Disk Cleanup, and move large caches to another drive."}
+{"instruction": "Best practice for API keys?", "input": "", "output": "Store secrets in environment variables or a vault; never commit them to git."}
+{"instruction": "How to benchmark LLM speed?", "input": "", "output": "Measure decode tokens per second using consistent prompt length, warmup runs, and isolated GPU."}
+{"instruction": "If all cats are mammals and Felix is a cat, what is Felix?", "input": "", "output": "Felix is a mammal."}
+{"instruction": "A train leaves at 2pm going 60mph. How far in 3 hours?", "input": "", "output": "180 miles."}
+{"instruction": "Is water wet?", "input": "", "output": "Water makes other materials wet; describing water itself as wet is debated but commonly said yes."}
+{"instruction": "Which is heavier: 1kg of feathers or 1kg of steel?", "input": "", "output": "They weigh the same — one kilogram each."}
+{"instruction": "Can you divide by zero?", "input": "", "output": "No — division by zero is undefined in standard arithmetic."}
+{"instruction": "CUDA out of memory — what to try?", "input": "", "output": "Reduce batch size, sequence length, enable gradient checkpointing, or use layer streaming."}
+{"instruction": "BF16 error on GTX 1650?", "input": "", "output": "Turing GPUs lack native BF16; use fp16 mixed precision or quantization none with auto_mixed_precision."}
+{"instruction": "Ollama slow on laptop GPU?", "input": "", "output": "Check thermal throttling, close other GPU apps, use smaller quant, and ensure model fits in VRAM."}
+{"instruction": "Why is layer streaming slower?", "input": "", "output": "Weights are loaded layer-by-layer from disk or RAM instead of staying resident on GPU."}
+{"instruction": "Name a sci-fi book.", "input": "", "output": "Dune by Frank Herbert."}
+{"instruction": "Two-line poem about stars.", "input": "", "output": "Silver pins in velvet night\nAncient light still burning bright"}
+{"instruction": "Startup name for an AI router.", "input": "", "output": "Lumen Stream — routes prompts to the fastest capable model."}
+{"instruction": "What is Soup in ML tooling?", "input": "", "output": "Soup is a CLI for fine-tuning LLMs with features like layer streaming for low-VRAM training."}
+{"instruction": "What is Colibri?", "input": "", "output": "Colibri streams mixture-of-experts models across VRAM, RAM, and NVMe tiers."}
+{"instruction": "What is AirLLM?", "input": "", "output": "AirLLM runs large models by streaming layers through limited GPU memory."}
+{"instruction": "Goal of Lumen Stream Lab?", "input": "", "output": "Orchestrate Soup, AirLLM, and Colibri to maximize throughput on modest hardware."}
+{"instruction": "When not to use streaming?", "input": "", "output": "When the model already fits in VRAM — resident inference is faster."}
+{"instruction": "What is a draft model in speculative decode?", "input": "", "output": "A small fast model that proposes tokens for a larger model to verify."}
+{"instruction": "What quant is good for 4GB GPU?", "input": "", "output": "Q4_K_M or Q4_0 balances size and quality for 7B models on 4GB VRAM."}
+{"instruction": "What is TTFT?", "input": "", "output": "Time To First Token — latency from prompt submission to first generated token."}
+{"instruction": "What is batch size 1?", "input": "", "output": "Processing one training example per forward pass — common on memory-constrained GPUs."}
+{"instruction": "What is gradient checkpointing?", "input": "", "output": "Recomputes activations during backward pass to trade compute for lower memory use."}
+{"instruction": "Explain TCP vs UDP briefly.", "input": "", "output": "TCP is reliable and connection-oriented; UDP is faster but does not guarantee delivery."}
+{"instruction": "What is HTTPS?", "input": "", "output": "HTTPS is HTTP encrypted with TLS to protect data in transit."}
+{"instruction": "What is a hash function?", "input": "", "output": "A hash function maps input to a fixed-size digest, used for integrity and lookup."}
+{"instruction": "What is OAuth?", "input": "", "output": "OAuth is an authorization framework allowing apps to access resources without sharing passwords."}
+{"instruction": "What is CI/CD?", "input": "", "output": "Continuous Integration and Delivery automates building, testing, and deploying code changes."}
+{"instruction": "What is a pull request?", "input": "", "output": "A pull request proposes code changes for review before merging into a main branch."}
+{"instruction": "What is latency vs throughput?", "input": "", "output": "Latency is delay per request; throughput is how many requests complete per unit time."}
+{"instruction": "What is a bottleneck?", "input": "", "output": "The slowest component limiting overall system performance."}
+{"instruction": "What is mmap for models?", "input": "", "output": "Memory-mapping loads weight files on demand from disk without copying entire files into RAM."}
+{"instruction": "What is thermal throttling?", "input": "", "output": "Hardware reduces clock speed when temperature exceeds safe limits."}
+{"instruction": "Signs of RAM pressure?", "input": "", "output": "Swapping, OOM kills, slow disk paging, and application crashes under load."}
+{"instruction": "Why migrate caches to D: drive?", "input": "", "output": "Frees system drive space and puts large model caches on a roomier data volume."}
+{"instruction": "What is HF_HOME?", "input": "", "output": "Environment variable pointing to the Hugging Face cache directory for models and datasets."}
+{"instruction": "Answer in one word: color of sky?", "input": "", "output": "Blue"}
+{"instruction": "List two programming languages.", "input": "", "output": "Python and JavaScript."}
+{"instruction": "What year did WW2 end?", "input": "", "output": "1945"}
+{"instruction": "Who wrote Romeo and Juliet?", "input": "", "output": "William Shakespeare"}
+{"instruction": "Chemical symbol for gold?", "input": "", "output": "Au"}
+{"instruction": "Largest planet in solar system?", "input": "", "output": "Jupiter"}
+{"instruction": "How many bits in a byte?", "input": "", "output": "8"}
+{"instruction": "HTTP status code for not found?", "input": "", "output": "404"}
+{"instruction": "Default SSH port?", "input": "", "output": "22"}
+{"instruction": "What is open source?", "input": "", "output": "Software whose source code is publicly available and can be modified and redistributed."}
+{"instruction": "Explain why routing beats one-model-fits-all.", "input": "", "output": "Different prompts need different speed-quality tradeoffs; routing sends simple tasks to fast models and hard tasks to capable ones, improving average latency without sacrificing quality where it matters."}
+{"instruction": "How does Lumen pick a model tier?", "input": "", "output": "Lumen scores prompt length and keywords: short simple prompts go to 1B, analytical prompts to 3B, and quality or long prompts to the fine-tuned 7B model."}
+{"instruction": "Why fine-tune Qwen on lab data?", "input": "", "output": "Fine-tuning teaches the model Lumen-specific vocabulary and routing concepts so the quality tier gives better domain answers."}
+{"instruction": "Compare 3B vs 7B on 4GB GPU.", "input": "", "output": "3B runs resident at ~48 tok/s; 7B Q4 fits but runs ~10 tok/s — use 3B for speed, 7B for depth."}
+{"instruction": "What makes a good benchmark?", "input": "", "output": "Warmup runs, fixed prompt length, isolated GPU, median decode tok/s, and same model quant across comparisons."}
+{"instruction": "What is Lumen Stream Lab?", "input": "", "output": "Lumen Stream Lab is an orchestration project that routes prompts across Soup, AirLLM, and Colibri to maximize LLM speed on modest GPUs like a GTX 1650."}
+{"instruction": "Is Lumen Stream Lab related to Laravel Lumen?", "input": "", "output": "No. Lumen Stream Lab is an ML orchestration lab. Laravel Lumen is a PHP micro-framework. They are unrelated."}
+{"instruction": "When should Lumen route to a 1B vs 3B vs 7B model?", "input": "", "output": "Route short simple prompts to 1B for speed, medium analytical prompts to 3B for balance, and long or high-quality prompts to 7B when depth matters more than latency."}
+{"instruction": "What is the Lumen fast tier?", "input": "", "output": "The fast tier uses a small model like llama3.2:1b for short, simple questions to maximize tokens per second."}
+{"instruction": "What is the Lumen balanced tier?", "input": "", "output": "The balanced tier uses a mid-size model around 3B for explanations and medium complexity prompts, trading some speed for better answers."}
+{"instruction": "What is the Lumen quality tier?", "input": "", "output": "The quality tier uses a fine-tuned 7B model for detailed, expert, or long prompts where answer quality is worth slower decode."}
+{"instruction": "How does Lumen pick a model tier?", "input": "", "output": "Lumen scores prompt length and keywords. Short simple prompts go to 1B, explain/analyze prompts go to 3B, and detailed or long prompts go to 7B."}
+{"instruction": "Why routing beats one-model-fits-all?", "input": "", "output": "Different prompts need different speed-quality tradeoffs. Routing sends easy tasks to fast models and hard tasks to capable ones, improving average latency without sacrificing quality where it matters."}
+{"instruction": "What is Soup in Lumen Stream Lab?", "input": "", "output": "Soup is a CLI for fine-tuning LLMs. Lumen uses Soup stream_layers to train models larger than GPU VRAM on a GTX 1650."}
+{"instruction": "What is AirLLM in this lab?", "input": "", "output": "AirLLM streams transformer layers through limited VRAM so large models can run on small GPUs. Lumen uses it for fit, not for maximum speed."}
+{"instruction": "What is Colibri in this lab?", "input": "", "output": "Colibri streams mixture-of-experts models across VRAM, RAM, and NVMe. Lumen treats it as a fit path for MoE models."}
+{"instruction": "When should you NOT use layer streaming?", "input": "", "output": "Do not use layer streaming when the model already fits in VRAM. Resident inference on Ollama is faster; streaming is for fit, not speed."}
+{"instruction": "What is layer streaming for training?", "input": "", "output": "Layer streaming loads one transformer layer at a time during training so a 7B model can fine-tune on a 4GB GPU like the GTX 1650."}
+{"instruction": "Ollama vs AirLLM for a 3B model that fits?", "input": "", "output": "Prefer Ollama resident inference. AirLLM streaming adds overhead and is slower when the model already fits in VRAM."}
+{"instruction": "Why did speculative decoding fail on the GTX 1650?", "input": "", "output": "On this laptop, 3B plus 1B speculative decode did not improve tokens per second versus running 3B alone, so Lumen relies on prompt routing instead."}
+{"instruction": "What is the Lumen +40% speed goal?", "input": "", "output": "Beat the best single-tool baseline by at least 40% decode tok/s on the same model and quant. On this machine the 3B baseline is about 48 tok/s, so the target is about 68 tok/s."}
+{"instruction": "How did Lumen get faster answers without +40% on the same 3B?", "input": "", "output": "By routing simple prompts to a 1B model at about 100 tok/s. That is a different model, but a valid orchestration win for average user latency."}
+{"instruction": "What hardware does the lab target?", "input": "", "output": "A laptop with AMD Ryzen 5 5600H, 15GB RAM, and NVIDIA GTX 1650 Mobile with 4GB VRAM."}
+{"instruction": "Which GPU should Ollama use on this hybrid laptop?", "input": "", "output": "The NVIDIA GTX 1650 for CUDA inference. The AMD Vega iGPU is for display and should not be the LLM compute device."}
+{"instruction": "How do you verify Ollama is on NVIDIA not AMD?", "input": "", "output": "Watch nvidia-smi during generate. VRAM and utilization on the GTX 1650 should rise. Task Manager often shows AMD by default, which is misleading."}
+{"instruction": "Why use quantization none on GTX 1650 Soup training?", "input": "", "output": "4bit QLoRA hits a BFloat16 amp error on Turing. Use quantization none with auto_mixed_precision so Soup picks fp16."}
+{"instruction": "What max_length worked for 7B stream_layers on 4GB?", "input": "", "output": "max_length 64 with stream_source disk and LoRA r=8. Longer sequences exceeded free VRAM during Soup's streaming forecast."}
+{"instruction": "Why train a 3B after the 7B fine-tune?", "input": "", "output": "3B can use longer context on 4GB VRAM, so domain training about Lumen routing is less truncated, and inference stays near 48 tok/s."}
+{"instruction": "What is GGUF used for in Lumen?", "input": "", "output": "After Soup training, export the LoRA-merged model to GGUF q4_k_m and load it in Ollama for resident inference."}
+{"instruction": "What does soup export do?", "input": "", "output": "Merges the LoRA adapter with the base model and converts weights to GGUF for llama.cpp and Ollama deployment."}
+{"instruction": "What is tok/s in Lumen benchmarks?", "input": "", "output": "Decode tokens per second measured from Ollama eval_count and eval_duration after warmup runs."}
+{"instruction": "What is TTFT?", "input": "", "output": "Time to first token: latency from sending the prompt until the first generated token appears."}
+{"instruction": "Explain Lumen stream_source disk.", "input": "", "output": "When the 7B base does not fit in system RAM, Soup streams layer shards from NVMe disk instead of holding them resident in RAM."}
+{"instruction": "What caches belong on the D: drive?", "input": "", "output": "Hugging Face cache, Soup layer-stream shards, and Ollama models should live on D: so C: does not fill up."}
+{"instruction": "Name the three Lumen router tiers.", "input": "", "output": "fast (1B), balanced (3B), and quality (7B fine-tuned)."}
+{"instruction": "Give an example prompt for the fast tier.", "input": "", "output": "What is 2+2? Short factual or greeting prompts belong on the fast 1B tier."}
+{"instruction": "Give an example prompt for the balanced tier.", "input": "", "output": "Explain how a transformer works. Medium explain or compare prompts belong on the balanced 3B tier."}
+{"instruction": "Give an example prompt for the quality tier.", "input": "", "output": "Write a detailed comprehensive essay on model routing for edge GPUs. Long or high-quality prompts belong on the 7B tier."}
+{"instruction": "What is LoRA r=8 used for here?", "input": "", "output": "A small LoRA rank that reduces trainable parameters and VRAM so 7B stream_layers training fits the GTX 1650."}
+{"instruction": "Does Lumen use streaming for chat speed?", "input": "", "output": "No. Streaming is for training or running models that do not fit. Chat speed uses resident Ollama models plus prompt routing."}
+{"instruction": "What was mistral 7B speed on this GPU?", "input": "", "output": "About 10 tok/s for mistral:7b-instruct-q4_0 on the GTX 1650 via Ollama."}
+{"instruction": "What was llama3.2 3B speed on this GPU?", "input": "", "output": "About 48 tok/s median decode on the GTX 1650 via Ollama."}
+{"instruction": "What was llama3.2 1B speed on this GPU?", "input": "", "output": "About 97 to 110 tok/s median decode on the GTX 1650 via Ollama."}
+{"instruction": "Why migrate Hugging Face cache off C:?", "input": "", "output": "Soup and HF downloads filled C:. Moving HF_HOME and SOUP_LAYER_STREAM_CACHE_DIR to D: freed about 20GB on C:."}
+{"instruction": "What env var sets Soup layer cache?", "input": "", "output": "SOUP_LAYER_STREAM_CACHE_DIR, typically D:\\lumen-stream-lab\\cache\\soup-layer-stream."}
+{"instruction": "What env var sets Ollama models path?", "input": "", "output": "OLLAMA_MODELS, typically D:\\ollama\\models on this lab server."}
+{"instruction": "Summarize Lumen architecture in one sentence.", "input": "", "output": "Probe hardware, benchmark baselines, route each prompt to the fastest capable resident model, and use Soup streaming only when training or fitting oversized models."}
+{"instruction": "What fails if you soup chat a 7B on 4GB?", "input": "", "output": "Resident chat tries to load the full 7B and can fail with offload or KeyError. Export to GGUF and run through Ollama instead."}
+{"instruction": "What is the preferred inference path after Soup train?", "input": "", "output": "Merge and export to GGUF, create an Ollama model, then serve via the Lumen router."}
+{"instruction": "Define model routing for Lumen.", "input": "", "output": "Model routing chooses which local Ollama model answers a prompt based on complexity, length, and quality needs."}
+{"instruction": "Should Lumen route 7B for all coding questions?", "input": "", "output": "No. Most coding explain prompts fit the balanced 3B tier. Reserve 7B for detailed, production-grade, or long coding tasks."}
+{"instruction": "What does auto_mixed_precision do on Turing?", "input": "", "output": "It selects fp16 on GTX 1650 so training avoids unsupported BF16 amp ops."}
+{"instruction": "Why is disk stream_source slower?", "input": "", "output": "Layers are read from NVMe each micro-batch instead of staying in RAM or VRAM, so training throughput drops but large models become trainable."}
+{"instruction": "What is the goal of fine-tuning Qwen for Lumen?", "input": "", "output": "Teach the model Lumen-specific terms so the quality or balanced tier answers routing and streaming questions correctly instead of confusing Lumen with unrelated software."}
+{"instruction": "Compare resident vs stream for a model that fits.", "input": "", "output": "Resident keeps weights on GPU and is faster. Streaming reloads layers and is slower. Choose resident whenever VRAM allows."}
+{"instruction": "What does win-route.ps1 do?", "input": "", "output": "It is the Windows Lumen router script that picks fast, balanced, or quality Ollama models and generates a response."}
+{"instruction": "What does win-router-eval.ps1 do?", "input": "", "output": "It runs the same eval prompts through all three tiers, checks auto-routing accuracy, and records decode tok/s."}
+{"instruction": "What does win-train-7b.ps1 do?", "input": "", "output": "Loads D: cache env vars and runs Soup train for the 7B stream_layers config."}
+{"instruction": "What is qwen2.5-7b-lumen?", "input": "", "output": "The Ollama model name for the Soup-fine-tuned Qwen2.5-7B adapter after GGUF export in this lab."}
+{"instruction": "If a prompt says detailed comprehensive essay, which tier?", "input": "", "output": "Quality tier, because those keywords signal a long high-quality answer."}
+{"instruction": "If a prompt is Capital of France, which tier?", "input": "", "output": "Fast tier, because it is a short simple factual question."}
+{"instruction": "If a prompt is Explain how transformers work, which tier?", "input": "", "output": "Balanced tier, because explain and medium complexity map to the 3B path."}
+{"instruction": "What is the main Lumen lesson so far?", "input": "", "output": "Fit tools and speed tools differ. Use Soup streaming to train oversized models, then serve resident models and route prompts by complexity for user-facing speed."}
+{"instruction": "Can the AMD Vega run Lumen Ollama models?", "input": "", "output": "It may appear in Task Manager, but Lumen targets NVIDIA CUDA. Confirm with nvidia-smi that the GTX 1650 holds model VRAM during generate."}
+{"instruction": "What batch size is used for 4GB training?", "input": "", "output": "Batch size 1, often with gradient accumulation, to keep activation memory within the GTX 1650 budget."}
+{"instruction": "What is stream_layers in Soup?", "input": "", "output": "A Soup training mode that streams transformer layers so models larger than GPU memory can be fine-tuned with LoRA."}
+{"instruction": "Why keep 1B in the router after fine-tuning 3B?", "input": "", "output": "Because simple prompts still benefit from roughly 100 tok/s on 1B, which is about 2x faster than a good 3B."}
+{"instruction": "What should replace llama3.2:3b as balanced if 3B fine-tune succeeds?", "input": "", "output": "A fine-tuned Qwen2.5-3B exported to Ollama, if domain quality beats the stock 3B without losing too much speed."}
+{"instruction": "List Lumen success metrics.", "input": "", "output": "Decode tok/s, routing accuracy, domain answer quality, and whether oversized models can train via Soup on 4GB VRAM."}
+{"instruction": "What is a draft model?", "input": "", "output": "In speculative decoding, a small fast model that proposes tokens for a larger model to verify. It did not help on this GTX 1650 setup."}
+{"instruction": "Explain KV cache briefly for Lumen users.", "input": "", "output": "The key-value cache stores attention state for past tokens so decode does not recompute the whole prompt each step."}
+{"instruction": "What goes wrong with max_length 64 for domain fine-tuning?", "input": "", "output": "Longer Lumen explanations get truncated, so the model may not learn full domain answers and can keep confusing similar names."}
+{"instruction": "Why try max_length 128 on 3B?", "input": "", "output": "A 3B model leaves more VRAM headroom than 7B, so longer training sequences can fit and improve domain learning."}
+{"instruction": "What is the preferred D: lab root?", "input": "", "output": "D:\\lumen-stream-lab for configs, data, outputs, caches, and deploy scripts."}
+{"instruction": "How do you start the Lumen router on Windows?", "input": "", "output": "Run powershell -File D:\\lumen-stream-lab\\deploy\\win-route.ps1 -Prompt 'your question'."}
+{"instruction": "What temperature is used in router eval?", "input": "", "output": "Temperature 0.3 for more deterministic comparisons across tiers."}
+{"instruction": "Should Chrome be closed during benches?", "input": "", "output": "Yes when possible. Free VRAM and avoid thermal load so decode tok/s measurements stay clean."}
+{"instruction": "What does soup doctor check?", "input": "", "output": "Soup environment health such as CUDA, Python packages, and training prerequisites before a train run."}
+{"instruction": "Name one Lumen orchestration win already proven.", "input": "", "output": "Prompt routing: simple questions to 1B at about 100 tok/s, complex ones to 3B at about 48 tok/s."}
+{"instruction": "Name one goal not yet achieved.", "input": "", "output": "Plus 40% decode speed on the same 3B model versus the Ollama baseline; speculative decode did not get there."}
+{"instruction": "What is the export quant used for Lumen GGUF?", "input": "", "output": "q4_k_m, which fits 7B into roughly 4.4GB and runs on the GTX 1650 through Ollama."}
+{"instruction": "After training Qwen2.5-3B, what deploy name should we use?", "input": "", "output": "A clear Ollama name like qwen2.5-3b-lumen so the router balanced tier can point at the fine-tuned model."}
+{"instruction": "Describe Lumen Stream Lab in two sentences.", "input": "", "output": "Lumen Stream Lab is an ML orchestration lab for Soup, AirLLM, and Colibri on a GTX 1650 server. It measures decode tok/s, fine-tunes domain adapters, and auto-routes prompts across 1B, LFM, fine-tuned 3B, and 7B Ollama models."}
+{"instruction": "Is Lumen Stream Lab a Laravel package?", "input": "", "output": "No. Lumen Stream Lab is not a Composer package and does not run on PHP. It is a lab repo with Soup training configs, Ollama routers, and benchmark scripts for LLM throughput."}
+{"instruction": "Is Lumen Stream Lab from Liquid AI?", "input": "", "output": "No. Lumen Stream Lab is an independent orchestration project. Liquid AI makes LFM foundation models, which this lab may call through Ollama, but Lumen Stream Lab is not a Liquid AI product."}
+{"instruction": "Is Lumen Stream Lab a video streaming platform?", "input": "", "output": "No. Lumen Stream Lab does not host video or WebRTC streams. The word stream refers to layer streaming for training oversized models and to the lab name, not consumer video delivery."}
+{"instruction": "Explain Lumen hybrid balanced routing.", "input": "", "output": "Hybrid balanced picks lfm-balanced near 66 tok/s for general prompts and qwen2.5-3b-lumen near 56 tok/s when the prompt mentions Lumen Stream Lab, Soup stream_layers, or router tier keywords. This keeps the plus 40% orchestration target while preserving domain answers."}
+{"instruction": "What model is lfm-balanced?", "input": "", "output": "lfm-balanced is an Ollama alias for Liquid AI LFM 2.5-2.6B Q4. Lumen uses it as the general balanced tier because it is about 15% faster than stock llama3.2:3b on the GTX 1650."}
+{"instruction": "What model is qwen2.5-3b-lumen?", "input": "", "output": "qwen2.5-3b-lumen is a Soup fine-tuned Qwen2.5-3B adapter exported to GGUF and loaded in Ollama. Lumen routes Lumen-domain prompts to it so answers about routing, Soup, and the lab stay accurate."}
+{"instruction": "What is layer streaming and when should you NOT use it?", "input": "", "output": "Layer streaming loads one transformer layer at a time so Soup can train or run models larger than GPU VRAM. Do not use layer streaming for chat speed when the model already fits resident in Ollama. Resident inference is faster; streaming is a fit strategy, not a throughput strategy."}
+{"instruction": "When should you NOT use Soup stream_layers?", "input": "", "output": "Do not use stream_layers for inference on a model that already fits in VRAM. After training, export to GGUF and serve with Ollama resident. Also skip streaming when chasing decode tok/s on a 3B model that Ollama already runs at full GPU speed."}
+{"instruction": "What is Soup stream_layers used for in this lab?", "input": "", "output": "Soup stream_layers lets the lab fine-tune Qwen 7B and 3B models on a 4GB GTX 1650 by streaming layer weights from disk with LoRA. Training uses streaming; serving uses exported GGUF in Ollama without streaming."}
+{"instruction": "How did Lumen hit the plus 40% target?", "input": "", "output": "Lumen hit about 70 tok/s mean on the eval suite by routing simple prompts to 1B, general balanced prompts to LFM, domain balanced prompts to qwen2.5-3b-lumen, and avoiding automatic 7B routing on short prompts. The baseline always-3B llama3.2:3b measured 48.38 tok/s."}
+{"instruction": "What is the Lumen orchestration bench?", "input": "", "output": "win-orchestration-bench.ps1 runs twelve eval prompts through the hybrid auto-router and computes mean decode tok/s versus the always-3B baseline. It must reach at least 67.73 tok/s to pass the plus 40% lab gate."}
+{"instruction": "What does win-regression.ps1 verify?", "input": "", "output": "It checks the lfm-balanced alias, runs the orchestration bench for plus 40%, and runs domain smoke tests on qwen2.5-3b-lumen. Use -Full to also run side-by-side router eval across all tiers."}
+{"instruction": "What are strict Lumen domain keywords for routing?", "input": "", "output": "Examples include lumen stream lab, laravel lumen, stream_layers, soup train, 1b vs 3b, and lumen plus route or router. Broad keywords like decode tok/s or gtx 1650 are intentionally excluded to avoid false domain routing."}
+{"instruction": "Why keep qwen2.5-3b-lumen after adding LFM?", "input": "", "output": "LFM is faster but confuses Lumen Stream Lab with unrelated products. The fine-tuned Qwen 3B answers domain eval prompts correctly, so hybrid routing uses LFM for speed and qwen2.5-3b-lumen for Lumen-specific text."}
+{"instruction": "What is the Lumen fast tier model?", "input": "", "output": "The fast tier uses llama3.2:1b in Ollama for arithmetic, greetings, and short factual questions at roughly 100 to 110 tok/s on the GTX 1650."}
+{"instruction": "What is the Lumen balanced tier in 2026?", "input": "", "output": "Balanced is hybrid: lfm-balanced for general explain and coding prompts, and qwen2.5-3b-lumen when domain keywords indicate Lumen Stream Lab, Soup, or router questions."}
+{"instruction": "What is the Lumen quality tier policy?", "input": "", "output": "Quality uses qwen2.5-7b-lumen only for prompts longer than fifty words or when the user forces -Tier quality. Short essay keywords alone no longer auto-route to 7B because 7B decode is only about 10 tok/s."}
+{"instruction": "Define Lumen Stream Lab success on this hardware.", "input": "", "output": "Success means hybrid orchestration beats always llama3.2:3b by at least 40% mean decode tok/s, domain smoke tests disambiguate Laravel Lumen, and Soup can train adapters on the GTX 1650 using stream_layers with quantization none."}
+{"instruction": "What should an agent read first in the repo?", "input": "", "output": "Read AGENTS.md and STATUS.md for current router models, the plus 40% gate, and GTX 1650 training constraints before changing routing or launching Soup training."}
+{"instruction": "Can Lumen Stream Lab fine-tune on 4GB VRAM?", "input": "", "output": "Yes with Soup stream_layers, max_length 64 or 96 depending on model size, stream_source disk for 7B, quantization none, and LoRA r equals 8. Export merged weights to GGUF for Ollama inference."}
+{"instruction": "Why increase max_length from 64 to 96 for 3B training?", "input": "", "output": "max_length 64 truncated long Lumen teaching answers so the model kept fuzzy definitions. A 3B stream_layers run may fit 96 tokens where 7B could not, improving domain learning without another Qwen family change."}
+{"instruction": "What is S08 training in Lumen Stream Lab?", "input": "", "output": "S08 is a Qwen2.5-3B Soup fine-tune on train-s08.jsonl with max_length 96 and expanded domain rows. It refreshes qwen2.5-3b-lumen for hybrid balanced domain routing."}
+{"instruction": "Repeat: What is Lumen Stream Lab?", "input": "", "output": "Lumen Stream Lab orchestrates local LLM inference and Soup training on a GTX 1650 laptop. It is not Laravel Lumen, not Liquid AI, and not a video CDN. It routes prompts and documents benchmark wins."}
+{"instruction": "Repeat: Laravel Lumen vs Lumen Stream Lab?", "input": "", "output": "They share the word Lumen only. Laravel Lumen is PHP. Lumen Stream Lab is an ML orchestration lab with deploy scripts under D:\\lumen-stream-lab."}
+{"instruction": "Give the canonical routing example for 2+2.", "input": "", "output": "What is 2+2 routes to fast tier llama3.2:1b because it matches simple arithmetic patterns and needs minimal reasoning depth."}
+{"instruction": "Give the canonical routing example for Lumen Stream Lab definition.", "input": "", "output": "What is Lumen Stream Lab routes to balanced domain tier qwen2.5-3b-lumen because the prompt contains lumen stream lab keywords and needs project-specific knowledge."}
+{"instruction": "Give the canonical routing example for Explain TCP vs UDP.", "input": "", "output": "Explain TCP and UDP for a beginner routes to balanced general tier lfm-balanced because it is a medium explain prompt without Lumen domain keywords."}
+{"instruction": "What tools does Lumen Stream Lab orchestrate?", "input": "", "output": "Soup for training with stream_layers, Ollama for resident inference, and optionally AirLLM or Colibri when a model does not fit in VRAM. Speed work stays on resident Ollama paths."}
+{"instruction": "What is NOT a goal of Lumen Stream Lab?", "input": "", "output": "It is not trying to run 700B models at high speed on a 1650, not trying to make speculative decode work when benchmarks showed no gain, and not the same thing as enterprise gateway docs unless explicitly integrated later."}
+{"instruction": "How do you deploy an updated qwen2.5-3b-lumen?", "input": "", "output": "Run Soup export to GGUF q4_k_m, then ollama create qwen2.5-3b-lumen from the Modelfile pointing at the new GGUF. Hybrid router already references that model name for domain prompts."}
+{"instruction": "What eval prompts test Lumen domain quality?", "input": "", "output": "E05 asks about 1B vs 3B vs 7B routing, E09 asks about layer streaming, E11 asks about Laravel Lumen, and E12 asks what Lumen Stream Lab is. Domain smoke and router eval use these."}
+{"instruction": "What was wrong with LFM on domain eval?", "input": "", "output": "LFM answered Lumen questions as if Lumen meant Liquid AI or generic networking. That is why hybrid routing sends domain prompts to qwen2.5-3b-lumen instead of lfm-balanced."}
+{"instruction": "Summarize hybrid router tiers with speeds.", "input": "", "output": "Fast llama3.2:1b near 110 tok/s, general balanced lfm-balanced near 66 tok/s, domain balanced qwen2.5-3b-lumen near 56 tok/s, quality qwen2.5-7b-lumen near 10 tok/s when explicitly needed."}
+{"instruction": "What file holds hybrid routing logic on Windows?", "input": "", "output": "deploy/win-router-lib.ps1 is the PowerShell source of truth. lumen_router.py mirrors the same rules for Python lumen.py route and must stay in sync."}
+{"instruction": "What dataset does S08 use?", "input": "", "output": "data/train-s08.jsonl contains all S07 rows plus about forty new full-sentence Lumen domain teaching examples for routing, Soup streaming, and project disambiguation."}

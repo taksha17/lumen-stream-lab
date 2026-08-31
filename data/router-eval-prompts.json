@@ -1,0 +1,74 @@
+[
+  {
+    "id": "E01",
+    "category": "simple_fact",
+    "prompt": "What is 2+2?",
+    "expected_auto_tier": "fast"
+  },
+  {
+    "id": "E02",
+    "category": "simple_fact",
+    "prompt": "Capital of France?",
+    "expected_auto_tier": "fast"
+  },
+  {
+    "id": "E03",
+    "category": "medium_explain",
+    "prompt": "Explain how a transformer neural network works.",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E04",
+    "category": "medium_explain",
+    "prompt": "Compare TCP and UDP for a beginner.",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E05",
+    "category": "lumen_domain",
+    "prompt": "When should Lumen route to a 1B vs 3B vs 7B model?",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E06",
+    "category": "quality",
+    "prompt": "Write a detailed comprehensive essay on why model routing improves latency on edge devices.",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E07",
+    "category": "coding",
+    "prompt": "Write a Python function to compute median decode tok/s from a list of benchmark runs.",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E08",
+    "category": "troubleshooting",
+    "prompt": "CUDA OOM on GTX 1650 during 7B training — what should I try?",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E09",
+    "category": "lumen_domain",
+    "prompt": "What is layer streaming and when should you NOT use it?",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E10",
+    "category": "reasoning",
+    "prompt": "A server has 4GB VRAM and 15GB RAM. Can it fine-tune Qwen2.5-7B with Soup stream_layers?",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E11",
+    "category": "lumen_domain",
+    "prompt": "Is Lumen Stream Lab related to Laravel Lumen?",
+    "expected_auto_tier": "balanced"
+  },
+  {
+    "id": "E12",
+    "category": "lumen_domain",
+    "prompt": "What is Lumen Stream Lab?",
+    "expected_auto_tier": "balanced"
+  }
+]
