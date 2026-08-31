@@ -1,6 +1,6 @@
 # Benchmark Results Log
 
-> Server: HP @ 192.168.4.31 | `D:\lumen-stream-lab` | GTX 1650 4GB
+> Server: HP laptop (LAN) | `D:\lumen-stream-lab` | GTX 1650 4GB
 
 ## Storage fix (2026-08-30)
 

@@ -16,6 +16,8 @@ env/
 hardware.json
 results/*
 !results/.gitkeep
+!results/fixtures/
+!results/fixtures/**
 
 # Model weights / exports / training output (large binaries)
 exports/
@@ -52,6 +54,9 @@ desktop.ini
 # Archives (manual deploy zips)
 *.zip
 *.tar.gz
+
+# llama.cpp prebuilt binaries (downloaded by deploy scripts)
+tools/llama-cpp-bin/
 
 # Logs
 *.log

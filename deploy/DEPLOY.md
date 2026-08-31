@@ -1,4 +1,4 @@
-# Deploy to server laptop (192.168.4.31)
+# Deploy to server laptop (Windows)
 
 Target: **D:\lumen-stream-lab** (Windows, free space on D:)
 
@@ -55,7 +55,7 @@ From the dev machine:
 
 ```bash
 cd "/media/taksha/New Volume1/lumen-stream-lab"
-./deploy/push-to-server.sh taksha@192.168.4.31
+./deploy/push-to-server.sh user@your-server
 ```
 
 This copies the repo to `D:/lumen-stream-lab` and runs setup.

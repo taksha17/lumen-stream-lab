@@ -1,0 +1,15 @@
+{
+  "source": "reference-lab",
+  "evaluated_at": "2026-08-31T18:06:16Z",
+  "routing_accuracy": "12/12",
+  "median_decode_tok_s": {
+    "fast": 94.93,
+    "balanced_lfm": 63.74,
+    "balanced_domain": 54.58,
+    "quality": 10.62
+  },
+  "orchestration_mean_tok_s": 69.78,
+  "orchestration_gain_pct": 44.2,
+  "baseline_3b_tok_s": 48.38,
+  "notes": "Sanitized summary for CI/contributors. Full report stays on reference lab."
+}

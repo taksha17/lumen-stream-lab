@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Router parity tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Route CLI smoke
+        run: |
+          python lumen.py route --prompt "What is 2+2?" | python -c "import sys,json; d=json.load(sys.stdin); assert d['tier']=='fast'"
+          python lumen.py route --prompt "What is Lumen Stream Lab?" | python -c "import sys,json; d=json.load(sys.stdin); assert d['model']=='qwen2.5-3b-lumen'"
+
+      - name: Compare script smoke
+        run: python scripts/compare.py --baseline 48.38 --optimized 70.0 --min-gain 0.40

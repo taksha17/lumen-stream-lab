@@ -1,0 +1,14 @@
+---
+name: Feature request
+about: New tier, backend, hardware profile, or docs
+title: "[feature] "
+labels: enhancement
+---
+
+**Problem**
+
+**Proposed change**
+
+**Hardware class** (low / mid / high / cpu_only):
+
+**Benchmark data** (if any):

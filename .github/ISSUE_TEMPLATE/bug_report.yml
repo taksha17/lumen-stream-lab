@@ -1,0 +1,22 @@
+---
+name: Bug report
+about: Something broken in routing, bench, or deploy
+title: "[bug] "
+labels: bug
+---
+
+**What happened**
+
+**Expected**
+
+**Steps to reproduce**
+1.
+2.
+
+**Environment**
+- OS:
+- GPU / VRAM:
+- Ollama version:
+- `python3 lumen.py probe` output (redact paths if needed):
+
+**Logs / bench JSON** (optional)

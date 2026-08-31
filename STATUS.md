@@ -43,7 +43,16 @@ powershell -File D:\lumen-stream-lab\deploy\win-regression.ps1
 
 ### Still queued
 
-1. **llama.cpp vs Ollama** resident bench
+_None — see AGENTS.md for future ideas (HF model release, learned router)._
+
+## Tooling shipped (2026-08-31)
+
+| Item | Path |
+|------|------|
+| Backend shootout | `scripts/bench_backends.py`, `deploy/win-bench-llamacpp-vs-ollama.ps1` |
+| Model setup guide | `docs/MODELS.md` |
+| CI | `.github/workflows/ci.yml` |
+| Bench fixture | `results/fixtures/router-eval-summary.json` |
 
 ## Full router eval (2026-08-31) — **PASS**
 

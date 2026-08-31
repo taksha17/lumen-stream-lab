@@ -1,5 +1,7 @@
 # Lumen Stream Lab
 
+[![CI](https://github.com/taksha17/lumen-stream-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/taksha17/lumen-stream-lab/actions/workflows/ci.yml)
+
 > **Hybrid LLM orchestration — route each prompt to the right model, measure everything, beat always-3B by ≥40% decode tok/s.**
 
 Lumen is a thin **decision layer** between your app and inference backends (Ollama, llama.cpp, Soup, AirLLM, Colibri). It does not replace a model server — it answers: *which model, which backend, which speed stack* for this hardware and this prompt.
@@ -83,7 +85,35 @@ python3 scripts/lumen_gateway.py --port 8080
 
 Copy [`lumen.yaml.example`](./lumen.yaml.example) → `lumen.yaml` and set tiers, paths, and `target_improvement` for your environment.
 
-**Requirements:** Python 3.10+, [Ollama](https://ollama.com) for inference. Soup optional for training path.
+**Models:** see [docs/MODELS.md](./docs/MODELS.md) for required Ollama pulls, `lfm-balanced` alias, and fine-tuned `qwen2.5-*-lumen` setup.
+
+### HTTP gateway (optional)
+
+```bash
+python3 lumen.py probe   # once per machine
+python3 scripts/lumen_gateway.py --port 8080
+```
+
+```bash
+# Routing plan only
+curl -s http://127.0.0.1:8080/v1/plan \
+  -H 'content-type: application/json' \
+  -d '{"prompt": "What is 2+2?"}'
+
+# Route + generate (uses domain system prompt when needed)
+curl -s http://127.0.0.1:8080/v1/chat \
+  -H 'content-type: application/json' \
+  -d '{"prompt": "What is Lumen Stream Lab?"}'
+```
+
+### Backend shootout (Ollama vs llama.cpp)
+
+```bash
+python3 scripts/bench_backends.py --backend ollama --model llama3.2:3b
+python3 scripts/bench_backends.py --backend llamacpp --gguf /path/to/model.gguf
+```
+
+See [docs/MODELS.md](./docs/MODELS.md) and `deploy/win-bench-llamacpp-vs-ollama.ps1` on Windows.
 
 ---
 
@@ -132,11 +162,11 @@ Soup: **train** → export GGUF → Lumen **serves** via hybrid router.
 | [**PLAYBOOK.md**](./PLAYBOOK.md) | Soup / AirLLM / Colibri reference |
 | [**SCALING.md**](./SCALING.md) | Hardware profiles, OSS scaling |
 | [**CONTRIBUTING.md**](./CONTRIBUTING.md) | How to contribute benches and profiles |
+| [**docs/MODELS.md**](./docs/MODELS.md) | Required Ollama models, aliases, fine-tune deploy, backend bench |
 | [**benchmarks/PROTOCOL.md**](./benchmarks/PROTOCOL.md) | Fair measurement rules |
 | [**deploy/DEPLOY.md**](./deploy/DEPLOY.md) | Optional Windows reference-lab deploy |
+| [**hardware/reference-lab.json**](./hardware/reference-lab.json) | Reference CI rig (not a global default) |
 
----
-
-## License
+**Requirements:** Python 3.10+, [Ollama](https://ollama.com) for inference. Soup optional for training path.
 
 MIT — see [LICENSE](./LICENSE).

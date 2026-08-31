@@ -31,6 +31,9 @@ function Get-DomainContextPrefix([string]$prompt) {
     if ($lower -like '*laravel lumen*') {
         return "Answer starting with No. Lumen Stream Lab is NOT the Laravel PHP microframework - it is a separate ML orchestration project.`n`n"
     }
+    if ($lower -match '1b vs 3b|3b vs 7b|route to a 1b') {
+        return "[Lumen hybrid router tiers: fast=llama3.2:1b for short/simple; balanced=lfm-balanced or qwen2.5-3b-lumen for domain; quality=qwen2.5-7b-lumen for long prompts or forced quality.]`n`n"
+    }
     return ""
 }
 

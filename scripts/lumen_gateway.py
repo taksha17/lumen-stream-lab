@@ -13,11 +13,11 @@ Start:
 Try it:
     curl -s http://localhost:8080/v1/plan \
         -H 'content-type: application/json' \
-        -d '{"model": "llama3.2:3b"}' | jq
+        -d '{"prompt": "What is 2+2?"}' | jq
 
-    curl -N http://localhost:8080/v1/chat \
+    curl -s http://localhost:8080/v1/chat \
         -H 'content-type: application/json' \
-        -d '{"model": "llama3.2:3b", "prompt": "What is 2+2?"}'
+        -d '{"prompt": "What is 2+2?"}'
 """
 from __future__ import annotations
 

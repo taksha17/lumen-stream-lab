@@ -202,7 +202,15 @@ Winning configs: `soup-7b-stream.yaml`, `soup-3b-stream-s07.yaml`, dataset `data
 
 ## Open work (prioritized)
 
-1. **llama.cpp vs Ollama** resident bench
+1. **Publish domain GGUF** on Hugging Face (optional) — train path documented in `docs/MODELS.md`
+2. **Learned router** — classifier trained on prompt log vs keyword rules
+3. **vLLM backend plugin** in gateway
+
+## Completed (2026-08-31)
+
+- llama.cpp vs Ollama bench scripts (`scripts/bench_backends.py`, `deploy/win-bench-llamacpp-vs-ollama.ps1`)
+- `docs/MODELS.md`, GitHub Actions CI, issue templates, bench fixtures
+- E05 routing prefix for domain tier answers
 
 ---
 

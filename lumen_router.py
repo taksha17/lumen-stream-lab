@@ -88,7 +88,14 @@ def wrap_domain_prompt(prompt: str) -> str:
     if "laravel lumen" in lower:
         return (
             "Answer starting with No. Lumen Stream Lab is NOT the Laravel PHP "
-            "microframework — it is a separate ML orchestration project.\n\n"
+            "microframework - it is a separate ML orchestration project.\n\n"
+            + prompt
+        )
+    if re.search(r"1b vs 3b|3b vs 7b|route to a 1b", lower):
+        return (
+            "[Lumen hybrid router tiers: fast=llama3.2:1b for short/simple; "
+            "balanced=lfm-balanced or qwen2.5-3b-lumen for domain; "
+            "quality=qwen2.5-7b-lumen for long prompts or forced quality.]\n\n"
             + prompt
         )
     return prompt
