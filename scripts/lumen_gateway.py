@@ -86,6 +86,50 @@ def bench_freshness() -> dict:
     }
 
 
+def extract_prompt(body: dict) -> str:
+    """User text from Lumen /v1/chat body or OpenAI /v1/chat/completions messages."""
+    if body.get("prompt"):
+        return str(body["prompt"])
+    messages = body.get("messages") or []
+    parts: list[str] = []
+    for msg in messages:
+        if not isinstance(msg, dict):
+            continue
+        role = msg.get("role", "")
+        content = msg.get("content", "")
+        if isinstance(content, list):
+            text = " ".join(
+                p.get("text", "") for p in content if isinstance(p, dict) and p.get("type") == "text"
+            )
+        else:
+            text = str(content or "")
+        if role == "system":
+            parts.append(f"[system] {text}")
+        elif text:
+            parts.append(text)
+    return "\n".join(parts).strip()
+
+
+def chat_with_routing(prompt: str, force_tier: str | None = None) -> tuple[dict, dict, int]:
+    """Route prompt, generate via Ollama, return (plan, ollama_resp, latency_ms)."""
+    t0 = time.time()
+    plan = lumen_route(prompt, force_tier=force_tier)
+    try:
+        raw = ollama_generate(plan["model"], prompt, stream=False)
+    except RuntimeError as e:
+        if plan.get("tier") != "fast":
+            plan = lumen_route(prompt, force_tier="fast")
+            raw = ollama_generate(plan["model"], prompt, stream=False)
+        else:
+            raise e
+    try:
+        ollama_resp = json.loads(raw)
+    except json.JSONDecodeError:
+        ollama_resp = {"raw": raw.decode("utf-8", "replace")}
+    latency_ms = int((time.time() - t0) * 1000)
+    return plan, ollama_resp, latency_ms
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "LumenGateway/0.1"
 
@@ -118,7 +162,23 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/":
             return self._json(200, {
                 "service": "lumen-gateway",
-                "endpoints": ["/v1/health", "/v1/plan", "/v1/chat"],
+                "endpoints": [
+                    "/v1/health",
+                    "/v1/plan",
+                    "/v1/chat",
+                    "/v1/chat/completions",
+                    "/v1/models",
+                ],
+            })
+        if self.path == "/v1/models":
+            return self._json(200, {
+                "object": "list",
+                "data": [
+                    {"id": "lumen-hybrid", "object": "model", "owned_by": "lumen"},
+                    {"id": "llama3.2:1b", "object": "model", "owned_by": "ollama"},
+                    {"id": "lfm-balanced", "object": "model", "owned_by": "ollama"},
+                    {"id": "qwen2.5-3b-lumen", "object": "model", "owned_by": "ollama"},
+                ],
             })
         self._json(404, {"error": "not found", "path": self.path})
 
@@ -134,43 +194,47 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(500, {"error": str(e)})
             return self._json(200, plan)
 
-        if self.path == "/v1/chat":
+        if self.path in ("/v1/chat", "/v1/chat/completions"):
             body = self._read_json()
-            prompt = body.get("prompt", "")
+            prompt = extract_prompt(body)
             force = body.get("force_tier")
             if not prompt:
-                return self._json(400, {"error": "prompt required"})
+                return self._json(400, {"error": "prompt or messages required"})
 
-            t0 = time.time()
             try:
-                plan = lumen_route(prompt, force_tier=force)
+                plan, ollama_resp, latency_ms = chat_with_routing(prompt, force_tier=force)
+            except RuntimeError as e:
+                return self._json(502, {"error": "backend failed", "detail": str(e)})
             except Exception as e:
                 return self._json(500, {"error": "router failed", "detail": str(e)})
 
-            try:
-                raw = ollama_generate(plan["model"], prompt, stream=False)
-            except Exception as e:
-                if plan.get("tier") != "fast":
-                    plan = lumen_route(prompt, force_tier="fast")
-                    try:
-                        raw = ollama_generate(plan["model"], prompt, stream=False)
-                    except Exception as e2:
-                        return self._json(502, {
-                            "error": "backend failed",
-                            "fallback_error": str(e2),
-                        })
-                else:
-                    return self._json(502, {"error": "backend failed", "detail": str(e)})
-
-            try:
-                ollama_resp = json.loads(raw)
-            except json.JSONDecodeError:
-                ollama_resp = {"raw": raw.decode("utf-8", "replace")}
+            text = ollama_resp.get("response", "")
+            if self.path == "/v1/chat/completions":
+                return self._json(200, {
+                    "id": f"chatcmpl-lumen-{int(time.time())}",
+                    "object": "chat.completion",
+                    "model": plan.get("model", "lumen-hybrid"),
+                    "choices": [{
+                        "index": 0,
+                        "message": {"role": "assistant", "content": text},
+                        "finish_reason": "stop",
+                    }],
+                    "usage": {
+                        "prompt_tokens": ollama_resp.get("prompt_eval_count"),
+                        "completion_tokens": ollama_resp.get("eval_count"),
+                        "total_tokens": (
+                            (ollama_resp.get("prompt_eval_count") or 0)
+                            + (ollama_resp.get("eval_count") or 0)
+                        ),
+                    },
+                    "lumen_plan": plan,
+                    "backend_latency_ms": latency_ms,
+                })
 
             return self._json(200, {
                 "plan": plan,
-                "backend_latency_ms": int((time.time() - t0) * 1000),
-                "response": ollama_resp.get("response", ""),
+                "backend_latency_ms": latency_ms,
+                "response": text,
                 "eval_count": ollama_resp.get("eval_count"),
                 "eval_duration_ns": ollama_resp.get("eval_duration"),
             })
@@ -194,7 +258,7 @@ def main() -> int:
 
     srv = ThreadingHTTPServer((args.host, args.port), Handler)
     print(f"lumen-gateway listening on http://{args.host}:{args.port}")
-    print("endpoints: /v1/health  /v1/plan  /v1/chat")
+    print("endpoints: /v1/health  /v1/plan  /v1/chat  /v1/chat/completions  /v1/models")
     try:
         srv.serve_forever()
     except KeyboardInterrupt:

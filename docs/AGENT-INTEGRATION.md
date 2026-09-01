@@ -46,6 +46,20 @@ python3 lumen.py probe   # once
 python3 scripts/lumen_gateway.py --port 8080
 ```
 
+**Endpoints:** `/v1/plan`, `/v1/chat`, **`/v1/chat/completions`** (OpenAI shape for Hermes/LiteLLM), `/v1/models`, `/v1/health`
+
+### Hermes / OpenAI-compatible clients
+
+Point `base_url` at `http://127.0.0.1:8080/v1`:
+
+```bash
+curl -s http://127.0.0.1:8080/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"lumen-hybrid","messages":[{"role":"user","content":"What is 2+2?"}]}'
+```
+
+Response includes `choices[0].message.content` plus `lumen_plan` (tier, model, reason).
+
 ### Simple agent loop (curl)
 
 ```bash

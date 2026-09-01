@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Router parity tests
+      - name: Tests (router parity + fixture validation)
         run: python -m unittest discover -s tests -v
 
       - name: Route CLI smoke

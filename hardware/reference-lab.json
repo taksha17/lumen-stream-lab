@@ -2,23 +2,34 @@
   "id": "reference-lab",
   "name": "Lumen reference lab (HP server laptop)",
   "role": "reference",
-  "description": "Minimum-viable CI rig. Numbers in RESULTS.md are measured here. Contributors on stronger GPUs should probe their own hardware and set their own baselines.",
-  "probed_at": "2026-08-31",
+  "description": "Minimum-viable CI rig. Numbers in docs/REFERENCE-RESULTS.md are measured here. Contributors on stronger GPUs should probe their own hardware and set their own baselines.",
+  "probed_at": "2026-09-01",
   "cpu": "AMD Ryzen 5 5600H (6C/12T)",
   "ram_gb": 16,
   "gpu": "NVIDIA GeForce GTX 1650 Mobile",
   "vram_gb": 4,
   "disk": "NVMe (~150GB free)",
   "os": "Windows 11 (server), Linux (dev)",
+  "ollama_version": "0.33.2",
   "measured_baselines": {
-    "llama3.2:3b_tok_s": 48.38,
-    "llama3.2:1b_tok_s": 96.87,
-    "orchestration_mean_tok_s": 70.02,
-    "orchestration_gain_pct": 44.7
+    "llama3.2:3b_tok_s": 48.94,
+    "llama3.2:3b_tok_s_canonical_gate": 48.38,
+    "llama3.2:1b_tok_s": 98.56,
+    "lfm_balanced_tok_s": 64.13,
+    "qwen2.5_3b_lumen_tok_s": 55.65,
+    "orchestration_mean_tok_s": 68.1,
+    "orchestration_gain_pct_vs_48_38": 40.8,
+    "orchestration_gain_pct_vs_48_94": 39.1
   },
   "orchestration_target": {
     "baseline_model": "llama3.2:3b",
-    "min_gain": 0.40
+    "baseline_tok_s_for_gate": 48.38,
+    "min_gain": 0.40,
+    "target_tok_s": 67.73
+  },
+  "backend_shootout_20260901": {
+    "ollama_llama3.2_3b_tok_s": 48.2,
+    "llamacpp_same_gguf_tok_s": 16.49
   },
   "training_constraints": {
     "soup_stream_layers": true,
@@ -35,5 +46,14 @@
     "balanced": "lfm-balanced",
     "balanced_domain": "qwen2.5-3b-lumen",
     "quality": "qwen2.5-7b-lumen"
+  },
+  "fast_tier_candidates_d3": {
+    "smollm2:1.7b-instruct-q4_K_M": { "tok_s": 98.69, "domain_gate": "pending" },
+    "gemma3:1b-it-qat": { "tok_s": 82.27, "domain_gate": "pending" }
+  },
+  "fixtures": {
+    "phase_d3": "results/fixtures/phase-d3-summary.json",
+    "ecosystem": "results/fixtures/ecosystem-comparison-20260901.json",
+    "router_eval": "results/fixtures/router-eval-summary.json"
   }
 }
