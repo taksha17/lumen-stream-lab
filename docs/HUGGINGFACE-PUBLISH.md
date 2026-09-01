@@ -1,6 +1,8 @@
 # Publishing domain models to Hugging Face
 
-Share `qwen2.5-3b-lumen` so contributors can `ollama pull` or download GGUF without running Soup training.
+Share `qwen2.5-3b-lumen` so contributors can download GGUF without running Soup training.
+
+**Live model:** [takshathosani17/qwen2.5-3b-lumen](https://huggingface.co/takshathosani17/qwen2.5-3b-lumen)
 
 ## Prerequisites
 
@@ -40,8 +42,9 @@ Uploads:
 ## After publish — contributor install
 
 ```bash
-# Download GGUF from HF, then:
-printf 'FROM ./qwen2.5-3b-lumen-s07.q4_k_m.gguf\nPARAMETER temperature 0.7\n' > Modelfile
+pip install -U "huggingface_hub[cli]"
+hf download takshathosani17/qwen2.5-3b-lumen --local-dir ./qwen-lumen
+cd qwen-lumen
 ollama create qwen2.5-3b-lumen -f Modelfile
 ```
 

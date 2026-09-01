@@ -65,9 +65,20 @@ ollama pull qwen2.5:3b-instruct-q4_K_M
 
 Domain smoke tests (E11/E12) expect `qwen2.5-3b-lumen` with the system prompt in `data/domain-system-prompt.txt`.
 
-### Option C — Release artifacts (future)
+### Option C — Download from Hugging Face (no training)
 
-We may publish GGUF on Hugging Face under `taksha17/lumen-stream-lab`. Until then, train from `data/train-s07.jsonl` or open an issue if you need the reference export.
+Published S07 export: **[takshathosani17/qwen2.5-3b-lumen](https://huggingface.co/takshathosani17/qwen2.5-3b-lumen)**
+
+```bash
+pip install -U "huggingface_hub[cli]"
+hf download takshathosani17/qwen2.5-3b-lumen --local-dir ./qwen-lumen
+cd qwen-lumen
+ollama create qwen2.5-3b-lumen -f Modelfile
+```
+
+Verify domain routing: `lumen route --prompt "What is Lumen Stream Lab?"` should pick `qwen2.5-3b-lumen`.
+
+See [HUGGINGFACE-PUBLISH.md](./HUGGINGFACE-PUBLISH.md) if you need to re-publish or update the GGUF.
 
 ---
 
