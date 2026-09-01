@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Lumen HTTP gateway — reference implementation of the enterprise topology
-described in ENTERPRISE.md §4.1 and §7.1.
+described in docs/ENTERPRISE.md §4.1 and §7.1.
 
 Stdlib only (no FastAPI / uvicorn) so it runs anywhere python3 runs.
 Demonstrates: per-request routing via `lumen route`, plan-as-contract,

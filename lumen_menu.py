@@ -14,13 +14,11 @@ from urllib import request as urlrequest
 
 ROOT = Path(__file__).resolve().parent
 
-BANNER = r"""
-  _                                   
- | |    ___ _ __ ___  _   _ _ __ ___  
- | |   / _ \ '_ ` _ \| | | | '_ ` _ \ 
- | |__|  __/ | | | | | |_| | | | | | |
- |_____\___|_| |_| |_|\__,_|_| |_| |_|
-        Stream Lab — interactive menu
+BANNER = """
+==========================================
+  LUMEN STREAM LAB
+  interactive menu
+==========================================
 """
 
 MENU = """
@@ -317,8 +315,12 @@ def action_docs() -> None:
         ("Enterprise case study", ROOT / "docs" / "ENTERPRISE-CASE-STUDY.md"),
         ("Models setup", ROOT / "docs" / "MODELS.md"),
         ("Contributing", ROOT / "CONTRIBUTING.md"),
-        ("Enterprise integration", ROOT / "ENTERPRISE.md"),
-        ("Results log", ROOT / "RESULTS.md"),
+        ("Agent integration (Hermes)", ROOT / "docs" / "AGENT-INTEGRATION.md"),
+        ("Tool comparison", ROOT / "docs" / "TOOL-COMPARISON.md"),
+        ("Terminal UI guide", ROOT / "docs" / "TERMINAL-UI.md"),
+        ("Repo layout", ROOT / "docs" / "REPO-LAYOUT.md"),
+        ("Enterprise integration", ROOT / "docs" / "ENTERPRISE.md"),
+        ("Results log", ROOT / "docs" / "RESULTS.md"),
     ]
     print("\n=== Documentation ===\n")
     for label, path in docs:

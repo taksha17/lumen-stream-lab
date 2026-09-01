@@ -155,7 +155,7 @@ flowchart LR
 | Infer 7B | Ollama GGUF | ~10 tok/s — quality tier only |
 | Infer hybrid | Lumen router | **~70 tok/s mean** on 12-prompt suite |
 
-Training configs: `soup-7b-stream.yaml`, `soup-3b-stream-s07.yaml`.
+Training configs: `config/soup/soup-7b-stream.yaml`, `config/soup/soup-3b-stream-s07.yaml`.
 
 ---
 

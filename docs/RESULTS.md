@@ -283,3 +283,29 @@ Router-eval auto-route mean (64.08 tok/s) is a side metric across all prompts; *
 **Conclusion:** On GTX 1650 reference lab, **keep Ollama as default resident backend** for `llama3.2:3b`. Re-bench on other GPUs; winner may differ.
 
 Script: `scripts/bench_backends.py` (portable), `deploy/win-bench-llamacpp-vs-ollama.ps1` (Windows).
+
+---
+
+## Phase D3 — Phi-4, SmolLM2, Gemma 3 (2026-09-01) — **DONE**
+
+`deploy/win-bench-phase-d3.ps1` | GTX 1650 4GB | Ollama 0.33.2 | Fixture: `results/fixtures/phase-d3-summary.json`
+
+| ID | Model | Median tok/s | vs always-3B (48.94) |
+|----|-------|--------------|----------------------|
+| BL-01 | llama3.2:1b | **98.56** | +101% |
+| BL-02 | llama3.2:3b | **48.94** | baseline |
+| BL-03 | qwen2.5:3b-instruct-q4_K_M | **55.80** | +14% |
+| D3-01 | phi4-mini | **29.46** | −40% |
+| D3-02 | smollm2:1.7b-instruct-q4_K_M | **98.69** | +102% |
+| D3-03 | gemma3:1b-it-qat | **82.27** | +68% |
+| D3-04 | gemma3:4b-it-qat | **12.14** | −75% |
+| D3-05 | lfm-balanced | **64.13** | +31% |
+| D3-06 | qwen2.5-3b-lumen | **55.65** | +14% |
+
+**Takeaways:**
+- **Phi-4 mini** is *slower* than llama3.2:3b on this GPU — not a speed upgrade.
+- **SmolLM2 1.7B** matches llama3.2:1b speed (~99 tok/s) — candidate fast tier after domain eval.
+- **Gemma3 1B QAT** is strong (~82 tok/s) but not yet in production router.
+- **Lumen hybrid** still required for +40% with domain quality: orchestration **68.10 tok/s** (+40.8% vs 48.38) on same day re-bench.
+
+Ecosystem re-bench: `results/fixtures/ecosystem-comparison-20260901.json` | Ollama 48.2 vs llama.cpp 16.49 tok/s (same 3B GGUF).

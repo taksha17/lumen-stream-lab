@@ -87,4 +87,4 @@ Write-Host "C: free after:  $([math]::Round((Get-PSDrive C).Free/1GB,1)) GB" -Fo
 Write-Host "D: free after:  $([math]::Round((Get-PSDrive D).Free/1GB,1)) GB" -ForegroundColor Green
 Write-Host ""
 Write-Host "Done. New shells will use D: caches automatically." -ForegroundColor Green
-Write-Host "Re-run training: cd $LabRoot && soup train --config soup-7b-stream.yaml --yes"
+Write-Host "Re-run training: cd $LabRoot && soup train --config config/soup/soup-7b-stream.yaml --yes"

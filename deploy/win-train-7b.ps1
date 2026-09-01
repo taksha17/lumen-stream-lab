@@ -10,4 +10,4 @@ Write-Host "SOUP_LAYER_STREAM_CACHE_DIR: $env:SOUP_LAYER_STREAM_CACHE_DIR"
 Write-Host "C: free $([math]::Round((Get-PSDrive C).Free/1GB,1)) GB | D: free $([math]::Round((Get-PSDrive D).Free/1GB,1)) GB"
 
 Set-Location $LabRoot
-soup train --config soup-7b-stream.yaml --yes
+soup train --config config/soup/soup-7b-stream.yaml --yes

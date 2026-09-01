@@ -192,7 +192,7 @@ sequenceDiagram
 Internal product docs change quarterly. Pipeline:
 
 1. Curate `data/train-s07.jsonl` style rows (instruction/output).
-2. `soup train --config soup-3b-stream-s07.yaml`
+2. `soup train --config config/soup/soup-3b-stream-s07.yaml`
 3. `soup export` → GGUF → `ollama create qwen2.5-3b-lumen`
 4. `win-domain-smoke-gate.ps1` — must PASS
 5. `win-regression.ps1` — +40% must PASS
@@ -244,7 +244,7 @@ See [HARDWARE-TESTING.md](./HARDWARE-TESTING.md) to submit your profile.
 
 | Doc | Content |
 |-----|---------|
-| [ENTERPRISE.md](../ENTERPRISE.md) | Full integration reference (APIs, topologies) |
+| [ENTERPRISE.md](./ENTERPRISE.md) | Full integration reference (APIs, topologies) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Technical diagrams |
 | [REFERENCE-RESULTS.md](./REFERENCE-RESULTS.md) | All benchmark tables |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | Collaborator onboarding |

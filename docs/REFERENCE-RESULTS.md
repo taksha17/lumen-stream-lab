@@ -1,6 +1,6 @@
 # Reference results (consolidated)
 
-Single-page summary of **verified benchmarks** on the reference lab (GTX 1650 4GB). Full chronological log: [RESULTS.md](../RESULTS.md).  
+Single-page summary of **verified benchmarks** on the reference lab (GTX 1650 4GB). Full chronological log: [RESULTS.md](./RESULTS.md).  
 Machine profile: [hardware/reference-lab.json](../hardware/reference-lab.json).  
 CI fixture: [results/fixtures/router-eval-summary.json](../results/fixtures/router-eval-summary.json).
 
@@ -83,12 +83,50 @@ Script: `deploy/win-bench-llamacpp-vs-ollama.ps1`
 
 ## Phase D2 model families (balanced tier candidates)
 
-| Model | ~tok/s | Verdict |
-|-------|--------|---------|
-| LFM 2.5-2.6B | **~65** | **Production balanced (general)** |
-| Qwen 2.5 3B | ~56 | Domain fine-tune base |
-| Gemma e4b | ~12 | Ruled out (speed) |
-| Nemotron Lightning | ~2 | Ruled out (speed) |
+| Model | ~tok/s | vs always-3B | Verdict |
+|-------|--------|--------------|---------|
+| LFM 2.5-2.6B | **~65** | +35% | **Production balanced (general)** |
+| Qwen 2.5 3B (stock) | ~56 | +16% | Domain fine-tune base |
+| Gemma 4 e2b-it-qat | ~54 | +12% | Fits 4GB; slower than LFM |
+| Gemma 4 e4b | ~12 | −75% | Ruled out (speed) |
+| Nemotron Lightning | ~2 | −96% | Ruled out (speed) |
+
+---
+
+## Phase D3 — recent models (re-bench 2026-09-01)
+
+`deploy/win-bench-phase-d3.ps1` | Fixture: [results/fixtures/phase-d3-summary.json](../results/fixtures/phase-d3-summary.json)  
+GTX 1650 4GB | Ollama 0.33.2 | `num_predict=128` | same prompt as D2
+
+| ID | Model | Family | Median tok/s | vs always-3B (48.94) | Notes |
+|----|-------|--------|--------------|----------------------|-------|
+| BL-01 | llama3.2:1b | Meta | **98.56** | +101% | fast tier (unchanged) |
+| BL-02 | llama3.2:3b | Meta | **48.94** | baseline | +40% reference |
+| BL-03 | qwen2.5:3b-instruct-q4_K_M | Alibaba | **55.80** | +14% | stock 3B |
+| D3-01 | phi4-mini | Microsoft | **29.46** | −40% | slower than 3B on 4GB |
+| D3-02 | smollm2:1.7b-instruct-q4_K_M | HuggingFace | **98.69** | +102% | matches 1B speed; domain TBD |
+| D3-03 | gemma3:1b-it-qat | Google | **82.27** | +68% | strong 1B; not yet in router |
+| D3-04 | gemma3:4b-it-qat | Google | **12.14** | −75% | VRAM pressure |
+| D3-05 | lfm-balanced | Liquid AI | **64.13** | +31% | production balanced |
+| D3-06 | qwen2.5-3b-lumen | Qwen (Lumen) | **55.65** | +14% | domain tier |
+
+**D3 takeaway:** SmolLM2 1.7B and Gemma3 1B are **fast** on this GPU, but **no single new model** beats +40% *and* passes Lumen domain gates. Hybrid routing still wins.
+
+---
+
+## Ecosystem comparison (re-bench 2026-09-01)
+
+Fixture: [results/fixtures/ecosystem-comparison-20260901.json](../results/fixtures/ecosystem-comparison-20260901.json)
+
+| Tool / policy | Median / mean tok/s | vs always-3B (48.38) |
+|---------------|---------------------|----------------------|
+| Ollama always `llama3.2:3b` | 48.2–49.1 | baseline |
+| llama.cpp (same GGUF) | **16.49** | −66% |
+| LFM alone | 64.13 | +33% (below +40%) |
+| SmolLM2 1.7B alone | 98.69 | +104% (1B-class; quality/domain unproven) |
+| **Lumen hybrid orchestration** | **68.10** mean | **+40.8% PASS** |
+
+Full tool-by-tool write-up: [TOOL-COMPARISON.md](./TOOL-COMPARISON.md)
 
 ---
 

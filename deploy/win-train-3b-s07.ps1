@@ -15,4 +15,4 @@ Write-Host "GPU: $(nvidia-smi --query-gpu=memory.used,memory.free --format=csv,n
 Write-Host "Rows: $((Get-Content "$LabRoot\data\train-s07.jsonl" | Measure-Object -Line).Lines)"
 
 Set-Location $LabRoot
-soup train --config soup-3b-stream-s07.yaml --yes
+soup train --config config/soup/soup-3b-stream-s07.yaml --yes

@@ -38,8 +38,8 @@ These are **LoRA fine-tunes** trained with [Soup](https://github.com/getsoup-ai/
 ### Option A — Train your own (recommended for contributors)
 
 1. Install Soup and set cache paths (`SOUP_LAYER_STREAM_CACHE_DIR`, `HF_HOME`).
-2. Use configs in repo root: `soup-3b-stream-s07.yaml`, `soup-7b-stream-s06.yaml`.
-3. Train: `soup train --config soup-3b-stream-s07.yaml --yes`
+2. Use configs in `config/soup/`: `soup-3b-stream-s07.yaml`, `soup-7b-stream-s06.yaml`.
+3. Train: `soup train --config config/soup/soup-3b-stream-s07.yaml --yes`
 4. Export: `soup export --model output-3b-stream-s07 --base Qwen/Qwen2.5-3B-Instruct --format gguf --quant q4_k_m`
 5. Deploy:
 
@@ -125,4 +125,4 @@ Regression gate (Windows server): `deploy\win-regression.ps1`
 | 8–16 GB | Resident 7B; may lower `quality_min_words` in `lumen.yaml` |
 | 24 GB+ | Larger models, longer context; contribute a `hardware/<name>.json` profile |
 
-See [SCALING.md](../SCALING.md) and [hardware/reference-lab.json](../hardware/reference-lab.json).
+See [SCALING.md](./SCALING.md) and [hardware/reference-lab.json](../hardware/reference-lab.json).

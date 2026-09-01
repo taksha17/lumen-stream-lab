@@ -79,4 +79,4 @@ cd D:\lumen-stream-lab
 nvidia-smi
 ```
 
-Fill in `RESULTS.md` after running Ollama benchmark.
+Fill in `docs/RESULTS.md` after running Ollama benchmark.

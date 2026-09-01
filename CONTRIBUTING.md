@@ -13,6 +13,8 @@ Thanks for helping scale this beyond one laptop. The reference GTX 1650 rig vali
 | [docs/ENTERPRISE-CASE-STUDY.md](./docs/ENTERPRISE-CASE-STUDY.md) | Real-world enterprise narrative |
 | [docs/MODELS.md](./docs/MODELS.md) | Model setup |
 
+**Cursor / AI agents:** copy `AGENTS.md.example` → `AGENTS.md` locally (gitignored; may contain your machine paths).
+
 ---
 
 ## We are looking for collaborators
@@ -71,7 +73,7 @@ See [docs/MODELS.md](./docs/MODELS.md) for `ollama pull` commands.
 - [ ] No hardcoded server IPs, `D:\` paths, or lab-only tok/s in shared logic
 - [ ] Baselines labeled **reference-lab** vs **profile-specific** in docs
 - [ ] If reference regression affected: note in PR or run `win-regression.ps1`
-- [ ] `AGENTS.md` updated if agent workflow changes
+- [ ] `AGENTS.md.example` updated if agent workflow changes (copy locally to `AGENTS.md`)
 
 ---
 
@@ -127,7 +129,7 @@ Follow [benchmarks/PROTOCOL.md](./benchmarks/PROTOCOL.md):
 - `num_predict = 128` for comparability
 - Report **median** of 5 runs after 2 warmup
 - Use API `eval_duration` decode rate when possible
-- Negative results welcome in `RESULTS.md`
+- Negative results welcome in `docs/RESULTS.md`
 
 ---
 

@@ -8,4 +8,4 @@ Write-Host "=== Soup 7B S06 train (107 samples, 75 steps) ===" -ForegroundColor 
 Write-Host "C: free $([math]::Round((Get-PSDrive C).Free/1GB,1)) GB | D: free $([math]::Round((Get-PSDrive D).Free/1GB,1)) GB"
 
 Set-Location $LabRoot
-soup train --config soup-7b-stream-s06.yaml --yes
+soup train --config config/soup/soup-7b-stream-s06.yaml --yes

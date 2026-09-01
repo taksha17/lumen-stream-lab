@@ -1,0 +1,16 @@
+{
+  "probed_at": "2026-09-01T00:37:07-05:00",
+  "hardware": "NVIDIA GeForce GTX 1650, 4096 MiB",
+  "baseline_always_3b_tok_s": 49.08,
+  "canonical_baseline_3b_tok_s": 48.38,
+  "lumen_orchestration_mean_tok_s": 68.1,
+  "lumen_gain_vs_canonical_pct": 40.8,
+  "lumen_pass_40pct": true,
+  "backend_shootout": {
+    "ollama_llama3.2_3b_tok_s": 48.2,
+    "llamacpp_same_gguf_tok_s": 16.49,
+    "winner": "ollama"
+  },
+  "orchestration_report": "orchestration-bench-20260901-003509.json",
+  "notes": "Re-bench 2026-09-01 on reference lab. Primary +40% gate uses canonical baseline 48.38 tok/s."
+}

@@ -42,6 +42,10 @@ lumen.yaml
 credentials.json
 secrets.*
 
+# Maintainer-only (machine paths, SSH notes, session state)
+AGENTS.md
+docs/internal/
+
 # OS / editor
 .DS_Store
 Thumbs.db

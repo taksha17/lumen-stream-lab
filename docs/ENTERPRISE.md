@@ -2,7 +2,7 @@
 
 > **Audience:** platform / infra / ML-platform engineers wiring a local LLM stack into a real production system.  
 > **Narrative case study:** [docs/ENTERPRISE-CASE-STUDY.md](./docs/ENTERPRISE-CASE-STUDY.md) — end-to-end "Acme Platform" walkthrough with metrics.  
-> **Numbers:** [docs/REFERENCE-RESULTS.md](./docs/REFERENCE-RESULTS.md) on reference lab (GTX 1650 4GB). The *shape* of integration applies on bigger hardware.
+> **Numbers:** [REFERENCE-RESULTS.md](./REFERENCE-RESULTS.md) on reference lab (GTX 1650 4GB). The *shape* of integration applies on bigger hardware.
 
 ---
 
@@ -114,7 +114,7 @@ This is the way you get **per-task model selection** (cheap model for summarizat
 
 ### 4.3 MLOps training → serving pipeline
 
-This is the **train → export → route** path already in `STATUS.md` and `RESULTS.md`:
+This is the **train → export → route** path already in `docs/internal/STATUS.md` and `docs/RESULTS.md`:
 
 ```
    data.jsonl

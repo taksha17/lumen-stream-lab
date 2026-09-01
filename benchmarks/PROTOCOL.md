@@ -83,7 +83,7 @@ improvement = (optimized_median - baseline_median) / baseline_median
 PASS if improvement >= 0.40
 ```
 
-Document in `RESULTS.md` with run IDs.
+Document in `docs/RESULTS.md` with run IDs.
 
 ## Anti-patterns (invalid comparisons)
 

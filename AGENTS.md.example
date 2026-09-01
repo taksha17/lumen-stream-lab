@@ -1,0 +1,54 @@
+# AGENTS.md — Lumen Stream Lab (template)
+
+Copy to `AGENTS.md` in your repo root for local Cursor/agent use.  
+**Do not commit `AGENTS.md`** — it may contain machine-specific paths. This template is safe to commit.
+
+## Project overview
+
+**Lumen Stream Lab** is an open-source orchestration layer that routes inference across Ollama models to beat the “always use one 3B-class model” baseline on decode throughput.
+
+Read `docs/SCALING.md` and `CONTRIBUTING.md` before hardcoding paths or tok/s.
+
+| Tool | Role |
+|------|------|
+| **Ollama** | Primary inference backend |
+| **Soup** | Training (LoRA + stream_layers) |
+| **Lumen router** | Hybrid tiers (1B / LFM / domain 3B / 7B) |
+
+**Do not confuse** “Lumen Stream Lab” (this project) with Laravel Lumen (PHP).
+
+## Primary metric
+
++40% mean decode tok/s vs always `llama3.2:3b` on **your** hardware. Reference numbers: `hardware/reference-lab.json`, `docs/REFERENCE-RESULTS.md`.
+
+```bash
+python3 scripts/compare.py --baseline 48.38 --optimized 70.0 --min-gain 0.40
+```
+
+## Routing (keep in sync)
+
+When changing routing rules, update **both**:
+
+1. `deploy/win-router-lib.ps1`
+2. `lumen_router.py`
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 lumen.py route --prompt "What is Lumen Stream Lab?"
+```
+
+## Key docs
+
+| File | Use |
+|------|-----|
+| `docs/REFERENCE-RESULTS.md` | Benchmark numbers |
+| `docs/ARCHITECTURE.md` | System design |
+| `docs/TOOL-COMPARISON.md` | vs Ollama, llama.cpp, agents |
+| `docs/AGENT-INTEGRATION.md` | Hermes and other agent frameworks |
+| `CONTRIBUTING.md` | Contributor workflow |
+
+## Local-only (gitignored)
+
+- `AGENTS.md` — your machine paths, SSH notes, session checklist
+- `docs/internal/STATUS.md` — latest lab session state
+- `lumen.yaml` — local orchestrator config

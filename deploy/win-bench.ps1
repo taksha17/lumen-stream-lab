@@ -66,7 +66,7 @@ if ($rates.Count -gt 0) {
     $mid = [math]::Floor(($sorted.Count - 1) / 2)
     $median = $sorted[$mid]
     Write-Host "=== MEDIAN DECODE: $median tok/s ===" -ForegroundColor Cyan
-    Write-Host "Record in RESULTS.md"
+    Write-Host "Record in docs/RESULTS.md"
     Write-Host "Target +40%: $([math]::Round($median * 1.4, 2)) tok/s minimum"
 
     $result = @{

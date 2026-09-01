@@ -56,7 +56,7 @@ benchmark:
 2. **New hardware profiles** — add `hardware/<name>.json` + `RESULTS` snippet
 3. **Portable scripts** — Linux-first `scripts/bench.sh`, `lumen.py`; Windows `deploy/` stays optional
 4. **Training recipes** — `soup-*.yaml` per VRAM class (e.g. `soup-3b-mid.yaml` for 12GB)
-5. **Backend plugins** — llama.cpp vs Ollama vs vLLM in `ARCHITECTURE.md` resident path
+5. **Backend plugins** — llama.cpp vs Ollama vs vLLM in [ARCHITECTURE.md](./ARCHITECTURE.md) resident path
 
 ## CI strategy (target)
 
@@ -82,4 +82,4 @@ Set `LUMEN_LAB_ROOT` or run from repo root; see `CONTRIBUTING.md`.
 
 Ship a **router + bench + train playbook** that anyone can run on their stack. The reference lab proves it works on a $0 marginal-cost GPU; contributors with 24GB+ cards should beat our absolute tok/s while using the same orchestration rules.
 
-See also: `CONTRIBUTING.md`, `VISION.md`, `benchmarks/PROTOCOL.md`.
+See also: [CONTRIBUTING.md](../CONTRIBUTING.md), [VISION.md](./VISION.md), [benchmarks/PROTOCOL.md](../benchmarks/PROTOCOL.md).

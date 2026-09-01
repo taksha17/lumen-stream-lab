@@ -1,0 +1,22 @@
+{
+  "phase": "D3",
+  "started_at": "2026-09-01T00:41:33.3889094-05:00",
+  "ended_at": "2026-09-01T00:47:26.0609453-05:00",
+  "gpu": "NVIDIA GeForce GTX 1650, 4096 MiB",
+  "ollama_version": "ollama version is 0.33.2",
+  "prompt": "Explain quantum computing in simple terms.",
+  "num_predict": 128,
+  "runs": 2,
+  "warmup": 1,
+  "results": [
+    {"id": "BL-01", "model": "llama3.2:1b", "family": "Meta Llama 3.2", "note": "fast tier", "status": "ok", "median_decode_tok_s": 98.56},
+    {"id": "BL-02", "model": "llama3.2:3b", "family": "Meta Llama 3.2", "note": "+40% baseline", "status": "ok", "median_decode_tok_s": 48.94},
+    {"id": "BL-03", "model": "qwen2.5:3b-instruct-q4_K_M", "family": "Alibaba Qwen 2.5", "note": "stock 3B", "status": "ok", "median_decode_tok_s": 55.8},
+    {"id": "D3-01", "model": "phi4-mini", "family": "Microsoft Phi-4", "note": "recent small", "status": "ok", "median_decode_tok_s": 29.46},
+    {"id": "D3-02", "model": "smollm2:1.7b-instruct-q4_K_M", "family": "HuggingFace SmolLM2", "note": "recent 1.7B", "status": "ok", "median_decode_tok_s": 98.69},
+    {"id": "D3-03", "model": "gemma3:1b-it-qat", "family": "Google Gemma 3", "note": "recent 1B QAT", "status": "ok", "median_decode_tok_s": 82.27},
+    {"id": "D3-04", "model": "gemma3:4b-it-qat", "family": "Google Gemma 3", "note": "recent 4B QAT", "status": "ok", "median_decode_tok_s": 12.14},
+    {"id": "D3-05", "model": "lfm-balanced", "family": "Liquid AI LFM 2.5", "note": "balanced alias", "status": "ok", "median_decode_tok_s": 64.13},
+    {"id": "D3-06", "model": "qwen2.5-3b-lumen", "family": "Qwen 2.5 Lumen", "note": "domain fine-tune", "status": "ok", "median_decode_tok_s": 55.65}
+  ]
+}

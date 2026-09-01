@@ -12,7 +12,7 @@ Lumen is meant to **grow with contributors**, not stay bound to one GTX 1650 lap
 - **Your hardware** — probe, bench, set `lumen.yaml` tiers; absolute tok/s will exceed the lab on stronger GPUs.
 - **Shared logic** — routing, bench protocol, and relative gain targets are hardware-agnostic; only defaults and Soup recipes are profile-specific.
 
-See `SCALING.md` and `CONTRIBUTING.md`.
+See [docs/SCALING.md](./docs/SCALING.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 

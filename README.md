@@ -6,7 +6,7 @@
 
 Lumen is a thin **decision layer** between your app and inference backends (Ollama, llama.cpp, Soup, AirLLM, Colibri). It does not replace a model server — it answers: *which model, which backend, which speed stack* for this hardware and this prompt.
 
-Open source and **hardware-agnostic**. We CI-test on a modest reference rig (GTX 1650 4GB); contributors on stronger GPUs probe locally and tune tiers. See [SCALING.md](./SCALING.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
+Open source and **hardware-agnostic**. We CI-test on a modest reference rig (GTX 1650 4GB); contributors on stronger GPUs probe locally and tune tiers. See [docs/SCALING.md](./docs/SCALING.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
@@ -39,7 +39,7 @@ Most teams running local LLMs hit the same wall: the model is fine, but **routin
 
 **Reference HTTP gateway in this repo:** [`scripts/lumen_gateway.py`](./scripts/lumen_gateway.py) — `POST /v1/chat`, `POST /v1/plan`, `GET /v1/health` (stdlib only).
 
-**Full enterprise integration guide:** [ENTERPRISE.md](./ENTERPRISE.md) — gateway topology, agent frameworks, MLOps loop, tiered cost/quality, A/B routing, VRAM fall-back, CI regression gates.
+**Full enterprise integration guide:** [docs/ENTERPRISE.md](./docs/ENTERPRISE.md) — gateway topology, agent frameworks, MLOps loop, tiered cost/quality, A/B routing, VRAM fall-back, CI regression gates.
 
 ---
 
@@ -50,7 +50,8 @@ Numbers from [`hardware/reference-lab.json`](./hardware/reference-lab.json) — 
 | Metric | Result |
 |--------|--------|
 | Baseline (always `llama3.2:3b`) | **48.38 tok/s** |
-| **Lumen hybrid orchestration** | **~70 tok/s** mean (**+42–45% PASS**) |
+| **Lumen hybrid orchestration** | **~68–70 tok/s** mean (**+40–45% PASS**) |
+| vs llama.cpp (same 3B GGUF) | Ollama **48.2** vs llama.cpp **16.5** tok/s |
 | Router eval routing accuracy | **12/12** prompts |
 | Domain quality (E11/E12) | PASS with domain system prompt |
 
@@ -69,7 +70,7 @@ Numbers from [`hardware/reference-lab.json`](./hardware/reference-lab.json) — 
 git clone https://github.com/taksha17/lumen-stream-lab.git
 cd lumen-stream-lab
 
-# Interactive terminal UI (recommended — chat, bench, gateway, setup check)
+# Interactive terminal UI (recommended)
 python3 lumen.py
 # or: ./lumen          (Linux/macOS)
 # or: lumen.cmd        (Windows)
@@ -79,23 +80,33 @@ python3 lumen.py probe
 python3 lumen.py route --prompt "Explain TCP vs UDP"
 ```
 
-### Interactive menu
+**Full terminal UI walkthrough:** [docs/TERMINAL-UI.md](./docs/TERMINAL-UI.md) — prerequisites, every menu option, chat commands, troubleshooting.
+
+### Interactive menu at a glance
+
+```
+==========================================
+  LUMEN STREAM LAB
+  interactive menu
+==========================================
+```
 
 | Key | Action |
 |-----|--------|
-| **1** | Setup check — Ollama, probe GPU, list models |
+| **1** | Setup check — Ollama, GPU probe, list models |
 | **2** | **Chat** — route each prompt + generate (mini agent loop) |
-| **3** | Route one prompt (JSON plan) |
-| **4** | Bench a model |
-| **5** | +40% compare |
-| **6** | HTTP gateway on `:8080` |
+| **3** | Route one prompt (JSON plan only) |
+| **4** | Bench a model (decode tok/s) |
+| **5** | +40% compare (baseline vs orchestration mean) |
+| **6** | HTTP gateway on `:8080` (Ctrl+C to stop) |
 | **7** | Ollama vs llama.cpp shootout |
-| **8** | Router parity tests |
-| **9** | Doc paths |
+| **8** | Router parity tests (CI suite) |
+| **9** | Documentation paths + GitHub link |
+| **0** | Exit |
 
-In chat mode: `/quit` to exit, `/tier fast` (or `balanced` / `quality`) to force a tier.
+**Chat mode commands:** `/quit` to exit; `/tier fast`, `/tier balanced`, or `/tier quality` to force a tier.
 
-**Models:** see [docs/MODELS.md](./docs/MODELS.md) for required Ollama pulls and tier setup.
+**Before chatting:** start Ollama (`ollama serve`) and pull models — see [docs/MODELS.md](./docs/MODELS.md).
 
 Copy [`lumen.yaml.example`](./lumen.yaml.example) → `lumen.yaml` for custom tiers and paths.
 
@@ -169,15 +180,20 @@ Soup: **train** → export GGUF → Lumen **serves** via hybrid router.
 
 | File | Contents |
 |------|----------|
+| [**docs/AGENT-INTEGRATION.md**](./docs/AGENT-INTEGRATION.md) | Hermes Agent + speed wins for agent loops |
+| [**docs/TOOL-COMPARISON.md**](./docs/TOOL-COMPARISON.md) | Lumen vs Ollama, llama.cpp, LiteLLM, recent models |
+| [**docs/TERMINAL-UI.md**](./docs/TERMINAL-UI.md) | **Terminal menu — full usage guide** |
+| [**docs/REPO-LAYOUT.md**](./docs/REPO-LAYOUT.md) | Repository organization |
 | [**docs/ARCHITECTURE.md**](./docs/ARCHITECTURE.md) | Detailed design + mermaid diagrams |
 | [**docs/REFERENCE-RESULTS.md**](./docs/REFERENCE-RESULTS.md) | All benchmark numbers in one place |
 | [**docs/HARDWARE-TESTING.md**](./docs/HARDWARE-TESTING.md) | 4GB lab limits + **contributor call** |
 | [**docs/ENTERPRISE-CASE-STUDY.md**](./docs/ENTERPRISE-CASE-STUDY.md) | End-to-end enterprise narrative |
 | [**CONTRIBUTING.md**](./CONTRIBUTING.md) | Collaborator onboarding |
-| [**ENTERPRISE.md**](./ENTERPRISE.md) | Platform integration reference |
-| [**RESULTS.md**](./RESULTS.md) | Chronological benchmark log |
+| [**docs/ENTERPRISE.md**](./docs/ENTERPRISE.md) | Platform integration reference |
+| [**docs/RESULTS.md**](./docs/RESULTS.md) | Chronological benchmark log |
 | [**docs/MODELS.md**](./docs/MODELS.md) | Model setup |
-| [**SCALING.md**](./SCALING.md) | OSS hardware profiles |
+| [**docs/SCALING.md**](./docs/SCALING.md) | OSS hardware profiles |
+| [**docs/VISION.md**](./docs/VISION.md) | Goals and +40% thesis |
 | [**benchmarks/PROTOCOL.md**](./benchmarks/PROTOCOL.md) | Fair measurement rules |
 
 **Requirements:** Python 3.10+, [Ollama](https://ollama.com) for inference. Soup optional for training path.

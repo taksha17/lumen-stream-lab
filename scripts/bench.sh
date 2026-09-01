@@ -96,5 +96,5 @@ case "${BACKEND}" in
     ;;
 esac
 
-echo "Record medians in RESULTS.md"
+echo "Record medians in docs/RESULTS.md"
 echo "Compare optimized run using same model + prompts."
