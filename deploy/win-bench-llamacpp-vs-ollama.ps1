@@ -79,24 +79,43 @@ function Invoke-LlamaCppBench([string]$gguf) {
     $rows = @()
     for ($i = 1; $i -le ($Warmup + $Runs); $i++) {
         $label = if ($i -le $Warmup) { "warmup-$i" } else { "run-$($i - $Warmup)" }
-        $args = @("-m", $gguf, "-p", $Prompt, "-n", "$NumPredict", "--temp", "0", "-ngl", "99", "--no-display-prompt")
+        $outFile = Join-Path $env:TEMP "lumen-llama-out-$i.txt"
+        $errFile = Join-Path $env:TEMP "lumen-llama-err-$i.txt"
+        if (Test-Path $outFile) { Remove-Item $outFile -Force }
+        if (Test-Path $errFile) { Remove-Item $errFile -Force }
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
-        $out = & $llamaCli @args 2>&1 | Out-String
+        $p = Start-Process -FilePath $llamaCli -ArgumentList @(
+            "-m", $gguf, "-p", "`"$Prompt`"", "-n", "$NumPredict", "--temp", "0", "-ngl", "99", "--no-display-prompt"
+        ) -Wait -PassThru -NoNewWindow -RedirectStandardOutput $outFile -RedirectStandardError $errFile
         $sw.Stop()
+        $out = ""
+        if (Test-Path $outFile) { $out += Get-Content $outFile -Raw -ErrorAction SilentlyContinue }
+        if (Test-Path $errFile) { $out += Get-Content $errFile -Raw -ErrorAction SilentlyContinue }
         $rate = 0.0
         $tokens = 0
-        if ($out -match '(\d+\.?\d*)\s*tokens per second') { $rate = [double]$Matches[1] }
-        if ($out -match 'eval time\s*=\s*[\d.]+\s*ms\s*/\s*(\d+)\s*runs') { $tokens = [int]$Matches[1] }
+        if ($out -match 'context_print:\s+eval time\s*=[^\r\n]*?([\d.]+)\s*tokens per second') {
+            $rate = [double]$Matches[1]
+        }
+        if ($out -match 'context_print:\s+eval time\s*=\s*([\d.]+)\s*ms\s*/\s*(\d+)\s*runs') {
+            $ms = [double]$Matches[1]
+            $tokens = [int]$Matches[2]
+            if ($rate -eq 0 -and $ms -gt 0 -and $tokens -gt 0) {
+                $rate = [math]::Round($tokens / ($ms / 1000.0), 2)
+            }
+        }
         if ($rate -eq 0 -and $tokens -gt 0 -and $sw.Elapsed.TotalSeconds -gt 0) {
             $rate = [math]::Round($tokens / $sw.Elapsed.TotalSeconds, 2)
         }
-        Write-Host "llamacpp $label`: $rate tok/s"
-        $rows += @{ label = $label; decode_tok_s = $rate; eval_count = $tokens }
+        Write-Host "llamacpp $label`: $rate tok/s (exit $($p.ExitCode))"
+        $rows += @{ label = $label; decode_tok_s = $rate; eval_count = $tokens; exit_code = $p.ExitCode }
         if ($i -gt $Warmup -and $rate -gt 0) { $rates += $rate }
     }
-    $med = ($rates | Sort-Object)[[math]::Floor(($rates.Count - 1) / 2)]
-    if ($rates.Count -eq 1) { $med = $rates[0] }
-    return @{ backend = "llamacpp"; gguf = $gguf; median_decode_tok_s = $med; runs = $rows }
+    $med = 0
+    if ($rates.Count -gt 0) {
+        $med = ($rates | Sort-Object)[[math]::Floor(($rates.Count - 1) / 2)]
+        if ($rates.Count -eq 1) { $med = $rates[0] }
+    }
+    return @{ backend = "llamacpp"; gguf = $gguf; median_decode_tok_s = $med; runs = $rows; error = $(if ($rates.Count -eq 0) { "no successful runs" } else { $null }) }
 }
 
 Ensure-Ollama
@@ -109,7 +128,10 @@ Write-Host ""
 Write-Host "--- Ollama ---" -ForegroundColor Yellow
 $ollama = Invoke-OllamaBench
 Write-Host "--- llama.cpp ---" -ForegroundColor Yellow
+Get-Process ollama -EA SilentlyContinue | Stop-Process -Force -EA SilentlyContinue
+Start-Sleep 3
 $llama = Invoke-LlamaCppBench $gguf
+Ensure-Ollama
 
 $o = [double]$ollama.median_decode_tok_s
 $l = [double]$llama.median_decode_tok_s

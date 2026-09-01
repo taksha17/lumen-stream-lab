@@ -125,12 +125,20 @@ def bench_llamacpp(
         rate = 0.0
         tokens = 0
         for line in out.splitlines():
-            m = re.search(r"eval time\s*=\s*[\d.]+\s*ms\s*/\s*(\d+)\s*runs", line, re.I)
-            if m:
-                tokens = int(m.group(1))
-            m2 = re.search(r"(\d+\.?\d*)\s*tokens per second", line, re.I)
-            if m2:
-                rate = float(m2.group(1))
+            if "context_print:" in line and "eval time" in line:
+                m2 = re.search(
+                    r"eval time\s*=\s*([\d.]+)\s*ms\s*/\s*(\d+)\s*runs",
+                    line,
+                )
+                if m2:
+                    ms = float(m2.group(1))
+                    tokens = int(m2.group(2))
+                    if ms > 0:
+                        rate = tokens / (ms / 1000.0)
+                m3 = re.search(r"([\d.]+)\s*tokens per second", line)
+                if m3:
+                    rate = float(m3.group(1))
+                break
         if rate == 0.0 and tokens > 0 and wall > 0:
             rate = tokens / wall
         row = {

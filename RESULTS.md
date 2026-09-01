@@ -268,3 +268,18 @@ Pipeline: `deploy/win-train-3b-s09.ps1`, `win-domain-smoke-gate.ps1`, `win-post-
 | Report | `results/router-eval-20260831-180616.json` |
 
 Router-eval auto-route mean (64.08 tok/s) is a side metric across all prompts; **primary +40% gate** uses orchestration bench mean.
+
+---
+
+## Backend shootout — Ollama vs llama.cpp (2026-08-31)
+
+`deploy/win-bench-llamacpp-vs-ollama.ps1` on reference lab, `llama3.2:3b`, same Ollama GGUF blob, `num_predict=64`:
+
+| Backend | Median decode tok/s | Notes |
+|---------|---------------------|-------|
+| **Ollama** | **~49.3** | Primary resident path on this box |
+| llama.cpp (`llama-cli`) | **~17.0** | Same weights; interactive CLI overhead |
+
+**Conclusion:** On GTX 1650 reference lab, **keep Ollama as default resident backend** for `llama3.2:3b`. Re-bench on other GPUs; winner may differ.
+
+Script: `scripts/bench_backends.py` (portable), `deploy/win-bench-llamacpp-vs-ollama.ps1` (Windows).
