@@ -1,0 +1,147 @@
+{
+  "version": 2,
+  "feature_names": [
+    "bias",
+    "words",
+    "domain_kw",
+    "quality_kw",
+    "complex_kw",
+    "simple_pattern",
+    "has_lumen",
+    "question_mark",
+    "long_prompt",
+    "short_prompt"
+  ],
+  "class_names": [
+    "fast",
+    "balanced_lfm",
+    "balanced_domain",
+    "quality"
+  ],
+  "weights": [
+    [
+      3.661488015102625,
+      -0.5164486391470358,
+      -0.4190258088044861,
+      -0.39665636494717105,
+      -0.9011334604584125,
+      4.711772344441322,
+      -0.14294617678026952,
+      2.709734176153868,
+      -0.085365944002007,
+      3.9760184366315485
+    ],
+    [
+      6.459051097923954,
+      0.07739867208675678,
+      -4.010785364895209,
+      1.554656427596862,
+      6.355854025510867,
+      -3.5735049050500134,
+      -1.27926255200234,
+      0.6439461061906876,
+      -1.8918199077870075,
+      1.4022515738068497
+    ],
+    [
+      0.14055858679844255,
+      -0.22946710871264783,
+      9.404660432368848,
+      -2.0072555291423364,
+      2.562658601433792,
+      -0.7325209014676873,
+      2.3201207359820684,
+      2.4051298420746807,
+      -0.2752897187365456,
+      -0.8161628752826139
+    ],
+    [
+      -10.21399646998717,
+      0.6643407982737538,
+      -5.057044869066589,
+      0.804319831755313,
+      -7.945168856349984,
+      -0.39471892348240334,
+      -0.8944349374616154,
+      -5.819666059849088,
+      2.3465309248276847,
+      -4.640369719581449
+    ]
+  ],
+  "eval_accuracy": 1.0,
+  "eval_report": [
+    {
+      "id": "E01",
+      "expected": "fast",
+      "predicted": "fast",
+      "ok": true
+    },
+    {
+      "id": "E02",
+      "expected": "fast",
+      "predicted": "fast",
+      "ok": true
+    },
+    {
+      "id": "E03",
+      "expected": "balanced_lfm",
+      "predicted": "balanced_lfm",
+      "ok": true
+    },
+    {
+      "id": "E04",
+      "expected": "balanced_lfm",
+      "predicted": "balanced_lfm",
+      "ok": true
+    },
+    {
+      "id": "E05",
+      "expected": "balanced_domain",
+      "predicted": "balanced_domain",
+      "ok": true
+    },
+    {
+      "id": "E06",
+      "expected": "balanced_lfm",
+      "predicted": "balanced_lfm",
+      "ok": true
+    },
+    {
+      "id": "E07",
+      "expected": "balanced_lfm",
+      "predicted": "balanced_lfm",
+      "ok": true
+    },
+    {
+      "id": "E08",
+      "expected": "balanced_lfm",
+      "predicted": "balanced_lfm",
+      "ok": true
+    },
+    {
+      "id": "E09",
+      "expected": "balanced_lfm",
+      "predicted": "balanced_lfm",
+      "ok": true
+    },
+    {
+      "id": "E10",
+      "expected": "balanced_domain",
+      "predicted": "balanced_domain",
+      "ok": true
+    },
+    {
+      "id": "E11",
+      "expected": "balanced_domain",
+      "predicted": "balanced_domain",
+      "ok": true
+    },
+    {
+      "id": "E12",
+      "expected": "balanced_domain",
+      "predicted": "balanced_domain",
+      "ok": true
+    }
+  ],
+  "teacher": "lumen_router.route_decision"
+}

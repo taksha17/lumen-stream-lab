@@ -16,6 +16,14 @@ Start here for the full picture. The root [README](../README.md) is the landing 
 | 8 | [**MODELS.md**](./MODELS.md) | Ollama models, aliases, fine-tune deploy |
 | 9 | [**../CONTRIBUTING.md**](../CONTRIBUTING.md) | How to contribute benches, profiles, and code |
 
+## Advanced
+
+| Document | Purpose |
+|----------|---------|
+| [HUGGINGFACE-PUBLISH.md](./HUGGINGFACE-PUBLISH.md) | Publish domain GGUF to HF Hub |
+| [ROUTER-V2.md](./ROUTER-V2.md) | Learned linear router (experimental) |
+| [VLLM-BACKEND.md](./VLLM-BACKEND.md) | vLLM plugin for 8GB+ GPUs |
+
 ## Also in this folder
 
 | Document | Purpose |

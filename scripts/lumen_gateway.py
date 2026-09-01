@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -110,24 +111,39 @@ def extract_prompt(body: dict) -> str:
     return "\n".join(parts).strip()
 
 
+def backend_generate(model: str, prompt: str) -> dict:
+    """Generate via configured backend (ollama default, vllm optional)."""
+    backend = os.environ.get("LUMEN_BACKEND", "ollama").lower()
+    if backend == "vllm":
+        from scripts.backends.vllm import generate as vllm_generate
+
+        vllm_url = os.environ.get("VLLM_URL", "http://127.0.0.1:8000")
+        vllm_model = os.environ.get("VLLM_MODEL", model)
+        return vllm_generate(vllm_model, prompt, base_url=vllm_url)
+
+    raw = ollama_generate(model, prompt, stream=False)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        return {"raw": raw.decode("utf-8", "replace")}
+
+
 def chat_with_routing(prompt: str, force_tier: str | None = None) -> tuple[dict, dict, int]:
-    """Route prompt, generate via Ollama, return (plan, ollama_resp, latency_ms)."""
+    """Route prompt, generate via backend, return (plan, backend_resp, latency_ms)."""
     t0 = time.time()
     plan = lumen_route(prompt, force_tier=force_tier)
+    plan["backend"] = os.environ.get("LUMEN_BACKEND", "ollama")
     try:
-        raw = ollama_generate(plan["model"], prompt, stream=False)
+        backend_resp = backend_generate(plan["model"], prompt)
     except RuntimeError as e:
         if plan.get("tier") != "fast":
             plan = lumen_route(prompt, force_tier="fast")
-            raw = ollama_generate(plan["model"], prompt, stream=False)
+            plan["backend"] = os.environ.get("LUMEN_BACKEND", "ollama")
+            backend_resp = backend_generate(plan["model"], prompt)
         else:
             raise e
-    try:
-        ollama_resp = json.loads(raw)
-    except json.JSONDecodeError:
-        ollama_resp = {"raw": raw.decode("utf-8", "replace")}
     latency_ms = int((time.time() - t0) * 1000)
-    return plan, ollama_resp, latency_ms
+    return plan, backend_resp, latency_ms
 
 
 class Handler(BaseHTTPRequestHandler):

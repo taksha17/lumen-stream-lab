@@ -32,5 +32,8 @@ powershell -ExecutionPolicy Bypass -File "$LabRoot\deploy\win-fast-tier-domain-s
 Write-Host "`n--- Hermes setup check ---" -ForegroundColor Cyan
 powershell -ExecutionPolicy Bypass -File "$LabRoot\deploy\win-setup-hermes.ps1"
 
+Write-Host "`n--- Git link (first-time server setup) ---" -ForegroundColor Cyan
+Write-Host "Run once: powershell -File $LabRoot\deploy\win-git-link.ps1" -ForegroundColor DarkGray
+
 Write-Host "`n=== ALL REQUIRED GATES PASS ===" -ForegroundColor Green
 Write-Host "Optional: start gateway with: python scripts\lumen_gateway.py --port 8080"
