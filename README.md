@@ -140,6 +140,51 @@ See [docs/MODELS.md](./docs/MODELS.md) and `deploy/win-bench-llamacpp-vs-ollama.
 
 ---
 
+## Agent integration (Hermes & custom loops)
+
+Agent frameworks (e.g. [Hermes Agent](https://github.com/NousResearch/hermes-agent)) spend most wall time in **repeated LLM calls**. If every step uses `llama3.2:3b`, the whole loop stays at ~49 tok/s. Lumen routes **each step** to the right tier — measured **~68 tok/s mean (+41%)** on the reference lab.
+
+```
+Hermes / custom agent loop
+        │
+        ▼
+  Lumen gateway :8080     ← /v1/plan or /v1/chat per step
+        │
+        ▼
+  Ollama (1B / LFM / domain 3B / 7B)
+```
+
+| Agent step | Lumen tier | Typical model |
+|------------|------------|---------------|
+| Tool arg parsing, short classify | `fast` | `llama3.2:1b` (~99 tok/s) |
+| General reasoning | `balanced` | `lfm-balanced` (~64 tok/s) |
+| Project-specific / domain | `balanced` (domain) | `qwen2.5-3b-lumen` |
+| Long analysis (opt-in) | `quality` | `qwen2.5-7b-lumen` |
+
+**Quick setup:**
+
+```bash
+python3 lumen.py probe
+python3 scripts/lumen_gateway.py --port 8080
+
+# One agent turn — route + generate
+curl -s http://127.0.0.1:8080/v1/chat \
+  -H 'content-type: application/json' \
+  -d '{"prompt": "Summarize this log and suggest the next tool call"}'
+```
+
+**Hermes on Windows (reference lab):**
+
+```powershell
+powershell -File deploy\win-setup-hermes.ps1 -InstallNative
+```
+
+Optional: `pip install hermes-ollama-native` and set `HERMES_OLLAMA_NATIVE=1` for correct Ollama tool-call streaming — Lumen is **orthogonal** and picks which local model each turn uses.
+
+**Full guide:** [docs/AGENT-INTEGRATION.md](./docs/AGENT-INTEGRATION.md) — Python hook, gateway API, Hermes profiles, expected latency impact.
+
+---
+
 ## Integration API
 
 ```bash
