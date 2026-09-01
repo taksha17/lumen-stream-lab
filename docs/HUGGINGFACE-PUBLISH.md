@@ -16,6 +16,16 @@ $env:HF_TOKEN = "hf_..."
 powershell -File deploy\win-publish-hf.ps1 -RepoId YOUR_USERNAME/qwen2.5-3b-lumen
 ```
 
+From Linux (GGUF stays on server; token on your PC):
+
+```bash
+export HF_TOKEN=hf_...
+chmod +x deploy/publish-hf-remote.sh
+./deploy/publish-hf-remote.sh YOUR_USERNAME/qwen2.5-3b-lumen
+```
+
+**Note:** Use `hf upload` (not deprecated `huggingface-cli upload`) — the publish script sets UTF-8 env vars to avoid Windows `cp1252` Unicode errors.
+
 Dry run (stage files only):
 
 ```powershell

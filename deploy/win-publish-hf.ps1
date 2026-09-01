@@ -32,10 +32,15 @@ if (-not $env:HF_TOKEN) {
     exit 1
 }
 
-$hfCli = Get-Command huggingface-cli -ErrorAction SilentlyContinue
+$hfCli = Get-Command hf -ErrorAction SilentlyContinue
 if (-not $hfCli) {
     Write-Host "Installing huggingface_hub CLI ..." -ForegroundColor DarkGray
     python -m pip install -U "huggingface_hub[cli]"
+    $hfCli = Get-Command hf -ErrorAction SilentlyContinue
+}
+if (-not $hfCli) {
+    Write-Host "hf CLI not found after install. Try: python -m pip install -U huggingface_hub[cli]" -ForegroundColor Red
+    exit 1
 }
 
 $readme = @"
@@ -86,5 +91,13 @@ if ($DryRun) {
     exit 0
 }
 
-huggingface-cli upload $RepoId $stage . --repo-type model
+# Avoid Windows cp1252 UnicodeEncodeError from deprecated huggingface-cli warnings.
+$env:PYTHONIOENCODING = "utf-8"
+$env:PYTHONUTF8 = "1"
+
+& hf upload $RepoId $stage . --repo-type model
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Upload failed (exit $LASTEXITCODE). Staged files kept at $stage" -ForegroundColor Red
+    exit $LASTEXITCODE
+}
 Write-Host "Done: https://huggingface.co/$RepoId" -ForegroundColor Green
