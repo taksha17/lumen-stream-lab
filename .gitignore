@@ -45,6 +45,8 @@ secrets.*
 # Maintainer-only (machine paths, SSH notes, session state)
 AGENTS.md
 docs/internal/
+design.md
+flow.md
 
 # OS / editor
 .DS_Store
