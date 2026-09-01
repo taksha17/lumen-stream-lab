@@ -109,11 +109,16 @@ def cmd_compare(args: argparse.Namespace) -> int:
 
 
 def cmd_route(args: argparse.Namespace) -> int:
-    from lumen_router import route_decision
-
     prompt = args.prompt or ""
     tier = args.tier or "auto"
-    decision = route_decision(prompt, tier)
+    if args.router == "v2":
+        from lumen_router_v2 import route_decision_v2
+
+        decision = route_decision_v2(prompt, tier)
+    else:
+        from lumen_router import route_decision
+
+        decision = route_decision(prompt, tier)
     ref = load_reference_profile()
     measured = ref.get("measured_baselines", {})
     baseline = measured.get("llama3.2:3b_tok_s")
@@ -169,6 +174,7 @@ def main() -> int:
     p_route = sub.add_parser("route", help="Hybrid tier routing plan (JSON)")
     p_route.add_argument("--prompt", default="", help="User prompt for auto routing")
     p_route.add_argument("--tier", default="auto", choices=["auto", "fast", "balanced", "quality"])
+    p_route.add_argument("--router", default="keyword", choices=["keyword", "v2"], help="Routing engine (default: keyword)")
     p_route.set_defaults(func=cmd_route)
 
     p_menu = sub.add_parser("menu", help="Interactive terminal UI (chat, bench, gateway)")

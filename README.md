@@ -238,6 +238,7 @@ Optional: `pip install hermes-ollama-native` and set `HERMES_OLLAMA_NATIVE=1` fo
 lumen probe                              # hardware.json
 lumen bench --model llama3.2:3b          # benchmark a model
 lumen route --prompt "..."               # hybrid tier plan (JSON)
+lumen route --prompt "..." --router v2   # experimental learned router
 lumen compare --baseline X --optimized Y # CI gate (+40%)
 ```
 
@@ -286,6 +287,9 @@ Soup: **train** → export GGUF → Lumen **serves** via hybrid router.
 | [**docs/MODELS.md**](./docs/MODELS.md) | Model setup |
 | [**docs/SCALING.md**](./docs/SCALING.md) | OSS hardware profiles |
 | [**docs/VISION.md**](./docs/VISION.md) | Goals and +40% thesis |
+| [**docs/ROUTER-V2.md**](./docs/ROUTER-V2.md) | Learned linear router (experimental) |
+| [**docs/HUGGINGFACE-PUBLISH.md**](./docs/HUGGINGFACE-PUBLISH.md) | Publish domain GGUF to HF Hub |
+| [**docs/VLLM-BACKEND.md**](./docs/VLLM-BACKEND.md) | Optional vLLM backend (8GB+ GPUs) |
 | [**benchmarks/PROTOCOL.md**](./benchmarks/PROTOCOL.md) | Fair measurement rules |
 
 **Requirements:** Python 3.10+, [Ollama](https://ollama.com) for inference. Soup optional for training path.
