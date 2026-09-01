@@ -1,6 +1,8 @@
 # Lumen Stream Lab — Enterprise Integration Reference
 
-> **Audience:** platform / infra / ML-platform engineers wiring a local LLM stack into a real production system. Not a tutorial — a design reference. Numbers come from `RESULTS.md` on this box (GTX 1650 4GB, Ryzen 5600H, 16 GB RAM). The point is the *shape* of the integration; the same orchestrator pattern applies on bigger hardware.
+> **Audience:** platform / infra / ML-platform engineers wiring a local LLM stack into a real production system.  
+> **Narrative case study:** [docs/ENTERPRISE-CASE-STUDY.md](./docs/ENTERPRISE-CASE-STUDY.md) — end-to-end "Acme Platform" walkthrough with metrics.  
+> **Numbers:** [docs/REFERENCE-RESULTS.md](./docs/REFERENCE-RESULTS.md) on reference lab (GTX 1650 4GB). The *shape* of integration applies on bigger hardware.
 
 ---
 

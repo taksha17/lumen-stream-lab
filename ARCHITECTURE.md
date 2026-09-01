@@ -1,5 +1,8 @@
 # Architecture — Lumen Orchestration Layer
 
+> **Detailed diagrams, sequences, and repo map:** see [**docs/ARCHITECTURE.md**](./docs/ARCHITECTURE.md).  
+> **Full documentation index:** [**docs/README.md**](./docs/README.md).
+
 ## System diagram
 
 ```

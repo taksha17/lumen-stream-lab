@@ -2,9 +2,8 @@
 
 | File | Purpose |
 |------|---------|
-| `reference-lab.json` | Checked-in **reference CI rig** (GTX 1650). Numbers in README/RESULTS are from here. |
-| `../hardware.json` | **Your machine** — from `python3 lumen.py probe` (local, typically gitignored). |
+| `reference-lab.json` | **Reference CI rig** (GTX 1650) — numbers in [docs/REFERENCE-RESULTS.md](../docs/REFERENCE-RESULTS.md) |
+| `contributor-*.json` | Optional profiles from collaborators (PR welcome) |
+| `../hardware.json` | Your machine — from `python3 lumen.py probe` (gitignored) |
 
-Contributors may add `hardware/<name>.json` with probed specs and measured baselines. Do not treat reference-lab tok/s as universal defaults in shared code.
-
-See `SCALING.md`.
+See [docs/HARDWARE-TESTING.md](../docs/HARDWARE-TESTING.md) for what the reference lab can/cannot prove and how to contribute better-hardware results.

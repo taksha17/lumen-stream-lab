@@ -1,0 +1,26 @@
+{
+  "id": "contributor-your-id",
+  "name": "Your machine (short label)",
+  "role": "contributor",
+  "description": "Copy this file to hardware/<your-id>.json, fill in measured_baselines, open a PR.",
+  "probed_at": "YYYY-MM-DD",
+  "cpu": "e.g. AMD Ryzen 9 / Intel i7",
+  "ram_gb": 32,
+  "gpu": "e.g. NVIDIA RTX 4090",
+  "vram_gb": 24,
+  "os": "Linux / Windows / macOS",
+  "measured_baselines": {
+    "llama3.2:3b_tok_s": 0,
+    "llama3.2:1b_tok_s": 0,
+    "orchestration_mean_tok_s": 0,
+    "orchestration_gain_pct": 0,
+    "backend_shootout_winner": "ollama or llamacpp"
+  },
+  "recommended_tiers": {
+    "fast": "llama3.2:1b",
+    "balanced": "your-fastest-general-model",
+    "balanced_domain": "qwen2.5-3b-lumen or stock qwen",
+    "quality": "your-7b-model"
+  },
+  "notes": "What you changed vs reference-lab defaults; link to bench JSON if any."
+}

@@ -69,23 +69,35 @@ Numbers from [`hardware/reference-lab.json`](./hardware/reference-lab.json) — 
 git clone https://github.com/taksha17/lumen-stream-lab.git
 cd lumen-stream-lab
 
-# Profile your hardware (writes hardware.json — gitignored)
+# Interactive terminal UI (recommended — chat, bench, gateway, setup check)
+python3 lumen.py
+# or: ./lumen          (Linux/macOS)
+# or: lumen.cmd        (Windows)
+
+# One-shot CLI
 python3 lumen.py probe
-
-# See routing plan for a prompt (JSON)
 python3 lumen.py route --prompt "Explain TCP vs UDP"
-python3 lumen.py route --prompt "What is Lumen Stream Lab?"
-
-# Check +40% vs YOUR baseline
-python3 scripts/compare.py --baseline 48.38 --optimized 70.0 --min-gain 0.40
-
-# Optional: HTTP gateway on :8080
-python3 scripts/lumen_gateway.py --port 8080
 ```
 
-Copy [`lumen.yaml.example`](./lumen.yaml.example) → `lumen.yaml` and set tiers, paths, and `target_improvement` for your environment.
+### Interactive menu
 
-**Models:** see [docs/MODELS.md](./docs/MODELS.md) for required Ollama pulls, `lfm-balanced` alias, and fine-tuned `qwen2.5-*-lumen` setup.
+| Key | Action |
+|-----|--------|
+| **1** | Setup check — Ollama, probe GPU, list models |
+| **2** | **Chat** — route each prompt + generate (mini agent loop) |
+| **3** | Route one prompt (JSON plan) |
+| **4** | Bench a model |
+| **5** | +40% compare |
+| **6** | HTTP gateway on `:8080` |
+| **7** | Ollama vs llama.cpp shootout |
+| **8** | Router parity tests |
+| **9** | Doc paths |
+
+In chat mode: `/quit` to exit, `/tier fast` (or `balanced` / `quality`) to force a tier.
+
+**Models:** see [docs/MODELS.md](./docs/MODELS.md) for required Ollama pulls and tier setup.
+
+Copy [`lumen.yaml.example`](./lumen.yaml.example) → `lumen.yaml` for custom tiers and paths.
 
 ### HTTP gateway (optional)
 
@@ -153,19 +165,20 @@ Soup: **train** → export GGUF → Lumen **serves** via hybrid router.
 
 ## Documentation
 
+**Start here:** [**docs/README.md**](./docs/README.md) — full index with architecture diagrams, reference results, hardware limits, and enterprise case study.
+
 | File | Contents |
 |------|----------|
-| [**ENTERPRISE.md**](./ENTERPRISE.md) | Real production topologies, agent/MLOps integration, what Lumen is *not* |
-| [**RESULTS.md**](./RESULTS.md) | Benchmark log and training history |
-| [**VISION.md**](./VISION.md) | Goals and honest expectations |
-| [**ARCHITECTURE.md**](./ARCHITECTURE.md) | Orchestrator design, speed vs I/O stack |
-| [**PLAYBOOK.md**](./PLAYBOOK.md) | Soup / AirLLM / Colibri reference |
-| [**SCALING.md**](./SCALING.md) | Hardware profiles, OSS scaling |
-| [**CONTRIBUTING.md**](./CONTRIBUTING.md) | How to contribute benches and profiles |
-| [**docs/MODELS.md**](./docs/MODELS.md) | Required Ollama models, aliases, fine-tune deploy, backend bench |
+| [**docs/ARCHITECTURE.md**](./docs/ARCHITECTURE.md) | Detailed design + mermaid diagrams |
+| [**docs/REFERENCE-RESULTS.md**](./docs/REFERENCE-RESULTS.md) | All benchmark numbers in one place |
+| [**docs/HARDWARE-TESTING.md**](./docs/HARDWARE-TESTING.md) | 4GB lab limits + **contributor call** |
+| [**docs/ENTERPRISE-CASE-STUDY.md**](./docs/ENTERPRISE-CASE-STUDY.md) | End-to-end enterprise narrative |
+| [**CONTRIBUTING.md**](./CONTRIBUTING.md) | Collaborator onboarding |
+| [**ENTERPRISE.md**](./ENTERPRISE.md) | Platform integration reference |
+| [**RESULTS.md**](./RESULTS.md) | Chronological benchmark log |
+| [**docs/MODELS.md**](./docs/MODELS.md) | Model setup |
+| [**SCALING.md**](./SCALING.md) | OSS hardware profiles |
 | [**benchmarks/PROTOCOL.md**](./benchmarks/PROTOCOL.md) | Fair measurement rules |
-| [**deploy/DEPLOY.md**](./deploy/DEPLOY.md) | Optional Windows reference-lab deploy |
-| [**hardware/reference-lab.json**](./hardware/reference-lab.json) | Reference CI rig (not a global default) |
 
 **Requirements:** Python 3.10+, [Ollama](https://ollama.com) for inference. Soup optional for training path.
 

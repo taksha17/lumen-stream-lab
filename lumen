@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Launch Lumen interactive menu from repo root
+cd "$(dirname "$0")"
+exec python3 lumen.py menu "$@"

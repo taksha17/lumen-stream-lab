@@ -2,6 +2,8 @@
 """
 Lumen orchestrator - route to fastest backend and apply speed stack config.
 Usage:
+  python lumen.py menu          # interactive terminal UI
+  python lumen.py               # same as menu (no args)
   python lumen.py probe
   python lumen.py bench --model llama3.2:3b
   python lumen.py compare --baseline 47 --optimized 66
@@ -137,7 +139,16 @@ def cmd_route(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_menu(_: argparse.Namespace) -> int:
+    from lumen_menu import run_interactive
+
+    return run_interactive()
+
+
 def main() -> int:
+    if len(sys.argv) == 1:
+        return cmd_menu(argparse.Namespace())
+
     parser = argparse.ArgumentParser(prog="lumen", description="Lumen Stream Lab orchestrator")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
@@ -159,6 +170,9 @@ def main() -> int:
     p_route.add_argument("--prompt", default="", help="User prompt for auto routing")
     p_route.add_argument("--tier", default="auto", choices=["auto", "fast", "balanced", "quality"])
     p_route.set_defaults(func=cmd_route)
+
+    p_menu = sub.add_parser("menu", help="Interactive terminal UI (chat, bench, gateway)")
+    p_menu.set_defaults(func=cmd_menu)
 
     args = parser.parse_args()
     return args.func(args)
