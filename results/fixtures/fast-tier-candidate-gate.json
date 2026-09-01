@@ -1,0 +1,19 @@
+[
+  {
+    "model": "smollm2:1.7b-instruct-q4_K_M",
+    "domain_gate": "FAIL (E12)",
+    "promote_candidate": false,
+    "notes": "E11 PASS, E05 PASS; E12 definition wrong"
+  },
+  {
+    "model": "gemma3:1b-it-qat",
+    "domain_gate": "FAIL (E11, E12)",
+    "promote_candidate": false
+  },
+  {
+    "model": "llama3.2:1b",
+    "domain_gate": "FAIL (E11, E12, E05)",
+    "promote_candidate": false,
+    "notes": "Expected - production router sends domain to qwen-lumen; fast tier kept"
+  }
+]

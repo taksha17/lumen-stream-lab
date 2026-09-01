@@ -49,6 +49,12 @@ class TestFixtures(unittest.TestCase):
         data = json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual(data.get("routing_accuracy"), "12/12")
 
+    def test_fast_tier_candidate_gate(self) -> None:
+        path = FIXTURES / "fast-tier-candidate-gate.json"
+        self.assertTrue(path.exists())
+        rows = json.loads(path.read_text(encoding="utf-8"))
+        smol = next(r for r in rows if "smollm2" in r["model"])
+        self.assertFalse(smol["promote_candidate"])
+
 
 if __name__ == "__main__":
-    unittest.main()

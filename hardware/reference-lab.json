@@ -48,8 +48,9 @@
     "quality": "qwen2.5-7b-lumen"
   },
   "fast_tier_candidates_d3": {
-    "smollm2:1.7b-instruct-q4_K_M": { "tok_s": 98.69, "domain_gate": "pending" },
-    "gemma3:1b-it-qat": { "tok_s": 82.27, "domain_gate": "pending" }
+    "smollm2:1.7b-instruct-q4_K_M": { "tok_s": 98.69, "domain_gate": "FAIL (E12)", "promote": false },
+    "gemma3:1b-it-qat": { "tok_s": 82.27, "domain_gate": "FAIL (E11, E12)", "promote": false },
+    "llama3.2:1b": { "tok_s": 98.56, "domain_gate": "FAIL (expected - fast tier not for domain)", "promote": true, "note": "production fast tier; domain routed elsewhere" }
   },
   "fixtures": {
     "phase_d3": "results/fixtures/phase-d3-summary.json",

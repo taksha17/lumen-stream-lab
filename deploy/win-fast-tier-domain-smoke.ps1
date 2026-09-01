@@ -78,7 +78,7 @@ foreach ($model in $Models) {
         domain_gate = if ($pass) { "PASS" } else { "FAIL ($($fails -join ', '))" }
         promote_candidate = $pass
     })
-    Write-Host "  Overall: $(if ($pass) { 'PASS — candidate for fast tier' } else { "FAIL ($($fails -join ', '))" })" -ForegroundColor $(if ($pass) { 'Green' } else { 'Yellow' })
+    Write-Host "  Overall: $(if ($pass) { 'PASS - candidate for fast tier' } else { "FAIL ($($fails -join ', '))" })" -ForegroundColor $(if ($pass) { 'Green' } else { 'Yellow' })
 }
 
 $outPath = "D:\lumen-stream-lab\results\fast-tier-candidate-gate.json"
@@ -86,6 +86,6 @@ $summary | ConvertTo-Json -Depth 4 | Set-Content $outPath -Encoding UTF8
 Write-Host "`nWrote $outPath" -ForegroundColor Green
 
 if ($anyPromote) {
-    Write-Host "At least one new model passed all domain checks — consider updating fast tier in lumen_router.py / win-router-lib.ps1" -ForegroundColor Cyan
+    Write-Host "At least one new model passed all domain checks - consider updating fast tier in lumen_router.py / win-router-lib.ps1" -ForegroundColor Cyan
 }
 exit 0
