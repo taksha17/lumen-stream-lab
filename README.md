@@ -45,22 +45,69 @@ Most teams running local LLMs hit the same wall: the model is fine, but **routin
 
 ## Proven results (reference lab)
 
-Numbers from [`hardware/reference-lab.json`](./hardware/reference-lab.json) — **your machine will differ**; measure your own baseline.
+**Hardware:** GTX 1650 4GB, Ollama 0.33.2 — [`hardware/reference-lab.json`](./hardware/reference-lab.json)  
+**Re-bench date:** 2026-09-01 | Fixtures: [`results/fixtures/`](./results/fixtures/)  
+**Your machine will differ** — the **+40% relative gain** is the portable claim. Full tables: [docs/REFERENCE-RESULTS.md](./docs/REFERENCE-RESULTS.md) | [docs/TOOL-COMPARISON.md](./docs/TOOL-COMPARISON.md)
 
-| Metric | Result |
-|--------|--------|
-| Baseline (always `llama3.2:3b`) | **48.38 tok/s** |
-| **Lumen hybrid orchestration** | **~68–70 tok/s** mean (**+40–45% PASS**) |
-| vs llama.cpp (same 3B GGUF) | Ollama **48.2** vs llama.cpp **16.5** tok/s |
-| Router eval routing accuracy | **12/12** prompts |
-| Domain quality (E11/E12) | PASS with domain system prompt |
+### Primary metric (+40% gate)
 
-| Tier | Model | When |
-|------|-------|------|
-| `fast` | `llama3.2:1b` | Arithmetic, greetings, short facts |
-| `balanced` | `lfm-balanced` | General explain/coding (~65 tok/s) |
-| `balanced` (domain) | `qwen2.5-3b-lumen` | Lumen / Soup / routing keywords |
-| `quality` | `qwen2.5-7b-lumen` | Prompt >50 words or `-Tier quality` |
+| Metric | Baseline | Target | **Latest (2026-09-01)** |
+|--------|----------|--------|-------------------------|
+| Mean decode tok/s (12-prompt hybrid auto-route) | `llama3.2:3b` @ **48.38** | ≥ **67.73** (+40%) | **68.10** (+40.8%) **PASS** |
+
+### Lumen vs other approaches
+
+| Approach | tok/s | vs always-3B (48.38) |
+|----------|-------|----------------------|
+| Ollama always `llama3.2:3b` | 48.2–48.9 | baseline |
+| llama.cpp (same 3B GGUF) | **16.49** | **−66%** |
+| LFM 2.5 alone | 64.13 | +33% (below +40%) |
+| SmolLM2 1.7B alone | 98.69 | +104% (speed only; domain unproven) |
+| **Lumen hybrid orchestration** | **68.10** mean | **+40.8% PASS** |
+
+| Quality gate | Result |
+|--------------|--------|
+| Router eval (E01–E12) | **12/12** routing accuracy |
+| Domain smoke (E05/E11/E12) | **PASS** (system prompt + prefixes) |
+| Median by tier (router eval) | fast **94.9** · LFM **63.7** · domain **54.6** · quality **10.6** tok/s |
+
+### Production router tiers
+
+| Tier | Model | When | ~tok/s (D3) |
+|------|-------|------|-------------|
+| `fast` | `llama3.2:1b` | Arithmetic, greetings, short facts | **98.6** |
+| `balanced` | `lfm-balanced` | General explain/coding | **64.1** |
+| `balanced` (domain) | `qwen2.5-3b-lumen` | Lumen / Soup / routing keywords | **55.7** |
+| `quality` | `qwen2.5-7b-lumen` | Prompt >50 words or `-Tier quality` | **~10** |
+
+Reproduce: `deploy/win-orchestration-bench.ps1` · `deploy/win-regression.ps1 -Full`
+
+### Latest models bench — Phase D3 (2026-09-01)
+
+`deploy/win-bench-phase-d3.ps1` · `num_predict=128` · median decode tok/s
+
+| Model | Family | tok/s | vs always-3B (48.94) | Verdict |
+|-------|--------|-------|----------------------|---------|
+| **smollm2:1.7b-instruct-q4_K_M** | HuggingFace | **98.69** | +102% | Fast; candidate fast tier (domain TBD) |
+| llama3.2:1b | Meta | **98.56** | +101% | Production fast tier |
+| **gemma3:1b-it-qat** | Google | **82.27** | +68% | Strong 1B; not in router yet |
+| lfm-balanced | Liquid AI | **64.13** | +31% | Production balanced (general) |
+| qwen2.5:3b-instruct-q4_K_M | Alibaba | **55.80** | +14% | Stock 3B alternative |
+| qwen2.5-3b-lumen | Qwen (fine-tuned) | **55.65** | +14% | Production domain tier |
+| llama3.2:3b | Meta | **48.94** | — | +40% baseline |
+| phi4-mini | Microsoft | **29.46** | −40% | Slower than 3B on 4GB |
+| gemma3:4b-it-qat | Google | **12.14** | −75% | VRAM pressure |
+
+### Phase D2 families (2026-08-31)
+
+| Model | tok/s | Verdict |
+|-------|-------|---------|
+| LFM 2.5-2.6B | **65.2** | Best balanced speed; fails domain alone |
+| Gemma 4 e2b-it-qat | 54.0 | Fits 4GB |
+| Gemma 4 e4b | 12.2 | Ruled out |
+| Nemotron 3.5 Lightning | 1.8 | Ruled out |
+
+**Takeaway:** No single new model beats +40% *and* passes Lumen domain gates. **Hybrid routing** (1B + LFM + domain 3B + opt-in 7B) is what hits the gate.
 
 ---
 
