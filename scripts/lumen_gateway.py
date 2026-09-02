@@ -38,13 +38,26 @@ HARDWARE = ROOT / "hardware.json"
 RESULTS = ROOT / "results"
 OLLAMA_URL = "http://127.0.0.1:11434"
 
+# Make `lumen_router` (repo root) importable regardless of how the server is
+# launched. Without this, `python3 scripts/lumen_gateway.py` puts `scripts/`
+# first on sys.path and `from lumen_router import ...` raises ModuleNotFoundError.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+# Also ensure `scripts/` is importable for `scripts.backends.vllm`.
+SCRIPTS_DIR = ROOT / "scripts"
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+import lumen_router  # noqa: F401 — fail fast if repo root not on sys.path
+
 
 def lumen_route(prompt: str, force_tier: str | None = None) -> dict:
     """Call `lumen.py route` — hybrid tier plan (single source of truth)."""
     cmd = [sys.executable, str(LUMEN_PY), "route", "--prompt", prompt]
     if force_tier:
         cmd.extend(["--tier", force_tier])
-    out = subprocess.run(cmd, capture_output=True, text=True, check=False)
+    out = subprocess.run(cmd, capture_output=True, text=True, check=False, cwd=str(ROOT))
     if out.returncode != 0:
         raise RuntimeError(f"lumen route failed: {out.stderr}")
     return json.loads(out.stdout)
