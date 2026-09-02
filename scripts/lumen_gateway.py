@@ -37,6 +37,7 @@ LUMEN_PY = ROOT / "lumen.py"
 HARDWARE = ROOT / "hardware.json"
 RESULTS = ROOT / "results"
 OLLAMA_URL = "http://127.0.0.1:11434"
+DEFAULT_NUM_PREDICT = int(os.environ.get("LUMEN_NUM_PREDICT", "128"))
 
 # Make `lumen_router` (repo root) importable regardless of how the server is
 # launched. Without this, `python3 scripts/lumen_gateway.py` puts `scripts/`
@@ -63,12 +64,33 @@ def lumen_route(prompt: str, force_tier: str | None = None) -> dict:
     return json.loads(out.stdout)
 
 
-def ollama_generate(model: str, prompt: str, stream: bool = False) -> bytes:
+def resolve_num_predict(body: dict, tier: str | None = None) -> int:
+    """Per-request cap; aligns with benchmark max_new_tokens (default 128)."""
+    for key in ("num_predict", "max_tokens", "max_new_tokens"):
+        if key in body and body[key] is not None:
+            return max(1, int(body[key]))
+    if tier == "fast":
+        return min(DEFAULT_NUM_PREDICT, 64)
+    if tier == "quality":
+        return max(DEFAULT_NUM_PREDICT, 256)
+    return DEFAULT_NUM_PREDICT
+
+
+def ollama_generate(
+    model: str,
+    prompt: str,
+    *,
+    stream: bool = False,
+    num_predict: int | None = None,
+) -> bytes:
     """Proxy to a running Ollama instance. Replace this with llamacpp/airllm
     clients when the plan.backend changes."""
     from lumen_router import ollama_generate_payload
 
-    body = json.dumps(ollama_generate_payload(model, prompt, stream=stream)).encode()
+    options = {"num_predict": num_predict or DEFAULT_NUM_PREDICT, "temperature": 0.7}
+    body = json.dumps(
+        ollama_generate_payload(model, prompt, stream=stream, options=options)
+    ).encode()
     req = urlrequest.Request(
         f"{OLLAMA_URL}/api/generate", data=body,
         headers={"content-type": "application/json"},
@@ -124,7 +146,7 @@ def extract_prompt(body: dict) -> str:
     return "\n".join(parts).strip()
 
 
-def backend_generate(model: str, prompt: str) -> dict:
+def backend_generate(model: str, prompt: str, *, num_predict: int | None = None) -> dict:
     """Generate via configured backend (ollama default, vllm optional)."""
     backend = os.environ.get("LUMEN_BACKEND", "ollama").lower()
     if backend == "vllm":
@@ -134,25 +156,34 @@ def backend_generate(model: str, prompt: str) -> dict:
         vllm_model = os.environ.get("VLLM_MODEL", model)
         return vllm_generate(vllm_model, prompt, base_url=vllm_url)
 
-    raw = ollama_generate(model, prompt, stream=False)
+    raw = ollama_generate(model, prompt, stream=False, num_predict=num_predict)
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
         return {"raw": raw.decode("utf-8", "replace")}
 
 
-def chat_with_routing(prompt: str, force_tier: str | None = None) -> tuple[dict, dict, int]:
+def chat_with_routing(
+    prompt: str,
+    force_tier: str | None = None,
+    *,
+    num_predict: int | None = None,
+) -> tuple[dict, dict, int]:
     """Route prompt, generate via backend, return (plan, backend_resp, latency_ms)."""
     t0 = time.time()
     plan = lumen_route(prompt, force_tier=force_tier)
     plan["backend"] = os.environ.get("LUMEN_BACKEND", "ollama")
+    cap = num_predict if num_predict is not None else resolve_num_predict({}, plan.get("tier"))
+    plan["num_predict"] = cap
     try:
-        backend_resp = backend_generate(plan["model"], prompt)
+        backend_resp = backend_generate(plan["model"], prompt, num_predict=cap)
     except RuntimeError as e:
         if plan.get("tier") != "fast":
             plan = lumen_route(prompt, force_tier="fast")
             plan["backend"] = os.environ.get("LUMEN_BACKEND", "ollama")
-            backend_resp = backend_generate(plan["model"], prompt)
+            cap = num_predict if num_predict is not None else resolve_num_predict({}, "fast")
+            plan["num_predict"] = cap
+            backend_resp = backend_generate(plan["model"], prompt, num_predict=cap)
         else:
             raise e
     latency_ms = int((time.time() - t0) * 1000)
@@ -231,7 +262,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(400, {"error": "prompt or messages required"})
 
             try:
-                plan, ollama_resp, latency_ms = chat_with_routing(prompt, force_tier=force)
+                cap = None
+                if any(k in body for k in ("num_predict", "max_tokens", "max_new_tokens")):
+                    cap = resolve_num_predict(body, None)
+                plan, ollama_resp, latency_ms = chat_with_routing(
+                    prompt, force_tier=force, num_predict=cap,
+                )
             except RuntimeError as e:
                 return self._json(502, {"error": "backend failed", "detail": str(e)})
             except Exception as e:
@@ -275,7 +311,14 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Lumen HTTP gateway (reference)")
     ap.add_argument("--port", type=int, default=8080)
     ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument(
+        "--default-num-predict",
+        type=int,
+        default=DEFAULT_NUM_PREDICT,
+        help="Default Ollama num_predict cap (or set LUMEN_NUM_PREDICT)",
+    )
     args = ap.parse_args()
+    globals()["DEFAULT_NUM_PREDICT"] = args.default_num_predict
 
     if not LUMEN_PY.exists():
         print(f"lumen.py not found at {LUMEN_PY}", file=sys.stderr)

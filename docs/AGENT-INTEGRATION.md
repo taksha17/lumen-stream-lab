@@ -60,6 +60,16 @@ curl -s http://127.0.0.1:8080/v1/chat/completions \
 
 Response includes `choices[0].message.content` plus `lumen_plan` (tier, model, reason).
 
+Default generation cap: **128 tokens** (`num_predict`), matching benchmark protocol. Override per request:
+
+```bash
+curl -s http://127.0.0.1:8080/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"lumen-hybrid","max_tokens":64,"messages":[{"role":"user","content":"What is 2+2?"}]}'
+```
+
+Or set `LUMEN_NUM_PREDICT=256` / `python scripts/lumen_gateway.py --default-num-predict 256`.
+
 ### Simple agent loop (curl)
 
 ```bash

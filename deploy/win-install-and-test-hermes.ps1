@@ -218,7 +218,7 @@ function Test-LumenGatewayDirect {
     param([int]$Port, [string]$Prompt)
     $body = @{ messages = @(@{ role = "user"; content = $Prompt }) } | ConvertTo-Json -Depth 5
     $resp = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/v1/chat/completions" `
-        -Method Post -ContentType "application/json" -Body $body -TimeoutSec 120
+        -Method Post -ContentType "application/json" -Body $body -TimeoutSec 180
     return $resp
 }
 
@@ -243,7 +243,7 @@ $gw = Test-LumenGatewayDirect -Port $GatewayPort -Prompt "What is 2+2?"
 Write-Host "Routed model: $($gw.lumen_plan.model) tier=$($gw.lumen_plan.tier) reason=$($gw.lumen_plan.reason)"
 Write-Host "Response: $($gw.choices[0].message.content.Substring(0, [Math]::Min(120, $gw.choices[0].message.content.Length)))"
 
-$gw2 = Test-LumenGatewayDirect -Port $GatewayPort -Prompt "What is Lumen Stream Lab?"
+$gw2 = Test-LumenGatewayDirect -Port $GatewayPort -Prompt "What is Lumen Stream Lab? Reply in one sentence."
 Write-Host "Routed model: $($gw2.lumen_plan.model) tier=$($gw2.lumen_plan.tier)"
 
 if ($GatewayOnly) {
