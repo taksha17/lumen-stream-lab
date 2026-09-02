@@ -6,6 +6,8 @@ Start here for the full picture. The root [README](../README.md) is the landing 
 
 | # | Document | What you get |
 |---|----------|--------------|
+| 0 | [**LOW-SPEC-BUILDERS.md**](./LOW-SPEC-BUILDERS.md) | **Individuals + enterprises** — offline low-spec playbook, hybrid cost vs all-cloud |
+| 0b | [**../docs/walkthrough.mp4**](../docs/walkthrough.mp4) | **~60s video** — pros, cons, live routing (regen: `scripts/render_walkthrough_video.py`) |
 | 1 | [**TERMINAL-UI.md**](./TERMINAL-UI.md) | **Interactive menu** — setup, chat, bench, gateway |
 | 2 | [**ARCHITECTURE.md**](./ARCHITECTURE.md) | System design, routing flow, training vs inference, diagrams |
 | 3 | [**AGENT-INTEGRATION.md**](./AGENT-INTEGRATION.md) | Hermes Agent + other agent frameworks |

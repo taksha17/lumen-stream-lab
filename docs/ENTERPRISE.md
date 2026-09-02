@@ -1,7 +1,8 @@
 # Lumen Stream Lab — Enterprise Integration Reference
 
 > **Audience:** platform / infra / ML-platform engineers wiring a local LLM stack into a real production system.  
-> **Narrative case study:** [docs/ENTERPRISE-CASE-STUDY.md](./docs/ENTERPRISE-CASE-STUDY.md) — end-to-end "Acme Platform" walkthrough with metrics.  
+> **Cost & audience framing:** [LOW-SPEC-BUILDERS.md](./LOW-SPEC-BUILDERS.md) — individuals on 4GB hardware *and* enterprise hybrid vs all-cloud subscriptions.  
+> **Narrative case study:** [ENTERPRISE-CASE-STUDY.md](./ENTERPRISE-CASE-STUDY.md) — end-to-end "Acme Platform" walkthrough with metrics.  
 > **Numbers:** [REFERENCE-RESULTS.md](./REFERENCE-RESULTS.md) on reference lab (GTX 1650 4GB). The *shape* of integration applies on bigger hardware.
 
 ---

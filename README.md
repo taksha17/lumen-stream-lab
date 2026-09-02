@@ -10,6 +10,17 @@ Open source and **hardware-agnostic**. We CI-test on a modest reference rig (GTX
 
 ---
 
+## Who is this for?
+
+| You | What you get |
+|-----|--------------|
+| **Individual / low-spec builder** — old laptop GPU, offline, privacy-first | Route simple prompts to 1B (~99 tok/s), domain to fine-tuned 3B, 7B only when needed — **+40% on the GPU you already own** |
+| **Team / enterprise** — many users, cost pressure, data residency | Same router behind your gateway: **local by default, cloud by exception** — cut per-seat API spend without giving up frontier models for hard tasks |
+
+**Full guide (both audiences):** [docs/LOW-SPEC-BUILDERS.md](./docs/LOW-SPEC-BUILDERS.md) — offline playbook, hybrid cost model vs all-cloud subscriptions, when to escalate to Claude/GPT.
+
+---
+
 ## Real-world use cases
 
 Most teams running local LLMs hit the same wall: the model is fine, but **routing and tuning** are tribal. Lumen makes that **measured, reproducible, and auditable** — the same pattern used in production gateways (tiered routing, A/B, regression gates), scoped to one box or your fleet.
@@ -113,11 +124,36 @@ Reproduce: `deploy/win-orchestration-bench.ps1` · `deploy/win-regression.ps1 -F
 
 ---
 
+## Walkthrough (~60s)
+
+Hybrid routing on a 4GB GPU — what Lumen is, live `route` demo, +40% gate, **pros & cons**, and how to start. No Hermes or cloud API required.
+
+<video src="docs/walkthrough.mp4" controls width="100%">
+  <a href="docs/walkthrough.mp4">Download walkthrough.mp4</a>
+</video>
+
+![Walkthrough preview](./docs/walkthrough.gif)
+
+| Section | Content |
+|---------|---------|
+| 0:00–0:10 | Problem — one model for everything is slow on modest GPUs |
+| 0:10–0:28 | Live routing: fast → balanced → domain + **+40% PASS** |
+| 0:28–0:40 | **Pros** — offline, measured tiers, open source, enterprise hybrid |
+| 0:40–0:52 | **Cons** — not frontier cloud; 7B slow on 4GB; re-bench on your hardware |
+| 0:52–1:00 | Get started — `demo.sh`, `lumen.py`, docs |
+
+**Regenerate:** `python3 scripts/render_walkthrough_video.py` · **Audience guide:** [docs/LOW-SPEC-BUILDERS.md](./docs/LOW-SPEC-BUILDERS.md)
+
+---
+
 ## Quick start
 
 ```bash
 git clone https://github.com/taksha17/lumen-stream-lab.git
 cd lumen-stream-lab
+
+# 60-second demo (routing + +40% gate, no Ollama required)
+./scripts/demo.sh
 
 # Interactive terminal UI (recommended)
 python3 lumen.py
