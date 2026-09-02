@@ -80,6 +80,17 @@ Verify domain routing: `lumen route --prompt "What is Lumen Stream Lab?"` should
 
 See [HUGGINGFACE-PUBLISH.md](./HUGGINGFACE-PUBLISH.md) if you need to re-publish or update the GGUF.
 
+### Option D — Download 7B from Hugging Face (quality tier)
+
+After publish: **[YOUR_USER/qwen2.5-7b-lumen](https://huggingface.co/takshathosani17/qwen2.5-7b-lumen)** (pending upload)
+
+```bash
+hf download takshathosani17/qwen2.5-7b-lumen --local-dir ./qwen-7b-lumen
+cd qwen-7b-lumen && ollama create qwen2.5-7b-lumen -f Modelfile
+```
+
+Publish from reference lab: `./deploy/publish-hf-remote.sh USER/qwen2.5-7b-lumen --variant 7b`
+
 ---
 
 ## `lfm-balanced` alias

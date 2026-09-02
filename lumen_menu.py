@@ -139,6 +139,12 @@ def action_setup() -> None:
         if ps.exists():
             print(f"\nWindows regression: powershell -File {ps}")
 
+    print("\nDomain models on Hugging Face (no Soup training needed):")
+    print("  3B: https://huggingface.co/takshathosani17/qwen2.5-3b-lumen")
+    print("  7B: publish with deploy/publish-hf-remote.sh (after HF upload)")
+    print("  Install: hf download USER/qwen2.5-3b-lumen --local-dir ./qwen-lumen")
+    print("           ollama create qwen2.5-3b-lumen -f qwen-lumen/Modelfile")
+
 
 def action_chat() -> None:
     from lumen_router import route_decision

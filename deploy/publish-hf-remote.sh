@@ -3,11 +3,23 @@
 # Usage:
 #   export HF_TOKEN=hf_...
 #   ./deploy/publish-hf-remote.sh takshathosani17/qwen2.5-3b-lumen
+#   ./deploy/publish-hf-remote.sh takshathosani17/qwen2.5-7b-lumen --variant 7b
 #   ./deploy/publish-hf-remote.sh takshathosani17/qwen2.5-3b-lumen --dry-run
 set -euo pipefail
 
-REPO_ID="${1:?usage: $0 USER/repo [--dry-run]}"
-DRY_RUN="${2:-}"
+REPO_ID="${1:?usage: $0 USER/repo [--variant 3b|7b] [--dry-run]}"
+shift || true
+
+VARIANT="3b"
+DRY_RUN=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --variant) VARIANT="${2:?}"; shift 2 ;;
+    --dry-run) DRY_RUN="-DryRun"; shift ;;
+    *) echo "unknown arg: $1" >&2; exit 1 ;;
+  esac
+done
+
 SSH_HOST="${LUMEN_SSH_HOST:-Taksha Thosani@192.168.4.31}"
 LAB_ROOT="${LUMEN_LAB_ROOT:-D:\\lumen-stream-lab}"
 
@@ -16,10 +28,5 @@ if [[ -z "${HF_TOKEN:-}" ]]; then
   exit 1
 fi
 
-EXTRA=""
-if [[ "$DRY_RUN" == "--dry-run" ]]; then
-  EXTRA="-DryRun"
-fi
-
 ssh -o BatchMode=yes "$SSH_HOST" \
-  "powershell -NoProfile -ExecutionPolicy Bypass -Command \"\$env:HF_TOKEN='$HF_TOKEN'; & '$LAB_ROOT\\deploy\\win-publish-hf.ps1' -RepoId '$REPO_ID' $EXTRA\""
+  "powershell -NoProfile -ExecutionPolicy Bypass -Command \"\$env:HF_TOKEN='$HF_TOKEN'; & '$LAB_ROOT\\deploy\\win-publish-hf.ps1' -Variant '$VARIANT' -RepoId '$REPO_ID' $DRY_RUN\""

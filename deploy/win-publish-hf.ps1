@@ -1,9 +1,12 @@
 # Publish Lumen domain GGUF to Hugging Face Hub
 # Usage:
-#   set HF_TOKEN=hf_...   (Windows)  OR  export HF_TOKEN=hf_...
+#   set HF_TOKEN=hf_...
 #   powershell -File deploy\win-publish-hf.ps1 -RepoId youruser/qwen2.5-3b-lumen
+#   powershell -File deploy\win-publish-hf.ps1 -Variant 7b -RepoId youruser/qwen2.5-7b-lumen
 param(
     [string]$LabRoot = "D:\lumen-stream-lab",
+    [ValidateSet("3b", "7b")]
+    [string]$Variant = "3b",
     [string]$RepoId = "",
     [string]$Gguf = "",
     [switch]$DryRun
@@ -12,18 +15,38 @@ param(
 $ErrorActionPreference = "Stop"
 . "$LabRoot\deploy\win-env-d.ps1"
 
-if (-not $Gguf) {
-    $Gguf = "$LabRoot\exports\qwen2.5-3b-lumen-s07.q4_k_m.gguf"
+$profiles = @{
+    "3b" = @{
+        default_gguf = "$LabRoot\exports\qwen2.5-3b-lumen-s07.q4_k_m.gguf"
+        artifact     = "qwen2.5-3b-lumen-s07.q4_k_m.gguf"
+        ollama_name  = "qwen2.5-3b-lumen"
+        base_model   = "Qwen/Qwen2.5-3B-Instruct"
+        title        = "qwen2.5-3b-lumen (S07 domain fine-tune)"
+        soup         = "config/soup/soup-3b-stream-s07.yaml"
+        post_script  = "deploy\win-post-s07.ps1"
+    }
+    "7b" = @{
+        default_gguf = "$LabRoot\exports\qwen2.5-7b-lumen-s06.q4_k_m.gguf"
+        artifact     = "qwen2.5-7b-lumen-s06.q4_k_m.gguf"
+        ollama_name  = "qwen2.5-7b-lumen"
+        base_model   = "Qwen/Qwen2.5-7B-Instruct"
+        title        = "qwen2.5-7b-lumen (S06 quality tier)"
+        soup         = "config/soup/soup-7b-stream-s06.yaml"
+        post_script  = "deploy\win-post-s07.ps1"
+    }
 }
+
+$p = $profiles[$Variant]
+if (-not $Gguf) { $Gguf = $p.default_gguf }
 if (-not (Test-Path $Gguf)) {
     Write-Host "GGUF not found: $Gguf" -ForegroundColor Red
-    Write-Host "Run: powershell -File deploy\win-post-s07.ps1" -ForegroundColor Yellow
+    Write-Host "Export first or pass -Gguf path" -ForegroundColor Yellow
     exit 1
 }
 
 if (-not $RepoId) {
-    Write-Host "Set -RepoId your-hf-username/qwen2.5-3b-lumen" -ForegroundColor Yellow
-    Write-Host "Example: powershell -File deploy\win-publish-hf.ps1 -RepoId taksha17/qwen2.5-3b-lumen"
+    Write-Host "Set -RepoId your-hf-username/qwen2.5-$Variant-lumen" -ForegroundColor Yellow
+    Write-Host "Example: powershell -File deploy\win-publish-hf.ps1 -Variant $Variant -RepoId takshathosani17/qwen2.5-$Variant-lumen"
     exit 1
 }
 
@@ -39,51 +62,53 @@ if (-not $hfCli) {
     $hfCli = Get-Command hf -ErrorAction SilentlyContinue
 }
 if (-not $hfCli) {
-    Write-Host "hf CLI not found after install. Try: python -m pip install -U huggingface_hub[cli]" -ForegroundColor Red
+    Write-Host "hf CLI not found after install." -ForegroundColor Red
     exit 1
 }
 
+$artifact = $p.artifact
+$ollama = $p.ollama_name
 $readme = @"
 ---
 license: apache-2.0
-base_model: Qwen/Qwen2.5-3B-Instruct
+base_model: $($p.base_model)
 tags:
   - lumen-stream-lab
   - gguf
   - ollama
 ---
 
-# qwen2.5-3b-lumen (S07 domain fine-tune)
+# $($p.title)
 
-Domain fine-tune for [Lumen Stream Lab](https://github.com/taksha17/lumen-stream-lab) hybrid router.
+Domain/quality tier model for [Lumen Stream Lab](https://github.com/taksha17/lumen-stream-lab) hybrid router.
 
 ## Ollama
 
 ``````bash
-ollama create qwen2.5-3b-lumen -f Modelfile
+ollama create $ollama -f Modelfile
 ``````
 
 Modelfile:
 
 ``````
-FROM ./qwen2.5-3b-lumen-s07.q4_k_m.gguf
+FROM ./$artifact
 PARAMETER temperature 0.7
 ``````
 
-Trained with Soup `config/soup/soup-3b-stream-s07.yaml` on reference GTX 1650 lab.
+Trained with Soup ``$($p.soup)`` on reference GTX 1650 lab (~10 tok/s quality tier).
 "@
 
-$stage = Join-Path $env:TEMP "lumen-hf-publish"
+$stage = Join-Path $env:TEMP "lumen-hf-publish-$Variant"
 Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path $stage | Out-Null
-Copy-Item $Gguf (Join-Path $stage "qwen2.5-3b-lumen-s07.q4_k_m.gguf")
+Copy-Item $Gguf (Join-Path $stage $artifact)
 Set-Content (Join-Path $stage "README.md") $readme -Encoding UTF8
 @"
-FROM ./qwen2.5-3b-lumen-s07.q4_k_m.gguf
+FROM ./$artifact
 PARAMETER temperature 0.7
 "@ | Set-Content (Join-Path $stage "Modelfile") -Encoding UTF8
 
-Write-Host "Publishing to huggingface.co/$RepoId" -ForegroundColor Cyan
+Write-Host "Publishing to huggingface.co/$RepoId ($Variant)" -ForegroundColor Cyan
 Write-Host "GGUF: $Gguf ($([math]::Round((Get-Item $Gguf).Length/1GB, 2)) GB)"
 
 if ($DryRun) {
@@ -91,13 +116,12 @@ if ($DryRun) {
     exit 0
 }
 
-# Avoid Windows cp1252 UnicodeEncodeError from deprecated huggingface-cli warnings.
 $env:PYTHONIOENCODING = "utf-8"
 $env:PYTHONUTF8 = "1"
 
 & hf upload $RepoId $stage . --repo-type model
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Upload failed (exit $LASTEXITCODE). Staged files kept at $stage" -ForegroundColor Red
+    Write-Host "Upload failed (exit $LASTEXITCODE). Staged at $stage" -ForegroundColor Red
     exit $LASTEXITCODE
 }
 Write-Host "Done: https://huggingface.co/$RepoId" -ForegroundColor Green

@@ -52,4 +52,17 @@ See also [MODELS.md](./MODELS.md).
 
 ## 7B model
 
-Same pattern with `exports\qwen2.5-7b-lumen*.gguf` and `deploy\win-export-7b.ps1`.
+Published S06 export (quality tier, ~4.4 GB):
+
+```bash
+./deploy/publish-hf-remote.sh takshathosani17/qwen2.5-7b-lumen --variant 7b
+```
+
+Or on the reference lab:
+
+```powershell
+$env:HF_TOKEN = "hf_..."
+powershell -File deploy\win-publish-hf.ps1 -Variant 7b -RepoId YOUR_USER/qwen2.5-7b-lumen
+```
+
+GGUF on server: `exports\qwen2.5-7b-lumen-s06.q4_k_m.gguf`
