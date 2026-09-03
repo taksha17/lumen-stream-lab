@@ -15,7 +15,7 @@ Social / HN / Reddit: **paused**. Focus is measurable product gains on the refer
 |----------|------|-----|
 | **P0** | Probe **fast** swap: `llama3.2:1b` vs `qwen3:1.7b` | **Done** — keep 1B (96 vs 86 tok/s) |
 | **P0** | Domain **delta**: stock 3B vs `qwen2.5-3b-lumen` | **Done** — keep lumen (quality); tok/s tied |
-| **P1** | Re-run orchestration / regression on lab | **Done** — PASS, mean **69.12** tok/s (**+42.9%**) |
+| **P1** | Re-run orchestration / regression on lab | **Done** — PASS, mean **69.12** then post-LFM **68.03** (**+40.6%**) |
 | **P1** | Reduce tier-switch thrash (`keep_alive`) | **Done** — default `10m`; same-tier wall −42%; cross-tier no win on 4GB |
 
 ## Next (after P0/P1)

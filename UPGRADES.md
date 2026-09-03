@@ -72,6 +72,13 @@ Format per entry:
 
 ## In progress
 
+### 2026-09-03 — Post-LFM-recreate regression gate
+- **Type:** gate
+- **Result:** `deploy/win-regression.ps1` **ALL PASS** on reference 1650 @ `88d9a6e`
+  - Orchestration mean **68.03** tok/s vs always-3B 48.38 → **+40.6%** (need +40%)
+  - Domain smoke: lumen correct; stock 3B still Laravel-confused
+- **Status:** shipped
+
 ### 2026-09-03 — LFM answer quality + opt-in reason tier
 - **Type:** capability / model
 - **LFM fix:** `visible_response()` strips meta lead + think/boxed; balanced default `num_predict=192`
