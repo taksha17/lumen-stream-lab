@@ -59,7 +59,8 @@ Format per entry:
 - **Type:** capability
 - **Reason:** Windows Task Manager often shows RAM/CPU spikes and 0% GPU because it graphs the **3D** engine, not CUDA compute. Ollama uses CUDA.
 - **Change:** `python3 lumen.py bench` and `python3 lumen.py gpu` sample `utilization.gpu` + VRAM during generate. Portable `deploy/win-gpu-check.ps1` (no hardcoded machine paths).
-- **Status:** in-progress (confirm on the NVIDIA box with `lumen.py gpu`)
+- **Smoke:** `deploy/win-upgrade-smoke.ps1` includes a 64-token GPU generate.
+- **Status:** in-progress (confirm on the NVIDIA box)
 
 ### 2026-09-03 — Experimental `code` tier (opt-in)
 - **Type:** capability
@@ -67,6 +68,7 @@ Format per entry:
 - **Reason:** E07-style coding prompts currently share `balanced` (LFM). A dedicated coder must not change the 12/12 suite unless `LUMEN_CODE_TIER=1`.
 - **Gate:** default **off**. `python3 lumen.py route --tier code` always available.
 - **Bench:** not yet — do not enable in production until domain + orchestration gates still PASS.
+- **Smoke:** `deploy/win-upgrade-smoke.ps1` pulls `qwen2.5-coder:3b` and checks `--tier code`.
 - **Status:** in-progress
 
 ---
