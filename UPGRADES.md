@@ -72,6 +72,44 @@ Format per entry:
 
 ## In progress
 
+### 2026-09-03 — Balanced slot probe (newer model versions)
+- **Type:** model
+- **Script:** `scripts/probe_tier_swaps.py --slot balanced` on reference 1650
+- **Results (general TCP/UDP, num_predict=96):**
+  | Model | tok/s | VRAM | Notes |
+  |-------|-------|------|-------|
+  | `lfm-balanced` | **65.7** | 2273 | Fastest; meta/scratchpad style answers |
+  | `qwen3:4b` | 27.1 | 2301 | empty `response` unless `think:false` |
+  | `phi4-mini` | 29.7 | 2281 | Clean answers; math **correct** (40 apples) |
+  | `gemma3:4b-it-qat` | 12.1 | 2431 | Too slow |
+- **Decision:** **keep LFM** as default balanced (swap would tank +40% mean).
+- **Tune shipped with this probe:**
+  - Recreate `lfm-balanced` Modelfile (concise SYSTEM, temp 0.5) via `win-create-lfm-alias.ps1 -Force`
+  - Default API `think: false` (`LUMEN_THINK`) — fixes Qwen3 empty replies; LFM still narrates (not Ollama-think-tagged)
+  - `visible_response()` strips trailing `</think>` answer when present (menu + gateway)
+- **Status:** shipped (no default model swap; LFM stays; quality path = post-process + optional future phi4 opt-in)
+
+### 2026-09-03 — Regression gate re-run (post tooling churn)
+- **Type:** capability / gate
+- **Result:** `deploy/win-regression.ps1` **ALL PASS** on reference 1650
+  - Orchestration mean **69.12** tok/s vs always-3B 48.38 → **+42.9%** (need +40%)
+  - Domain smoke: `qwen2.5-3b-lumen` correct; stock 3B still confuses with Laravel
+- **Status:** shipped
+
+### 2026-09-03 — `keep_alive` + tier thrash
+- **Type:** capability
+- **Change:** production payloads set `keep_alive` via `resolve_keep_alive()` / `Resolve-KeepAlive`
+  - Default **`10m`** (`LUMEN_KEEP_ALIVE`); `0` unloads; `off` omits (server default)
+  - Wired in `lumen_router.ollama_generate_payload` + `deploy/win-router-lib.ps1`
+  - Bench: `scripts/bench_tier_thrash.py`
+- **Lab (1650, 2026-09-03):**
+  | Arm | Cross-tier wall | Same-tier streak wall |
+  |-----|-----------------|------------------------|
+  | unload each (`0`) | 11.03 s | 9.47 s |
+  | keep `10m` | 13.20 s (−19% worse) | **5.46 s (−42%)** |
+- **Decision:** keep default **`10m`**. Wins multi-turn same-tier (load≈0 after first). Cross-tier on 4GB still pays full swap; keep_alive does not reduce that thrash.
+- **Status:** shipped
+
 ### 2026-09-03 — GPU util in benches (`nvidia-smi`)
 - **Type:** capability
 - **Reason:** Windows Task Manager often shows RAM/CPU spikes and 0% GPU because it graphs the **3D** engine, not CUDA compute. Ollama uses CUDA.

@@ -38,6 +38,20 @@ function Get-DomainContextPrefix([string]$prompt) {
     return ""
 }
 
+function Resolve-KeepAlive {
+    # Default 10m so hybrid chat does not unload after every generate.
+    # LUMEN_KEEP_ALIVE=off|none|default → omit (Ollama server default).
+    # LUMEN_KEEP_ALIVE=0 → unload immediately.
+    $raw = if ($null -ne $env:LUMEN_KEEP_ALIVE) { $env:LUMEN_KEEP_ALIVE.Trim() } else { "" }
+    if ([string]::IsNullOrWhiteSpace($raw)) { return "10m" }
+    $lower = $raw.ToLowerInvariant()
+    if ($lower -in @("off", "none", "default", "omit")) { return $null }
+    if ($lower -in @("0", "false")) { return 0 }
+    $asInt = 0
+    if ([int]::TryParse($raw, [ref]$asInt)) { return $asInt }
+    return $raw
+}
+
 function New-OllamaGeneratePayload([string]$model, [string]$prompt, [hashtable]$options) {
     $prefix = if (Test-IsDomainModel $model) { Get-DomainContextPrefix $prompt } else { "" }
     $userPrompt = if ($prefix) { "$prefix$prompt" } else { $prompt }
@@ -46,6 +60,17 @@ function New-OllamaGeneratePayload([string]$model, [string]$prompt, [hashtable]$
         prompt = $userPrompt
         stream = $false
         options = $options
+    }
+    $ka = Resolve-KeepAlive
+    if ($null -ne $ka) {
+        $payload.keep_alive = $ka
+    }
+    # Default think=false so Qwen3-class models put the answer in response (not only thinking).
+    $thinkRaw = if ($null -ne $env:LUMEN_THINK) { $env:LUMEN_THINK.Trim().ToLowerInvariant() } else { "" }
+    if ([string]::IsNullOrWhiteSpace($thinkRaw) -or $thinkRaw -in @("0", "false", "no")) {
+        $payload.think = $false
+    } elseif ($thinkRaw -in @("1", "true", "yes", "on")) {
+        $payload.think = $true
     }
     if (Test-IsDomainModel $model) {
         $payload.system = Get-DomainSystemPrompt

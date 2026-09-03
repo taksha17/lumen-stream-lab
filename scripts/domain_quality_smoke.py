@@ -28,7 +28,6 @@ def main() -> int:
             stream=False,
             options={"num_predict": 128, "temperature": 0.2},
         )
-        payload["keep_alive"] = "5m"
         body = json.dumps(payload).encode()
         req = urlrequest.Request(
             "http://127.0.0.1:11434/api/generate",

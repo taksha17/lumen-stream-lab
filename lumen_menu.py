@@ -84,7 +84,7 @@ def _generate_ollama(
     tier: str | None = None,
     options: dict | None = None,
 ) -> tuple[str, float | None]:
-    from lumen_router import ollama_generate_payload
+    from lumen_router import ollama_generate_payload, visible_response
 
     body = json.dumps(
         ollama_generate_payload(model, prompt, stream=False, options=options, tier=tier)
@@ -98,7 +98,7 @@ def _generate_ollama(
     with urlrequest.urlopen(req, timeout=300) as resp:
         data = json.loads(resp.read().decode())
     wall = time.perf_counter() - t0
-    text = data.get("response", "")
+    text = visible_response(data)
     eval_count = int(data.get("eval_count") or 0)
     eval_ns = float(data.get("eval_duration") or 0)
     rate = eval_count / (eval_ns / 1e9) if eval_ns > 0 else None

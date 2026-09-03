@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Probe candidate swaps for fast + domain tiers (tok/s + VRAM). Does not change defaults.
+"""Probe candidate swaps for hybrid tiers (tok/s + VRAM). Does not change defaults.
 
 Usage:
   python3 scripts/probe_tier_swaps.py
+  python3 scripts/probe_tier_swaps.py --slot balanced
   python3 scripts/probe_tier_swaps.py --skip-pull
 
 Writes results/tier-swap-probe-last.json (gitignored).
@@ -28,11 +29,51 @@ OLLAMA = "http://127.0.0.1:11434"
 FAST_PROMPT = "What is 2+2? Reply with one short sentence."
 DOMAIN_PROMPT = "What is Lumen Stream Lab? Answer in 2-3 sentences."
 GENERAL_PROMPT = "Explain TCP vs UDP in two short sentences."
+REASON_PROMPT = (
+    "A store has 47 apples. It sells 19 in the morning and receives 12 more "
+    "in the afternoon. How many apples are left? Show brief steps."
+)
 
 PROBES = [
     {"slot": "fast", "model": "llama3.2:1b", "prompt": FAST_PROMPT, "num_predict": 64},
     {"slot": "fast_candidate", "model": "qwen3:1.7b", "prompt": FAST_PROMPT, "num_predict": 64},
     {"slot": "balanced", "model": "lfm-balanced", "prompt": GENERAL_PROMPT, "num_predict": 96},
+    {
+        "slot": "balanced_candidate",
+        "model": "qwen3:4b",
+        "prompt": GENERAL_PROMPT,
+        "num_predict": 96,
+    },
+    {
+        "slot": "balanced_candidate",
+        "model": "phi4-mini",
+        "prompt": GENERAL_PROMPT,
+        "num_predict": 96,
+    },
+    {
+        "slot": "balanced_candidate",
+        "model": "gemma3:4b-it-qat",
+        "prompt": GENERAL_PROMPT,
+        "num_predict": 96,
+    },
+    {
+        "slot": "balanced_reason",
+        "model": "lfm-balanced",
+        "prompt": REASON_PROMPT,
+        "num_predict": 128,
+    },
+    {
+        "slot": "balanced_reason",
+        "model": "qwen3:4b",
+        "prompt": REASON_PROMPT,
+        "num_predict": 128,
+    },
+    {
+        "slot": "balanced_reason",
+        "model": "phi4-mini",
+        "prompt": REASON_PROMPT,
+        "num_predict": 128,
+    },
     {
         "slot": "domain",
         "model": "qwen2.5-3b-lumen",
@@ -70,9 +111,14 @@ def model_names() -> set[str]:
     return {m.get("name", "") for m in tags.get("models", [])}
 
 
+def model_installed(model: str, installed: set[str] | None = None) -> bool:
+    names = installed if installed is not None else model_names()
+    return any(model == n or n.startswith(model + ":") or n.startswith(model) for n in names)
+
+
 def pull(model: str) -> None:
     print(f"  pull {model} ...")
-    api_json("POST", "/api/pull", {"name": model, "stream": False}, timeout=900)
+    api_json("POST", "/api/pull", {"name": model, "stream": False}, timeout=1800)
     print(f"  pull {model} done")
 
 
@@ -82,10 +128,9 @@ def generate(model: str, prompt: str, num_predict: int) -> dict:
         "prompt": prompt,
         "stream": False,
         "options": {"num_predict": num_predict, "temperature": 0.2},
-        "keep_alive": "10m",
+        "keep_alive": 0,  # free VRAM between candidates on 4GB
     }
     if "lumen" in model:
-        # Domain model benefits from system prompt when present on disk
         sys_path = ROOT / "data" / "domain-system-prompt.txt"
         if sys_path.exists():
             body["system"] = sys_path.read_text(encoding="utf-8").strip()
@@ -101,12 +146,14 @@ def one(slot: str, model: str, prompt: str, num_predict: int) -> dict:
     during = sampler.stop()
     eval_count = int(data.get("eval_count") or 0)
     eval_ns = float(data.get("eval_duration") or 0)
+    load_ns = float(data.get("load_duration") or 0)
     tok_s = eval_count / (eval_ns / 1e9) if eval_ns > 0 else None
     return {
         "slot": slot,
         "model": model,
         "decode_tok_s": round(tok_s, 2) if tok_s else None,
         "wall_s": round(wall, 3),
+        "load_s": round(load_ns / 1e9, 3) if load_ns else None,
         "eval_count": eval_count,
         "gpu_util_max": during.get("util_gpu_pct_max"),
         "vram_peak_mib": during.get("memory_used_mib_max"),
@@ -114,10 +161,33 @@ def one(slot: str, model: str, prompt: str, num_predict: int) -> dict:
     }
 
 
+def filter_probes(slot_filter: str | None) -> list[dict]:
+    if not slot_filter or slot_filter == "all":
+        return list(PROBES)
+    key = slot_filter.lower()
+    if key == "balanced":
+        return [
+            p
+            for p in PROBES
+            if p["slot"] in ("balanced", "balanced_candidate", "balanced_reason")
+        ]
+    if key == "fast":
+        return [p for p in PROBES if p["slot"] in ("fast", "fast_candidate")]
+    if key == "domain":
+        return [p for p in PROBES if p["slot"] in ("domain", "domain_baseline")]
+    return [p for p in PROBES if p["slot"] == key]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-pull", action="store_true")
+    ap.add_argument(
+        "--slot",
+        default="all",
+        help="all | fast | balanced | domain | or exact slot name",
+    )
     args = ap.parse_args()
+    probes = filter_probes(args.slot)
 
     try:
         ensure_ollama()
@@ -126,22 +196,22 @@ def main() -> int:
         return 1
 
     installed = model_names()
-    needed = {p["model"] for p in PROBES}
-    missing = [m for m in needed if not any(m == n or n.startswith(m) for n in installed)]
+    needed = {p["model"] for p in probes}
+    missing = [m for m in needed if not model_installed(m, installed)]
     if missing and not args.skip_pull:
         for m in missing:
             try:
                 pull(m)
-            except (URLError, OSError) as exc:
+            except (URLError, OSError, TimeoutError) as exc:
                 print(f"  skip {m}: {exc}")
     elif missing:
         print(f"Missing models (use without --skip-pull): {missing}")
 
     rows: list[dict] = []
-    print("=== tier swap probe ===\n")
-    for p in PROBES:
+    print(f"=== tier swap probe (slot={args.slot}) ===\n")
+    for p in probes:
         model = p["model"]
-        if not any(model == n or n.startswith(model) for n in model_names()):
+        if not model_installed(model):
             print(f"SKIP {p['slot']} ({model}) — not installed")
             continue
         try:
@@ -152,11 +222,20 @@ def main() -> int:
                 f"{row['decode_tok_s']} tok/s  wall={row['wall_s']}s  "
                 f"util_max={row['gpu_util_max']}%  VRAM={row['vram_peak_mib']} MiB"
             )
-        except (URLError, OSError) as exc:
+            preview = (row.get("response_preview") or "").replace("\n", " ")[:120]
+            if preview:
+                print(f"  preview: {preview}")
+        except (URLError, OSError, TimeoutError) as exc:
             print(f"FAIL {p['slot']} ({model}): {exc}")
-            return 1
+            rows.append(
+                {
+                    "slot": p["slot"],
+                    "model": model,
+                    "error": str(exc),
+                }
+            )
 
-    by_slot = {r["slot"]: r for r in rows}
+    by_slot = {r["slot"]: r for r in rows if "error" not in r}
     notes: list[str] = []
     if "fast" in by_slot and "fast_candidate" in by_slot:
         a, b = by_slot["fast"], by_slot["fast_candidate"]
@@ -164,12 +243,31 @@ def main() -> int:
             notes.append("fast_candidate faster than llama3.2:1b — consider A/B before swap")
         else:
             notes.append("keep llama3.2:1b as fast unless quality wins")
+
+    bal = [r for r in rows if r.get("slot") == "balanced" and "error" not in r]
+    cands = [r for r in rows if r.get("slot") == "balanced_candidate" and "error" not in r]
+    if bal and cands:
+        base_tok = bal[0].get("decode_tok_s") or 0
+        for c in cands:
+            ct = c.get("decode_tok_s") or 0
+            vram = c.get("vram_peak_mib")
+            if ct >= base_tok * 0.95 and (vram is None or vram < 3800):
+                notes.append(
+                    f"{c['model']}: tok/s {ct} vs LFM {base_tok} — possible A/B if quality better"
+                )
+            else:
+                notes.append(
+                    f"{c['model']}: keep LFM — tok/s {ct} vs {base_tok} "
+                    f"(VRAM={vram})"
+                )
+
     if "domain" in by_slot and "domain_baseline" in by_slot:
         notes.append(
             "Compare response_preview manually for domain accuracy; tok/s alone does not promote lumen"
         )
 
     out = {
+        "slot_filter": args.slot,
         "runs": rows,
         "notes": notes,
         "policy": "Do not change MODELS defaults until win-regression / domain smoke PASS",

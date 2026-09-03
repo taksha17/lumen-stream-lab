@@ -70,6 +70,8 @@ curl -s http://127.0.0.1:8080/v1/chat/completions \
 
 Or set `LUMEN_NUM_PREDICT=256` / `python scripts/lumen_gateway.py --default-num-predict 256`.
 
+Ollama residency: generate payloads default to `keep_alive=10m` (`LUMEN_KEEP_ALIVE`). Use `0` to unload after each call, or `off` to omit and use the server default. Same-tier multi-turn benefits; cross-tier swaps on 4GB still reload.
+
 ### Simple agent loop (curl)
 
 ```bash

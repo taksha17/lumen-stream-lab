@@ -290,7 +290,9 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as e:
                 return self._json(500, {"error": "router failed", "detail": str(e)})
 
-            text = ollama_resp.get("response", "")
+            from lumen_router import visible_response
+
+            text = visible_response(ollama_resp)
             if self.path == "/v1/chat/completions":
                 return self._json(200, {
                     "id": f"chatcmpl-lumen-{int(time.time())}",

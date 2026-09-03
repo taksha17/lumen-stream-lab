@@ -197,6 +197,74 @@ def wrap_domain_prompt(prompt: str) -> str:
     return prompt
 
 
+def resolve_keep_alive(
+    override: str | int | None = None,
+) -> str | int | None:
+    """Ollama keep_alive for generate payloads.
+
+    - unset override + unset LUMEN_KEEP_ALIVE → "10m" (resident after generate)
+    - LUMEN_KEEP_ALIVE=off / none / default → omit (server default, usually 5m)
+    - LUMEN_KEEP_ALIVE=0 → unload immediately after generate
+    """
+    if override is not None:
+        return override
+    raw = (os.environ.get("LUMEN_KEEP_ALIVE") or "").strip()
+    if not raw:
+        return "10m"
+    lower = raw.lower()
+    if lower in ("off", "none", "default", "omit"):
+        return None
+    if lower in ("0", "false"):
+        return 0
+    try:
+        return int(raw)
+    except ValueError:
+        return raw
+
+
+def resolve_think(override: bool | None = None) -> bool | None:
+    """Ollama think flag. Default False so Qwen3-class models return answer text.
+
+    LUMEN_THINK=1/true enables thinking. LUMEN_THINK=off omits the field.
+    """
+    if override is not None:
+        return override
+    raw = (os.environ.get("LUMEN_THINK") or "").strip().lower()
+    if not raw:
+        return False
+    if raw in ("off", "omit", "default", "none"):
+        return None
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    if raw in ("0", "false", "no"):
+        return False
+    return False
+
+
+_THINK_CLOSE = re.compile(r"</\s*think\s*>", re.IGNORECASE)
+
+
+def visible_response(data: dict[str, Any] | str) -> str:
+    """Prefer user-visible answer over chain-of-thought / empty think shells."""
+    if isinstance(data, str):
+        text = data
+        thinking = ""
+    else:
+        text = str(data.get("response") or "")
+        thinking = str(data.get("thinking") or "")
+    if text.strip():
+        parts = _THINK_CLOSE.split(text, maxsplit=1)
+        if len(parts) == 2 and parts[1].strip():
+            return parts[1].strip()
+        return text.strip()
+    if thinking.strip():
+        parts = _THINK_CLOSE.split(thinking, maxsplit=1)
+        if len(parts) == 2 and parts[1].strip():
+            return parts[1].strip()
+        return thinking.strip()
+    return ""
+
+
 def ollama_generate_payload(
     model: str,
     prompt: str,
@@ -204,6 +272,8 @@ def ollama_generate_payload(
     stream: bool = False,
     options: dict[str, Any] | None = None,
     tier: str | None = None,
+    keep_alive: str | int | None = None,
+    think: bool | None = None,
 ) -> dict[str, Any]:
     user_prompt = wrap_domain_prompt(prompt) if is_domain_model(model) else prompt
     resolved = dict(options or {})
@@ -220,6 +290,12 @@ def ollama_generate_payload(
         "stream": stream,
         "options": resolved,
     }
+    ka = resolve_keep_alive(keep_alive)
+    if ka is not None:
+        payload["keep_alive"] = ka
+    think_flag = resolve_think(think)
+    if think_flag is not None:
+        payload["think"] = think_flag
     if is_domain_model(model):
         payload["system"] = domain_system_prompt()
     elif is_code_model(model):
