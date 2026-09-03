@@ -109,6 +109,8 @@ def resolve_num_predict(body: dict, tier: str | None = None) -> int:
     if tier == "code":
         # Coding answers often need a bit more than chat defaults, still capped.
         return max(DEFAULT_NUM_PREDICT, 192)
+    if tier == "reason":
+        return max(DEFAULT_NUM_PREDICT, 160)
     return DEFAULT_NUM_PREDICT
 
 

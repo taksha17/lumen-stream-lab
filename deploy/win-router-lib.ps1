@@ -7,6 +7,7 @@ $script:RouterModels = @{
     balanced_domain = "qwen2.5-3b-lumen"  # ~54 tok/s Lumen domain
     quality         = "qwen2.5-7b-lumen"
     code            = "qwen2.5-coder:3b"  # experimental; auto only if LUMEN_CODE_TIER=1
+    reason          = "phi4-mini"         # experimental; auto only if LUMEN_REASON_TIER=1
 }
 
 $script:QualityMinWords = 50
@@ -182,6 +183,15 @@ function Get-RouteDecision([string]$text, [string]$tierPref) {
     )
     if ($codeOn -and (Test-RouterKeywordMatch $text $codeKeywords)) {
         return @{ tier = "code"; model = $script:RouterModels.code; reason = "code-tier (experimental)" }
+    }
+
+    $reasonOn = $env:LUMEN_REASON_TIER -match '^(1|true|yes|on)$'
+    $reasonKeywords = @(
+        'how many', 'calculate', 'compute', 'solve', 'step by step',
+        'show your work', 'math problem', 'word problem', 'prove that', 'logic puzzle'
+    )
+    if ($reasonOn -and (Test-RouterKeywordMatch $text $reasonKeywords)) {
+        return @{ tier = "reason"; model = $script:RouterModels.reason; reason = "reason-tier (experimental)" }
     }
 
     if ($words -le 12 -and -not (Test-RouterKeywordMatch $text $complexKeywords)) {

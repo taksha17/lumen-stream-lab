@@ -22,6 +22,8 @@ MODELS = {
     "quality": "qwen2.5-7b-lumen",
     # Experimental — auto-route only when code_tier_enabled()
     "code": "qwen2.5-coder:3b",
+    # Experimental — auto-route only when reason_tier_enabled()
+    "reason": "phi4-mini",
 }
 
 QUALITY_MIN_WORDS = 50
@@ -66,14 +68,36 @@ CODE_KEYWORDS = (
     "unit test",
 )
 
+REASON_KEYWORDS = (
+    "how many",
+    "calculate",
+    "compute",
+    "solve",
+    "step by step",
+    "show your work",
+    "math problem",
+    "word problem",
+    "prove that",
+    "logic puzzle",
+)
+
 
 def code_tier_enabled() -> bool:
     """Opt-in so the 12-prompt eval suite stays unchanged by default."""
     return os.environ.get("LUMEN_CODE_TIER", "").strip().lower() in ("1", "true", "yes", "on")
 
 
+def reason_tier_enabled() -> bool:
+    """Opt-in phi4 reasoning; never on by default (slower than LFM)."""
+    return os.environ.get("LUMEN_REASON_TIER", "").strip().lower() in ("1", "true", "yes", "on")
+
+
 def is_code_prompt(text: str) -> bool:
     return _kw_match(text, CODE_KEYWORDS)
+
+
+def is_reason_prompt(text: str) -> bool:
+    return _kw_match(text, REASON_KEYWORDS)
 
 
 SIMPLE_PATTERNS = (
@@ -104,6 +128,10 @@ def is_code_model(model: str) -> bool:
     return model == MODELS["code"]
 
 
+def is_reason_model(model: str) -> bool:
+    return model == MODELS["reason"]
+
+
 # Tuned for 4GB resident decode (reference lab). Override via LUMEN_CODE_* env.
 CODE_DEFAULT_OPTIONS: dict[str, Any] = {
     "temperature": 0.1,
@@ -117,6 +145,11 @@ CODE_DEFAULT_OPTIONS: dict[str, Any] = {
 CODE_SYSTEM_PROMPT = (
     "You are a concise coding assistant. Prefer correct, runnable code with minimal "
     "prose. Use fenced code blocks. Do not invent APIs."
+)
+
+REASON_SYSTEM_PROMPT = (
+    "You are a careful reasoning assistant. Show brief steps, then the final answer. "
+    "Prefer correct arithmetic and logic over long prose."
 )
 
 
@@ -156,10 +189,15 @@ def generation_options_for_tier(
             "num_ctx": _env_int("LUMEN_CODE_NUM_CTX", int(CODE_DEFAULT_OPTIONS["num_ctx"])),
             "num_batch": _env_int("LUMEN_CODE_NUM_BATCH", int(CODE_DEFAULT_OPTIONS["num_batch"])),
         }
+    elif tier == "reason":
+        opts = {"temperature": 0.2, "num_predict": _env_int("LUMEN_REASON_NUM_PREDICT", 160)}
     elif tier == "fast":
         opts = {"temperature": 0.5, "num_ctx": 1024}
     elif tier == "quality":
         opts = {"temperature": 0.7, "num_ctx": 4096}
+    elif tier == "balanced":
+        # Extra headroom so LFM can finish the answer after its think block.
+        opts = {"temperature": 0.5, "num_predict": _env_int("LUMEN_BALANCED_NUM_PREDICT", 192)}
     else:
         opts = {"temperature": 0.7}
     if num_predict is not None:
@@ -242,6 +280,36 @@ def resolve_think(override: bool | None = None) -> bool | None:
 
 
 _THINK_CLOSE = re.compile(r"</\s*think\s*>", re.IGNORECASE)
+_THINK_BLOCK = re.compile(r"<think>.*?</think>", re.IGNORECASE | re.DOTALL)
+_BOXED = re.compile(r"\\boxed\{([^{}]+)\}")
+_META_PREFIXES = (
+    "the user wants",
+    "the user asked",
+    "let me ",
+    "i need to",
+    "okay,",
+    "ok,",
+    "looking at",
+    "analyzing",
+    "we are to",
+    "first,",
+)
+
+
+def _strip_meta_lead(text: str) -> str:
+    """Drop leading self-talk paragraphs; keep first non-meta block."""
+    chunks = [c.strip() for c in re.split(r"\n\s*\n", text) if c.strip()]
+    if not chunks:
+        return text.strip()
+    kept: list[str] = []
+    for chunk in chunks:
+        low = chunk.lower().lstrip("*-• \t")
+        if any(low.startswith(p) for p in _META_PREFIXES):
+            continue
+        kept.append(chunk)
+    if kept:
+        return "\n\n".join(kept).strip()
+    return text.strip()
 
 
 def visible_response(data: dict[str, Any] | str) -> str:
@@ -250,18 +318,30 @@ def visible_response(data: dict[str, Any] | str) -> str:
         text = data
         thinking = ""
     else:
-        text = str(data.get("response") or "")
+        text = str(data.get("response") or data.get("message", {}).get("content") or "")
         thinking = str(data.get("thinking") or "")
+        msg = data.get("message")
+        if isinstance(msg, dict) and not thinking:
+            thinking = str(msg.get("thinking") or "")
+
+    boxed = _BOXED.search(text) or _BOXED.search(thinking)
+    if boxed:
+        return boxed.group(1).strip()
+
     if text.strip():
         parts = _THINK_CLOSE.split(text, maxsplit=1)
         if len(parts) == 2 and parts[1].strip():
-            return parts[1].strip()
-        return text.strip()
+            return _strip_meta_lead(parts[1])
+        cleaned = _THINK_BLOCK.sub("", text).strip()
+        if cleaned:
+            return _strip_meta_lead(cleaned)
+        return _strip_meta_lead(text)
+
     if thinking.strip():
         parts = _THINK_CLOSE.split(thinking, maxsplit=1)
         if len(parts) == 2 and parts[1].strip():
-            return parts[1].strip()
-        return thinking.strip()
+            return _strip_meta_lead(parts[1])
+        return _strip_meta_lead(thinking)
     return ""
 
 
@@ -300,6 +380,8 @@ def ollama_generate_payload(
         payload["system"] = domain_system_prompt()
     elif is_code_model(model):
         payload["system"] = CODE_SYSTEM_PROMPT
+    elif is_reason_model(model):
+        payload["system"] = REASON_SYSTEM_PROMPT
     return payload
 
 
@@ -336,6 +418,9 @@ def route_decision(prompt: str, tier_pref: str = "auto") -> dict[str, Any]:
         if tier == "code" or is_code_model(model):
             out["system_prompt"] = CODE_SYSTEM_PROMPT
             out["options"] = generation_options_for_tier("code")
+        if tier == "reason" or is_reason_model(model):
+            out["system_prompt"] = REASON_SYSTEM_PROMPT
+            out["options"] = generation_options_for_tier("reason")
         return out
 
     if tier_pref != "auto":
@@ -355,6 +440,9 @@ def route_decision(prompt: str, tier_pref: str = "auto") -> dict[str, Any]:
 
     if code_tier_enabled() and is_code_prompt(prompt):
         return _finish("code", MODELS["code"], "code-tier (experimental)")
+
+    if reason_tier_enabled() and is_reason_prompt(prompt):
+        return _finish("reason", MODELS["reason"], "reason-tier (experimental)")
 
     if words <= 12 and not _kw_match(prompt, COMPLEX_KEYWORDS):
         return _finish("fast", MODELS["fast"], f"short/simple ({words} words)")

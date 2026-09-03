@@ -176,10 +176,10 @@ def action_chat() -> None:
     print("\n=== Chat (route + generate) ===")
     print(f"Router engine: {engine} (set LUMEN_ROUTER=v2 for learned)")
     print("Type a prompt, or /quit to leave.")
-    print("/tier auto|fast|balanced|quality|code  (code = opt-in coder; auto-route stays off)\n")
+    print("/tier auto|fast|balanced|quality|code|reason  (code/reason = opt-in; auto stays off)\n")
 
     forced_tier: str | None = None
-    allowed = {"auto", "fast", "balanced", "quality", "code"}
+    allowed = {"auto", "fast", "balanced", "quality", "code", "reason"}
     while True:
         try:
             user = input("you> ").strip()

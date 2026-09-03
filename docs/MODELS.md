@@ -29,6 +29,7 @@ ollama pull qwen2.5:7b-instruct-q4_K_M
 | `balanced` (domain) | `qwen2.5-3b-lumen` | **fine-tuned** (see below) | Lumen/Soup/routing keywords |
 | `quality` | `qwen2.5-7b-lumen` | **fine-tuned** (see below) | Long prompts or `-Tier quality` |
 | `code` (experimental) | `qwen2.5-coder:3b` | `ollama pull qwen2.5-coder:3b` | Auto-route **off** unless `LUMEN_CODE_TIER=1`. Forced `--tier code` uses low-temp / concise presets ([UPGRADES.md](../UPGRADES.md)). Tune: `python3 scripts/tune_code_tier.py` |
+| `reason` (experimental) | `phi4-mini` | `ollama pull phi4-mini` | Auto-route **off** unless `LUMEN_REASON_TIER=1`. Forced `--tier reason` / menu `/tier reason`. ~30 tok/s on 4GB — quality math, not hybrid mean. |
 
 ---
 

@@ -24,11 +24,14 @@ Social / HN / Reddit: **paused**. Focus is measurable product gains on the refer
 |----------|------|-----|
 | **P2** | Balanced probe: LFM vs `qwen3:4b` / `phi4-mini` / gemma3 | **Done** — keep LFM (65 vs ≤30 tok/s); Modelfile + `think:false` tune |
 | **P2** | Router v2 A/B behind flag | **Done** — `LUMEN_ROUTER=v2` opt-in; eval+holdout 22/22 match; default stays keyword |
+| **P2** | LFM answer quality | **Done** — meta strip + num_predict 192; ChatML template inherit |
+| **P2** | Opt-in `reason` tier (`phi4-mini`) | **Done** — `LUMEN_REASON_TIER=1` / `--tier reason` |
 | **P3** | Vision / image_gen | Parked on 4GB — needs spare VRAM or mid-class GPU |
 
 ## Explicitly not now
 
 - Auto `LUMEN_CODE_TIER=1` (coder slower than LFM on 1650)
+- Auto `LUMEN_REASON_TIER=1` (phi4 ~30 tok/s vs LFM ~65)
 - Show HN / LocalLLaMA pushes ([PROMOTE.md](./PROMOTE.md) parked)
 - Resident 7B/8B as balanced default
 

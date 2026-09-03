@@ -69,6 +69,16 @@ class GenOptionsTests(unittest.TestCase):
             "final",
         )
 
+    def test_visible_response_strips_meta_lead(self) -> None:
+        raw = (
+            "The user wants a concise answer.\n\n"
+            "TCP is reliable; UDP is best-effort."
+        )
+        self.assertEqual(visible_response(raw), "TCP is reliable; UDP is best-effort.")
+
+    def test_visible_response_boxed(self) -> None:
+        self.assertEqual(visible_response(r"thinking...\n\\boxed{40}"), "40")
+
 
 if __name__ == "__main__":
     unittest.main()

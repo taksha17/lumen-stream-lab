@@ -72,6 +72,15 @@ Format per entry:
 
 ## In progress
 
+### 2026-09-03 — LFM answer quality + opt-in reason tier
+- **Type:** capability / model
+- **LFM fix:** `visible_response()` strips meta lead + think/boxed; balanced default `num_predict=192`
+  - Lab smoke: TCP/apples answers now start with real content (not "The user wants…")
+  - Alias recreate: inherit source ChatML TEMPLATE (do not collapse to `{{ .Prompt }}`)
+- **Reason tier:** `phi4-mini` via `--tier reason` / `/tier reason`; auto only if `LUMEN_REASON_TIER=1`
+  - ~30 tok/s on 1650 — **never** default auto (would tank +40% mean)
+- **Status:** shipped (LFM post-process on; reason opt-in only)
+
 ### 2026-09-03 — Router v2 A/B behind flag
 - **Type:** capability
 - **Change:** `route_with_engine()` + `LUMEN_ROUTER=v2` (CLI `--router`, menu, gateway in-process)
