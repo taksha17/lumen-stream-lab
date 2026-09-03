@@ -192,7 +192,9 @@ python3 lumen.py gpu --model llama3.2:3b    # nvidia-smi during generate
 | **9** | Documentation paths + GitHub link |
 | **0** | Exit |
 
-**Chat mode commands:** `/quit` to exit; `/tier fast`, `/tier balanced`, or `/tier quality` to force a tier.
+**Chat mode commands:** `/quit` to exit; `/tier fast|balanced|quality|code|auto` to force a tier (`code` is opt-in; auto hybrid stays default).
+
+**Promote:** [docs/PROMOTE.md](./docs/PROMOTE.md) — LocalLLaMA / Show HN checklist.
 
 **Before chatting:** start Ollama (`ollama serve`) and pull models — see [docs/MODELS.md](./docs/MODELS.md).
 

@@ -60,7 +60,7 @@ Format per entry:
 - **Reason:** Windows Task Manager often shows RAM/CPU spikes and 0% GPU because it graphs the **3D** engine, not CUDA compute. Ollama uses CUDA.
 - **Change:** `python3 lumen.py bench` and `python3 lumen.py gpu` sample `utilization.gpu` + VRAM during generate. Portable `deploy/win-gpu-check.ps1` (no hardcoded machine paths).
 - **Smoke:** `deploy/win-upgrade-smoke.ps1` includes a 64-token GPU generate.
-- **Status:** in-progress (confirm on the NVIDIA box)
+- **Status:** shipped (CUDA util confirmed on reference 1650: max ~53–94% during generate; Task Manager 3D still misleading)
 
 ### 2026-09-03 — Experimental `code` tier (opt-in)
 - **Type:** capability
@@ -73,8 +73,8 @@ Format per entry:
   - Coder **code_default** (temp 0.1, ctx 2048, batch 512 + concise system): **55.3 tok/s**, wall **1.6 s**
   - Smaller ctx/batch did **not** beat code_default on this prompt; wall win is shorter answers, not higher decode.
 - **Presets:** `CODE_DEFAULT_OPTIONS` in `lumen_router.py`; override with `LUMEN_CODE_TEMPERATURE` / `LUMEN_CODE_NUM_CTX` / `LUMEN_CODE_NUM_BATCH`. Gateway uses them for `tier=code`.
-- **Decision:** keep auto-route **off** (coder tok/s still below LFM). Use `--tier code` when code quality matters; tuned options are the default for that path.
-- **Status:** in-progress (presets shipped; auto still off)
+- **Decision (2026-09-03):** keep auto-route **off**. Forced `--tier code` / menu `/tier code` use tuned presets. No further knob chasing until a quality regression appears.
+- **Status:** shipped (opt-in only; `LUMEN_CODE_TIER` remains unset)
 
 ---
 

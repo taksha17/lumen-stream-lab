@@ -93,6 +93,8 @@ Lumen Stream Lab is a hybrid LLM orchestration layer...
 | `/tier fast` | Force `fast` tier for following prompts |
 | `/tier balanced` | Force `balanced` tier |
 | `/tier quality` | Force `quality` tier (7B when available) |
+| `/tier code` | Force experimental coder (opt-in; auto-route stays off) |
+| `/tier auto` | Clear forced tier |
 
 Routing logic lives in `lumen_router.py` (same rules as `lumen route` and the gateway).
 

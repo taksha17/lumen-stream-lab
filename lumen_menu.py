@@ -77,10 +77,18 @@ def _ollama_models() -> list[str]:
         return []
 
 
-def _generate_ollama(model: str, prompt: str) -> tuple[str, float | None]:
+def _generate_ollama(
+    model: str,
+    prompt: str,
+    *,
+    tier: str | None = None,
+    options: dict | None = None,
+) -> tuple[str, float | None]:
     from lumen_router import ollama_generate_payload
 
-    body = json.dumps(ollama_generate_payload(model, prompt, stream=False)).encode()
+    body = json.dumps(
+        ollama_generate_payload(model, prompt, stream=False, options=options, tier=tier)
+    ).encode()
     req = urlrequest.Request(
         "http://127.0.0.1:11434/api/generate",
         data=body,
@@ -165,9 +173,11 @@ def action_chat() -> None:
         return
 
     print("\n=== Chat (route + generate) ===")
-    print("Type a prompt, or /quit to leave, /tier fast|balanced|quality to force tier.\n")
+    print("Type a prompt, or /quit to leave.")
+    print("/tier auto|fast|balanced|quality|code  (code = opt-in coder; auto-route stays off)\n")
 
     forced_tier: str | None = None
+    allowed = {"auto", "fast", "balanced", "quality", "code"}
     while True:
         try:
             user = input("you> ").strip()
@@ -179,8 +189,15 @@ def action_chat() -> None:
         if user.lower() in ("/quit", "/exit", "/q"):
             break
         if user.lower().startswith("/tier "):
-            forced_tier = user.split(maxsplit=1)[1].strip() if " " in user else "auto"
-            print(f"forced tier: {forced_tier}")
+            forced_tier = user.split(maxsplit=1)[1].strip().lower() if " " in user else "auto"
+            if forced_tier not in allowed:
+                print(f"unknown tier (use: {'|'.join(sorted(allowed))})")
+                continue
+            if forced_tier == "auto":
+                forced_tier = None
+                print("forced tier: auto")
+            else:
+                print(f"forced tier: {forced_tier}")
             continue
 
         decision = route_decision(user, forced_tier or "auto")
@@ -189,7 +206,12 @@ def action_chat() -> None:
         print(f"[reason: {decision['reason']}]\n")
 
         try:
-            answer, rate = _generate_ollama(model, user)
+            answer, rate = _generate_ollama(
+                model,
+                user,
+                tier=decision["tier"],
+                options=decision.get("options"),
+            )
         except urlerror.URLError as e:
             print(f"Generate failed: {e}")
             continue
