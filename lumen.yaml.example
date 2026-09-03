@@ -21,7 +21,11 @@ routing:
     balanced: lfm-balanced
     balanced_domain: qwen2.5-3b-lumen
     quality: qwen2.5-7b-lumen
+    # experimental; auto-route only if LUMEN_CODE_TIER=1
+    code: qwen2.5-coder:3b
   quality_min_words: 50     # on 24GB+ you may lower this or add quality_keywords
+  experimental:
+    code_tier: false        # same as LUMEN_CODE_TIER; keep false until benches pass
 
 speed_stack:
   speculative:

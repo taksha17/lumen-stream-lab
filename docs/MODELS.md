@@ -28,6 +28,7 @@ ollama pull qwen2.5:7b-instruct-q4_K_M
 | `balanced` | `lfm-balanced` | alias → LFM 2.5-2.6B Q4 | General explain/coding (~65 tok/s ref. lab) |
 | `balanced` (domain) | `qwen2.5-3b-lumen` | **fine-tuned** (see below) | Lumen/Soup/routing keywords |
 | `quality` | `qwen2.5-7b-lumen` | **fine-tuned** (see below) | Long prompts or `-Tier quality` |
+| `code` (experimental) | `qwen2.5-coder:3b` | `ollama pull qwen2.5-coder:3b` | Auto-route **off** unless `LUMEN_CODE_TIER=1` ([UPGRADES.md](../UPGRADES.md)) |
 
 ---
 

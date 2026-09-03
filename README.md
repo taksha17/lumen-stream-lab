@@ -324,6 +324,7 @@ Soup: **train** → export GGUF → Lumen **serves** via hybrid router.
 | [**CONTRIBUTING.md**](./CONTRIBUTING.md) | Collaborator onboarding |
 | [**docs/ENTERPRISE.md**](./docs/ENTERPRISE.md) | Platform integration reference |
 | [**docs/RESULTS.md**](./docs/RESULTS.md) | Chronological benchmark log |
+| [**UPGRADES.md**](./UPGRADES.md) | Model / capability changelog (proposals → shipped) |
 | [**docs/MODELS.md**](./docs/MODELS.md) | Model setup |
 | [**docs/SCALING.md**](./docs/SCALING.md) | OSS hardware profiles |
 | [**docs/VISION.md**](./docs/VISION.md) | Goals and +40% thesis |

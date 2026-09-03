@@ -12,6 +12,7 @@ Thanks for helping scale this beyond one laptop. The reference GTX 1650 rig vali
 | [docs/HARDWARE-TESTING.md](./docs/HARDWARE-TESTING.md) | **What we cannot test — we need you** |
 | [docs/ENTERPRISE-CASE-STUDY.md](./docs/ENTERPRISE-CASE-STUDY.md) | Real-world enterprise narrative |
 | [docs/MODELS.md](./docs/MODELS.md) | Model setup |
+| [UPGRADES.md](./UPGRADES.md) | Proposed/shipped model swaps — keep in sync when you change tiers |
 
 **Cursor / AI agents:** copy `AGENTS.md.example` → `AGENTS.md` locally (gitignored; may contain your machine paths).
 
@@ -130,6 +131,7 @@ Follow [benchmarks/PROTOCOL.md](./benchmarks/PROTOCOL.md):
 - Report **median** of 5 runs after 2 warmup
 - Use API `eval_duration` decode rate when possible
 - Negative results welcome in `docs/RESULTS.md`
+- Model or tier changes: add an entry in [`UPGRADES.md`](./UPGRADES.md) (proposed → shipped / rolled back)
 
 ---
 

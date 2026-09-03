@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,8 @@ MODELS = {
     "balanced": "lfm-balanced",
     "balanced_domain": "qwen2.5-3b-lumen",
     "quality": "qwen2.5-7b-lumen",
+    # Experimental — auto-route only when code_tier_enabled()
+    "code": "qwen2.5-coder:3b",
 }
 
 QUALITY_MIN_WORDS = 50
@@ -48,6 +51,30 @@ COMPLEX_KEYWORDS = (
     "pros and cons", "summarize", "difference between", "route", "routing",
     "lumen", "model tier", "when should", "streaming", "fine-tune",
 )
+
+CODE_KEYWORDS = (
+    "write a python",
+    "write a function",
+    "python function",
+    "def ",
+    "leetcode",
+    "typescript",
+    "javascript function",
+    "fix this code",
+    "stack trace",
+    "compile error",
+    "unit test",
+)
+
+
+def code_tier_enabled() -> bool:
+    """Opt-in so the 12-prompt eval suite stays unchanged by default."""
+    return os.environ.get("LUMEN_CODE_TIER", "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def is_code_prompt(text: str) -> bool:
+    return _kw_match(text, CODE_KEYWORDS)
+
 
 SIMPLE_PATTERNS = (
     r"^\s*what is \d+\s*[\+\-\*\/]\s*\d+",
@@ -166,6 +193,9 @@ def route_decision(prompt: str, tier_pref: str = "auto") -> dict[str, Any]:
 
     if is_quality_route(prompt, words):
         return _finish("quality", MODELS["quality"], f"quality/long ({words} words)")
+
+    if code_tier_enabled() and is_code_prompt(prompt):
+        return _finish("code", MODELS["code"], "code-tier (experimental)")
 
     if words <= 12 and not _kw_match(prompt, COMPLEX_KEYWORDS):
         return _finish("fast", MODELS["fast"], f"short/simple ({words} words)")

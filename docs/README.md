@@ -35,6 +35,7 @@ Start here for the full picture. The root [README](../README.md) is the landing 
 | [SCALING.md](./SCALING.md) | OSS scaling model, hardware classes |
 | [PLAYBOOK.md](./PLAYBOOK.md) | Soup / AirLLM / Colibri limits |
 | [RESULTS.md](./RESULTS.md) | Chronological benchmark log (source of truth) |
+| [**../UPGRADES.md**](../UPGRADES.md) | Model swaps, new tiers, rollbacks — not bench numbers |
 | [REPO-LAYOUT.md](./REPO-LAYOUT.md) | Where everything lives in the repo |
 | [benchmarks/PROTOCOL.md](../benchmarks/PROTOCOL.md) | Fair measurement rules |
 

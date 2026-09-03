@@ -1,0 +1,17 @@
+{
+  "notes": "Probe on the machine that will serve Ollama. Do not commit hardware.json or hostnames. Bench before enabling LUMEN_CODE_TIER.",
+  "resident_candidates": [
+    {"id": "qwen3-4b-instruct", "ollama": "qwen3:4b", "slot": "balanced", "role": "Replacement candidate for llama3.2:3b / LFM"},
+    {"id": "qwen3-1.7b", "ollama": "qwen3:1.7b", "slot": "fast", "role": "Replacement candidate for llama3.2:1b"},
+    {"id": "phi4-mini", "ollama": "phi4-mini", "slot": "balanced", "role": "Math/reasoning on coding prompts"},
+    {"id": "gemma3-4b-it", "ollama": "gemma3:4b-it-qat", "slot": "balanced", "role": "Instruction following (already D3-benched on 4GB)"},
+    {"id": "qwen2.5-3b-instruct", "ollama": "qwen2.5:3b-instruct-q4_K_M", "slot": "balanced_domain_baseline", "role": "Untuned baseline vs qwen2.5-3b-lumen"},
+    {"id": "qwen2.5-coder-3b", "ollama": "qwen2.5-coder:3b", "slot": "code", "role": "First code-tier model"},
+    {"id": "qwen2.5-coder-7b", "ollama": "qwen2.5-coder:7b", "slot": "code_quality", "role": "Opt-in code quality; 4GB likely slow"},
+    {"id": "moondream2", "ollama": "moondream", "slot": "vision_qa", "role": "Lightweight captioning — not in auto router yet"}
+  ],
+  "quality_eval_only": [
+    {"id": "qwen2.5-7b-instruct", "ollama": "qwen2.5:7b-instruct-q4_K_M", "note": "Do not auto-route"},
+    {"id": "qwen3-8b", "ollama": "qwen3:8b", "note": "Quality probe if VRAM allows"}
+  ]
+}

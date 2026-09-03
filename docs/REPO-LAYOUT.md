@@ -14,6 +14,7 @@ How the Lumen Stream Lab repo is organized.
 | `lumen.yaml.example` | Optional orchestrator config template |
 | `AGENTS.md.example` | Template for local Cursor/agent rules (copy → `AGENTS.md`, gitignored) |
 | `README.md` | Landing page and quick start |
+| `UPGRADES.md` | Model / capability / backend changelog (proposals → shipped / rolled back) |
 | `CONTRIBUTING.md` | Contributor onboarding |
 | `LICENSE` | MIT |
 

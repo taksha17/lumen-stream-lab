@@ -6,6 +6,7 @@ $script:RouterModels = @{
     balanced        = "lfm-balanced"      # alias -> LFM 2.5-2.6B Q4 (~65 tok/s)
     balanced_domain = "qwen2.5-3b-lumen"  # ~54 tok/s Lumen domain
     quality         = "qwen2.5-7b-lumen"
+    code            = "qwen2.5-coder:3b"  # experimental; auto only if LUMEN_CODE_TIER=1
 }
 
 $script:QualityMinWords = 50
@@ -146,6 +147,16 @@ function Get-RouteDecision([string]$text, [string]$tierPref) {
 
     if (Test-QualityRoute $text $words) {
         return @{ tier = "quality"; model = $script:RouterModels.quality; reason = "quality/long ($words words)" }
+    }
+
+    $codeOn = $env:LUMEN_CODE_TIER -match '^(1|true|yes|on)$'
+    $codeKeywords = @(
+        'write a python', 'write a function', 'python function', 'def ',
+        'leetcode', 'typescript', 'javascript function', 'fix this code',
+        'stack trace', 'compile error', 'unit test'
+    )
+    if ($codeOn -and (Test-RouterKeywordMatch $text $codeKeywords)) {
+        return @{ tier = "code"; model = $script:RouterModels.code; reason = "code-tier (experimental)" }
     }
 
     if ($words -le 12 -and -not (Test-RouterKeywordMatch $text $complexKeywords)) {

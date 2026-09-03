@@ -173,7 +173,7 @@ def main() -> int:
 
     p_route = sub.add_parser("route", help="Hybrid tier routing plan (JSON)")
     p_route.add_argument("--prompt", default="", help="User prompt for auto routing")
-    p_route.add_argument("--tier", default="auto", choices=["auto", "fast", "balanced", "quality"])
+    p_route.add_argument("--tier", default="auto", choices=["auto", "fast", "balanced", "quality", "code"])
     p_route.add_argument("--router", default="keyword", choices=["keyword", "v2"], help="Routing engine (default: keyword)")
     p_route.set_defaults(func=cmd_route)
 

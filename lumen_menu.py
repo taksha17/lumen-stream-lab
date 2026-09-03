@@ -327,6 +327,7 @@ def action_docs() -> None:
         ("Repo layout", ROOT / "docs" / "REPO-LAYOUT.md"),
         ("Enterprise integration", ROOT / "docs" / "ENTERPRISE.md"),
         ("Results log", ROOT / "docs" / "RESULTS.md"),
+        ("Upgrades changelog", ROOT / "UPGRADES.md"),
     ]
     print("\n=== Documentation ===\n")
     for label, path in docs:
