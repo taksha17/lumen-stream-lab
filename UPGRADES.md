@@ -67,9 +67,14 @@ Format per entry:
 - **Tier:** `code` → `qwen2.5-coder:3b` (Ollama tag; pull before using)
 - **Reason:** E07-style coding prompts currently share `balanced` (LFM). A dedicated coder must not change the 12/12 suite unless `LUMEN_CODE_TIER=1`.
 - **Gate:** default **off**. `python3 lumen.py route --tier code` always available.
-- **Bench:** not yet — do not enable in production until domain + orchestration gates still PASS.
-- **Smoke:** `deploy/win-upgrade-smoke.ps1` pulls `qwen2.5-coder:3b` and checks `--tier code`.
-- **Status:** in-progress
+- **Tune (GTX 1650, 2026-09-03):** `scripts/tune_code_tier.py`
+  - LFM chat: **65.1 tok/s**, wall **4.6 s**
+  - Coder chatlike (temp 0.7): 54.8 tok/s, wall 5.7 s
+  - Coder **code_default** (temp 0.1, ctx 2048, batch 512 + concise system): **55.3 tok/s**, wall **1.6 s**
+  - Smaller ctx/batch did **not** beat code_default on this prompt; wall win is shorter answers, not higher decode.
+- **Presets:** `CODE_DEFAULT_OPTIONS` in `lumen_router.py`; override with `LUMEN_CODE_TEMPERATURE` / `LUMEN_CODE_NUM_CTX` / `LUMEN_CODE_NUM_BATCH`. Gateway uses them for `tier=code`.
+- **Decision:** keep auto-route **off** (coder tok/s still below LFM). Use `--tier code` when code quality matters; tuned options are the default for that path.
+- **Status:** in-progress (presets shipped; auto still off)
 
 ---
 
