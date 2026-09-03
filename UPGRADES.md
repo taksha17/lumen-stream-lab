@@ -51,6 +51,21 @@ Format per entry:
 
 ---
 
+### 2026-09-03 — Tier swap probe (P0)
+- **Type:** model
+- **Script:** `scripts/probe_tier_swaps.py` on reference 1650
+- **Results:**
+  | Slot | Model | tok/s | Decision |
+  |------|-------|-------|----------|
+  | fast | `llama3.2:1b` | **96.2** | **keep** |
+  | fast candidate | `qwen3:1.7b` | 86.1 | reject for speed (also empty reply on short prompt) |
+  | balanced | `lfm-balanced` | 65.2 | keep |
+  | domain | `qwen2.5-3b-lumen` | 55.2 | tok/s ≈ stock; **quality smoke next** |
+  | domain baseline | `qwen2.5:3b-instruct-q4_K_M` | 55.5 | baseline for S07 delta |
+- **Status:** in-progress — production-payload domain smoke (`scripts/domain_quality_smoke.py`)
+
+---
+
 ## In progress
 
 ### 2026-09-03 — GPU util in benches (`nvidia-smi`)
