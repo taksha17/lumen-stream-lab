@@ -17,27 +17,25 @@ Format per entry:
 
 ### 2026-09-03 — Multi-modal scope expansion
 - **Type:** capability
-- **Tiers:** new `code`, `vision_qa`, `image_gen`
-- **Reason:** current router is text-chat only; user wants coding + image gen + image understanding without losing the +44.7% orchestration win.
-- **Plan:** Path A — add 2–3 highest-value tasks to existing router (code, vision Q&A, image gen) before any bigger refactor. Auto-route stays off for new tiers until benches pass.
-- **Status:** proposed — code tier scaffolding in progress; vision/image_gen not started
+- **Tiers:** `vision_qa`, `image_gen` (code tier **shipped opt-in** — see Shipped / in-progress history)
+- **Reason:** coding path exists; vision/image still blocked by 4GB VRAM headroom.
+- **Plan:** park until mid-VRAM contributor profile or spare resident budget.
+- **Status:** proposed — deferred
 
 ### 2026-09-03 — Candidate models to probe (Tier 1, resident)
 | Model | Slot | Expected role |
 |---|---|---|
-| `Qwen3-4B-Instruct-2507` | `balanced` | Replacement candidate for `llama3.2:3b` |
-| `Qwen3-1.7B` | `fast` | Replacement candidate for `llama3.2:1b` |
-| `Phi-4-mini-instruct` (3.8B) | `balanced` | Math/reasoning upgrade on coding prompts |
-| `gemma-3-4b-it` | `balanced` | IFEval-style strict instruction following |
-| `Qwen2.5-3B-Instruct` | `balanced` (domain) | **Untuned baseline** for `qwen2.5-3b-lumen` S07 delta measurement |
-| `Mistral-Small-3.2-7B` Q4 | `quality` | Apache 2.0, EU-origin 7B for quality tier |
-| `Qwen2.5-Coder-3B-Instruct` | new `code` | First code-tier model |
-| `Qwen2.5-Coder-7B-Instruct` Q4 | new `code` (quality) | Tighter fit, higher quality code |
-| `moondream2` (1.7B) | new `vision_qa` | Lightweight image captioning |
-| `Qwen2.5-VL-3B-Instruct` | new `vision_qa` (quality) | Better multimodal reasoning |
-| `stable-diffusion-v1-5` | new `image_gen` | SD 1.5 + diffusers + lowvram for 4 GB |
+| `Qwen3-4B-Instruct-2507` | `balanced` | Replacement candidate for LFM / mid tier |
+| `Qwen3-1.7B` | `fast` | **P0 probe** vs `llama3.2:1b` |
+| `Phi-4-mini-instruct` (3.8B) | `balanced` | Math/reasoning upgrade |
+| `gemma-3-4b-it` | `balanced` | Already D3-benched (~12–82 tok/s class — check fit) |
+| `Qwen2.5-3B-Instruct` | `balanced` (domain) | **P0** untuned baseline vs `qwen2.5-3b-lumen` |
+| `Mistral-Small-3.2-7B` Q4 | `quality` | Opt-in quality only |
+| `Qwen2.5-Coder-3B` | `code` | **Done** (opt-in) |
+| `moondream2` / VL / SD | vision / image | Deferred on 4GB |
 
-- **Status:** proposed — bench each before router integration
+- **Status:** in-progress — `scripts/probe_tier_swaps.py` + [PRODUCT-ROADMAP.md](./docs/PRODUCT-ROADMAP.md)
+- **Promotion:** deferred (see PROMOTE.md; not this cycle)
 
 ### 2026-09-03 — Quality eval only (do NOT add to router)
 | Model | Use |
