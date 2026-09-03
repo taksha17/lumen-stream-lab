@@ -1,0 +1,27 @@
+name: Hardware profile
+description: Bench Lumen on your GPU and share numbers
+labels: [hardware-profile, help wanted]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        See [HARDWARE-TESTING.md](https://github.com/taksha17/lumen-stream-lab/blob/main/docs/HARDWARE-TESTING.md)
+        and tracking issue [#1](https://github.com/taksha17/lumen-stream-lab/issues/1).
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU + VRAM
+      placeholder: RTX 4060 8GB
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS / Ollama version
+  - type: textarea
+    id: numbers
+    attributes:
+      label: Measured tok/s
+      description: llama3.2:3b baseline, orchestration mean if you have full tiers, notes
+    validations:
+      required: true

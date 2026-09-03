@@ -82,7 +82,7 @@ See [HUGGINGFACE-PUBLISH.md](./HUGGINGFACE-PUBLISH.md) if you need to re-publish
 
 ### Option D — Download 7B from Hugging Face (quality tier)
 
-After publish: **[YOUR_USER/qwen2.5-7b-lumen](https://huggingface.co/takshathosani17/qwen2.5-7b-lumen)** (pending upload)
+After publish: **[takshathosani17/qwen2.5-7b-lumen](https://huggingface.co/takshathosani17/qwen2.5-7b-lumen)**
 
 ```bash
 hf download takshathosani17/qwen2.5-7b-lumen --local-dir ./qwen-7b-lumen

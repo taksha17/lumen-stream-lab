@@ -19,6 +19,8 @@ Open source and **hardware-agnostic**. We CI-test on a modest reference rig (GTX
 
 **Full guide (both audiences):** [docs/LOW-SPEC-BUILDERS.md](./docs/LOW-SPEC-BUILDERS.md) — offline playbook, hybrid cost model vs all-cloud subscriptions, when to escalate to Claude/GPT.
 
+**Help scale beyond 4GB:** [collaborators wanted — hardware profiles](https://github.com/taksha17/lumen-stream-lab/issues/1) (8GB+, Apple Silicon, AMD, CPU). Domain GGUFs: [3B](https://huggingface.co/takshathosani17/qwen2.5-3b-lumen) · [7B](https://huggingface.co/takshathosani17/qwen2.5-7b-lumen).
+
 ---
 
 ## Real-world use cases
@@ -91,7 +93,7 @@ Most teams running local LLMs hit the same wall: the model is fine, but **routin
 | `balanced` (domain) | `qwen2.5-3b-lumen` | Lumen / Soup / routing keywords | **55.7** |
 | `quality` | `qwen2.5-7b-lumen` | Prompt >50 words or `-Tier quality` | **~10** |
 
-**Domain GGUF on Hugging Face:** [takshathosani17/qwen2.5-3b-lumen](https://huggingface.co/takshathosani17/qwen2.5-3b-lumen) — install without training Soup. See [docs/MODELS.md](./docs/MODELS.md).
+**Domain GGUF on Hugging Face:** [3B domain](https://huggingface.co/takshathosani17/qwen2.5-3b-lumen) · [7B quality](https://huggingface.co/takshathosani17/qwen2.5-7b-lumen) — install without training Soup. See [docs/MODELS.md](./docs/MODELS.md).
 
 Reproduce: `deploy/win-orchestration-bench.ps1` · `deploy/win-regression.ps1 -Full`
 
