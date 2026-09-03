@@ -182,6 +182,32 @@ def cmd_menu(_: argparse.Namespace) -> int:
     return run_interactive()
 
 
+def cmd_route_log(args: argparse.Namespace) -> int:
+    sys.path.insert(0, str(ROOT / "scripts"))
+    if args.action == "stats":
+        from route_log import stats
+
+        print(json.dumps(stats(), indent=2))
+        return 0
+    if args.action == "seed":
+        from seed_route_log import main as seed_main
+
+        return seed_main()
+    if args.action == "feedback":
+        if not args.rating:
+            print("usage: lumen route-log feedback up|down", file=sys.stderr)
+            return 2
+        from route_log import feedback_last
+
+        rec = feedback_last(args.rating)
+        if not rec:
+            print("No events to rate", file=sys.stderr)
+            return 1
+        print(json.dumps({"ok": True, "id": rec["id"], "feedback": rec.get("feedback")}, indent=2))
+        return 0
+    return 2
+
+
 def main() -> int:
     if len(sys.argv) == 1:
         return cmd_menu(argparse.Namespace())
@@ -217,10 +243,15 @@ def main() -> int:
     p_route.add_argument(
         "--router",
         default=None,
-        choices=["keyword", "v2"],
+        choices=["keyword", "v2", "v3"],
         help="Routing engine (default: LUMEN_ROUTER or keyword)",
     )
     p_route.set_defaults(func=cmd_route)
+
+    p_log = sub.add_parser("route-log", help="Route log stats / feedback (router v3)")
+    p_log.add_argument("action", choices=["stats", "feedback", "seed"])
+    p_log.add_argument("rating", nargs="?", choices=["up", "down", "good", "bad"])
+    p_log.set_defaults(func=cmd_route_log)
 
     p_menu = sub.add_parser("menu", help="Interactive terminal UI (chat, bench, gateway)")
     p_menu.set_defaults(func=cmd_menu)

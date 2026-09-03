@@ -212,6 +212,28 @@ def chat_with_routing(
         else:
             raise e
     latency_ms = int((time.time() - t0) * 1000)
+    try:
+        sys.path.insert(0, str(SCRIPTS_DIR))
+        from route_log import append_route_event
+
+        ec = backend_resp.get("eval_count")
+        ed = float(backend_resp.get("eval_duration") or 0)
+        tok_s = None
+        if ec and ed > 0:
+            tok_s = float(ec) / (ed / 1e9)
+        append_route_event(
+            prompt=prompt,
+            tier=str(plan.get("tier") or ""),
+            model=str(plan.get("model") or ""),
+            reason=str(plan.get("reason") or ""),
+            router=str(plan.get("router") or "keyword"),
+            source="gateway",
+            wall_s=round(latency_ms / 1000.0, 3),
+            tok_s=round(tok_s, 2) if tok_s is not None else None,
+            eval_count=int(ec) if ec is not None else None,
+        )
+    except Exception:
+        pass
     return plan, backend_resp, latency_ms
 
 

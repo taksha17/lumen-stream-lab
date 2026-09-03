@@ -55,6 +55,4 @@ print(route_with_engine("What is Lumen Stream Lab?", engine="v2"))
 
 ## Next steps for v3
 
-- Train on real prompt logs (tier + latency + quality feedback)
-- Replace linear model with small sklearn/onnx classifier
-- Promote `LUMEN_ROUTER=v2` only after holdout A/B wins
+See [ROUTER-V3.md](./ROUTER-V3.md) — log-trained weights via `results/route-log.jsonl`.

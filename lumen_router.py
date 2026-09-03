@@ -456,8 +456,10 @@ def route_decision(prompt: str, tier_pref: str = "auto") -> dict[str, Any]:
 
 
 def resolve_router_engine(override: str | None = None) -> str:
-    """Select routing engine: keyword (default) or v2 via LUMEN_ROUTER."""
+    """Select routing engine: keyword (default), v2, or v3 via LUMEN_ROUTER."""
     raw = (override or os.environ.get("LUMEN_ROUTER") or "keyword").strip().lower()
+    if raw in ("v3", "learned_v3", "log"):
+        return "v3"
     if raw in ("v2", "learned", "learned_v2"):
         return "v2"
     return "keyword"
@@ -469,8 +471,14 @@ def route_with_engine(
     *,
     engine: str | None = None,
 ) -> dict[str, Any]:
-    """Route using keyword or learned v2. Default remains keyword."""
+    """Route using keyword, learned v2, or log-trained v3. Default remains keyword."""
     eng = resolve_router_engine(engine)
+    if eng == "v3":
+        from lumen_router_v3 import route_decision_v3
+
+        out = route_decision_v3(prompt, tier_pref)
+        out["router"] = "v3"
+        return out
     if eng == "v2":
         from lumen_router_v2 import route_decision_v2
 

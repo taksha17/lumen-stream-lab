@@ -174,12 +174,14 @@ def action_chat() -> None:
 
     engine = resolve_router_engine()
     print("\n=== Chat (route + generate) ===")
-    print(f"Router engine: {engine} (set LUMEN_ROUTER=v2 for learned)")
+    print(f"Router engine: {engine} (set LUMEN_ROUTER=v2|v3 for learned)")
     print("Type a prompt, or /quit to leave.")
-    print("/tier auto|fast|balanced|quality|code|reason  (code/reason = opt-in; auto stays off)\n")
+    print("/tier auto|fast|balanced|quality|code|reason  (code/reason = opt-in; auto stays off)")
+    print("/up or /down  rate last logged reply for router v3 training\n")
 
     forced_tier: str | None = None
     allowed = {"auto", "fast", "balanced", "quality", "code", "reason"}
+    last_log_id: str | None = None
     while True:
         try:
             user = input("you> ").strip()
@@ -190,6 +192,18 @@ def action_chat() -> None:
             continue
         if user.lower() in ("/quit", "/exit", "/q"):
             break
+        if user.lower() in ("/up", "/down", "/good", "/bad"):
+            sys.path.insert(0, str(ROOT / "scripts"))
+            from route_log import feedback_last, set_feedback
+
+            rating = user.lower().lstrip("/")
+            if last_log_id:
+                ok = set_feedback(last_log_id, rating)
+                print(f"feedback {'ok' if ok else 'failed'} id={last_log_id}")
+            else:
+                rec = feedback_last(rating)
+                print(f"feedback {'ok' if rec else 'failed'} (no prior id)")
+            continue
         if user.lower().startswith("/tier "):
             forced_tier = user.split(maxsplit=1)[1].strip().lower() if " " in user else "auto"
             if forced_tier not in allowed:
@@ -207,6 +221,7 @@ def action_chat() -> None:
         print(f"\n[router={decision.get('router', engine)} tier={decision['tier']} model={model}]")
         print(f"[reason: {decision['reason']}]\n")
 
+        t0 = time.perf_counter()
         try:
             answer, rate = _generate_ollama(
                 model,
@@ -217,12 +232,32 @@ def action_chat() -> None:
         except urlerror.URLError as e:
             print(f"Generate failed: {e}")
             continue
+        wall = time.perf_counter() - t0
 
         print(answer.strip())
         if rate is not None:
             print(f"\n--- {rate:.1f} tok/s ---\n")
         else:
             print()
+
+        try:
+            sys.path.insert(0, str(ROOT / "scripts"))
+            from route_log import append_route_event
+
+            rec = append_route_event(
+                prompt=user,
+                tier=decision["tier"],
+                model=model,
+                reason=decision.get("reason", ""),
+                router=str(decision.get("router") or engine),
+                source="menu",
+                wall_s=round(wall, 3),
+                tok_s=round(rate, 2) if rate is not None else None,
+            )
+            if rec:
+                last_log_id = rec["id"]
+        except Exception:
+            pass
 
 
 def action_route() -> None:

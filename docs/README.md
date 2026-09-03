@@ -26,6 +26,7 @@ Start here for the full picture. The root [README](../README.md) is the landing 
 |----------|---------|
 | [HUGGINGFACE-PUBLISH.md](./HUGGINGFACE-PUBLISH.md) | Publish domain GGUF to HF Hub |
 | [ROUTER-V2.md](./ROUTER-V2.md) | Learned linear router (experimental) |
+| [ROUTER-V3.md](./ROUTER-V3.md) | Log-trained router (`route-log.jsonl`, opt-in) |
 | [VLLM-BACKEND.md](./VLLM-BACKEND.md) | vLLM plugin for 8GB+ GPUs |
 
 ## Also in this folder

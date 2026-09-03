@@ -26,6 +26,7 @@ Social / HN / Reddit: **paused**. Focus is measurable product gains on the refer
 | **P2** | Router v2 A/B behind flag | **Done** — `LUMEN_ROUTER=v2` opt-in; eval+holdout 22/22 match; default stays keyword |
 | **P2** | LFM answer quality | **Done** — meta strip + num_predict 192; ChatML template inherit |
 | **P2** | Opt-in `reason` tier (`phi4-mini`) | **Done** — `LUMEN_REASON_TIER=1` / `--tier reason` |
+| **P2** | Router v3 from real logs | **In progress** — `route-log.jsonl` + `LUMEN_ROUTER=v3` |
 | **P3** | Vision / image_gen | Parked on 4GB — needs spare VRAM or mid-class GPU |
 
 ## Explicitly not now

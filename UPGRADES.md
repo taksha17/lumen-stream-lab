@@ -72,6 +72,15 @@ Format per entry:
 
 ## In progress
 
+### 2026-09-03 — Router v3 route logging
+- **Type:** capability
+- **Change:** append-only `results/route-log.jsonl` from menu + gateway; `/up` `/down` feedback
+  - Seed: `python3 scripts/seed_route_log.py`
+  - Train: `python3 scripts/train_router_v3.py` → `data/router-v3-weights.json`
+  - Opt-in: `LUMEN_ROUTER=v3` (default remains keyword)
+- **Docs:** [docs/ROUTER-V3.md](./docs/ROUTER-V3.md)
+- **Status:** shipped (logging + train path; not default)
+
 ### 2026-09-03 — Post-LFM-recreate regression gate
 - **Type:** gate
 - **Result:** `deploy/win-regression.ps1` **ALL PASS** on reference 1650 @ `88d9a6e`
