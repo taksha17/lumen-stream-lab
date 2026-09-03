@@ -54,14 +54,21 @@ import lumen_router  # noqa: F401 — fail fast if repo root not on sys.path
 
 
 def lumen_route(prompt: str, force_tier: str | None = None) -> dict:
-    """Call `lumen.py route` — hybrid tier plan (single source of truth)."""
-    cmd = [sys.executable, str(LUMEN_PY), "route", "--prompt", prompt]
-    if force_tier:
-        cmd.extend(["--tier", force_tier])
-    out = subprocess.run(cmd, capture_output=True, text=True, check=False, cwd=str(ROOT))
-    if out.returncode != 0:
-        raise RuntimeError(f"lumen route failed: {out.stderr}")
-    return json.loads(out.stdout)
+    """In-process hybrid tier plan (respects LUMEN_ROUTER=v2)."""
+    from lumen_router import resolve_router_engine, route_with_engine
+
+    decision = route_with_engine(prompt, force_tier or "auto")
+    return {
+        "prompt": prompt,
+        "tier": decision["tier"],
+        "model": decision["model"],
+        "reason": decision["reason"],
+        "router": decision.get("router", resolve_router_engine()),
+        "backend": os.environ.get("LUMEN_BACKEND", "ollama"),
+        "path": "resident",
+        "system_prompt": decision.get("system_prompt"),
+        "options": decision.get("options"),
+    }
 
 
 def ollama_generate(

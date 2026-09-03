@@ -23,7 +23,7 @@ Social / HN / Reddit: **paused**. Focus is measurable product gains on the refer
 | Priority | Work | Why |
 |----------|------|-----|
 | **P2** | Balanced probe: LFM vs `qwen3:4b` / `phi4-mini` / gemma3 | **Done** — keep LFM (65 vs ≤30 tok/s); Modelfile + `think:false` tune |
-| **P2** | Router v2 A/B behind flag | Better routing without breaking keyword gate |
+| **P2** | Router v2 A/B behind flag | **Done** — `LUMEN_ROUTER=v2` opt-in; eval+holdout 22/22 match; default stays keyword |
 | **P3** | Vision / image_gen | Parked on 4GB — needs spare VRAM or mid-class GPU |
 
 ## Explicitly not now

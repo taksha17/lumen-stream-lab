@@ -72,6 +72,13 @@ Format per entry:
 
 ## In progress
 
+### 2026-09-03 — Router v2 A/B behind flag
+- **Type:** capability
+- **Change:** `route_with_engine()` + `LUMEN_ROUTER=v2` (CLI `--router`, menu, gateway in-process)
+- **A/B:** `scripts/ab_router_v2.py --holdout` → eval **12/12** match, holdout **10/10** match
+- **Decision:** keep **keyword** as default (v2 is teacher-clone today; no speed delta until logs retrain). Opt-in via env for experimentation.
+- **Status:** shipped (flagged; not default)
+
 ### 2026-09-03 — Balanced slot probe (newer model versions)
 - **Type:** model
 - **Script:** `scripts/probe_tier_swaps.py --slot balanced` on reference 1650

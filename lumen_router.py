@@ -365,3 +365,30 @@ def route_decision(prompt: str, tier_pref: str = "auto") -> dict[str, Any]:
 
     model, reason = balanced_model(prompt)
     return _finish("balanced", model, f"default {reason}")
+
+
+def resolve_router_engine(override: str | None = None) -> str:
+    """Select routing engine: keyword (default) or v2 via LUMEN_ROUTER."""
+    raw = (override or os.environ.get("LUMEN_ROUTER") or "keyword").strip().lower()
+    if raw in ("v2", "learned", "learned_v2"):
+        return "v2"
+    return "keyword"
+
+
+def route_with_engine(
+    prompt: str,
+    tier_pref: str = "auto",
+    *,
+    engine: str | None = None,
+) -> dict[str, Any]:
+    """Route using keyword or learned v2. Default remains keyword."""
+    eng = resolve_router_engine(engine)
+    if eng == "v2":
+        from lumen_router_v2 import route_decision_v2
+
+        out = route_decision_v2(prompt, tier_pref)
+        out["router"] = "v2"
+        return out
+    out = route_decision(prompt, tier_pref)
+    out["router"] = "keyword"
+    return out

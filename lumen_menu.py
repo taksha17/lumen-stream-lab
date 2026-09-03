@@ -166,13 +166,15 @@ def action_setup() -> None:
 
 
 def action_chat() -> None:
-    from lumen_router import route_decision
+    from lumen_router import resolve_router_engine, route_with_engine
 
     if not _ollama_ok():
         print("\nOllama is not running. Start it with: ollama serve")
         return
 
+    engine = resolve_router_engine()
     print("\n=== Chat (route + generate) ===")
+    print(f"Router engine: {engine} (set LUMEN_ROUTER=v2 for learned)")
     print("Type a prompt, or /quit to leave.")
     print("/tier auto|fast|balanced|quality|code  (code = opt-in coder; auto-route stays off)\n")
 
@@ -200,9 +202,9 @@ def action_chat() -> None:
                 print(f"forced tier: {forced_tier}")
             continue
 
-        decision = route_decision(user, forced_tier or "auto")
+        decision = route_with_engine(user, forced_tier or "auto")
         model = decision["model"]
-        print(f"\n[tier={decision['tier']} model={model}]")
+        print(f"\n[router={decision.get('router', engine)} tier={decision['tier']} model={model}]")
         print(f"[reason: {decision['reason']}]\n")
 
         try:

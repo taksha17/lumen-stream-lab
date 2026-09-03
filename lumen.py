@@ -142,16 +142,12 @@ def cmd_compare(args: argparse.Namespace) -> int:
 
 
 def cmd_route(args: argparse.Namespace) -> int:
+    from lumen_router import resolve_router_engine, route_with_engine
+
     prompt = args.prompt or ""
     tier = args.tier or "auto"
-    if args.router == "v2":
-        from lumen_router_v2 import route_decision_v2
-
-        decision = route_decision_v2(prompt, tier)
-    else:
-        from lumen_router import route_decision
-
-        decision = route_decision(prompt, tier)
+    engine = args.router or resolve_router_engine()
+    decision = route_with_engine(prompt, tier, engine=engine)
     ref = load_reference_profile()
     measured = ref.get("measured_baselines", {})
     baseline = measured.get("llama3.2:3b_tok_s")
@@ -164,6 +160,7 @@ def cmd_route(args: argparse.Namespace) -> int:
         "tier": decision["tier"],
         "model": decision["model"],
         "reason": decision["reason"],
+        "router": decision.get("router", engine),
         "backend": "ollama",
         "path": "resident",
         "reference_profile": ref.get("id", "reference-lab"),
@@ -217,7 +214,12 @@ def main() -> int:
     p_route = sub.add_parser("route", help="Hybrid tier routing plan (JSON)")
     p_route.add_argument("--prompt", default="", help="User prompt for auto routing")
     p_route.add_argument("--tier", default="auto", choices=["auto", "fast", "balanced", "quality", "code"])
-    p_route.add_argument("--router", default="keyword", choices=["keyword", "v2"], help="Routing engine (default: keyword)")
+    p_route.add_argument(
+        "--router",
+        default=None,
+        choices=["keyword", "v2"],
+        help="Routing engine (default: LUMEN_ROUTER or keyword)",
+    )
     p_route.set_defaults(func=cmd_route)
 
     p_menu = sub.add_parser("menu", help="Interactive terminal UI (chat, bench, gateway)")
