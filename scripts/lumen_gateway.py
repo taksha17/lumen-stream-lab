@@ -64,32 +64,21 @@ def lumen_route(prompt: str, force_tier: str | None = None) -> dict:
     return json.loads(out.stdout)
 
 
-def resolve_num_predict(body: dict, tier: str | None = None) -> int:
-    """Per-request cap; aligns with benchmark max_new_tokens (default 128)."""
-    for key in ("num_predict", "max_tokens", "max_new_tokens"):
-        if key in body and body[key] is not None:
-            return max(1, int(body[key]))
-    if tier == "fast":
-        return min(DEFAULT_NUM_PREDICT, 64)
-    if tier == "quality":
-        return max(DEFAULT_NUM_PREDICT, 256)
-    return DEFAULT_NUM_PREDICT
-
-
 def ollama_generate(
     model: str,
     prompt: str,
     *,
     stream: bool = False,
     num_predict: int | None = None,
+    tier: str | None = None,
 ) -> bytes:
     """Proxy to a running Ollama instance. Replace this with llamacpp/airllm
     clients when the plan.backend changes."""
-    from lumen_router import ollama_generate_payload
+    from lumen_router import generation_options_for_tier, ollama_generate_payload
 
-    options = {"num_predict": num_predict or DEFAULT_NUM_PREDICT, "temperature": 0.7}
+    options = generation_options_for_tier(tier or "balanced", num_predict=num_predict)
     body = json.dumps(
-        ollama_generate_payload(model, prompt, stream=stream, options=options)
+        ollama_generate_payload(model, prompt, stream=stream, options=options, tier=tier)
     ).encode()
     req = urlrequest.Request(
         f"{OLLAMA_URL}/api/generate", data=body,
@@ -100,6 +89,21 @@ def ollama_generate(
             return resp.read()
     except URLError as e:
         raise RuntimeError(f"backend call failed: {e}") from e
+
+
+def resolve_num_predict(body: dict, tier: str | None = None) -> int:
+    """Per-request cap; aligns with benchmark max_new_tokens (default 128)."""
+    for key in ("num_predict", "max_tokens", "max_new_tokens"):
+        if key in body and body[key] is not None:
+            return max(1, int(body[key]))
+    if tier == "fast":
+        return min(DEFAULT_NUM_PREDICT, 64)
+    if tier == "quality":
+        return max(DEFAULT_NUM_PREDICT, 256)
+    if tier == "code":
+        # Coding answers often need a bit more than chat defaults, still capped.
+        return max(DEFAULT_NUM_PREDICT, 192)
+    return DEFAULT_NUM_PREDICT
 
 
 def bench_freshness() -> dict:
@@ -146,7 +150,13 @@ def extract_prompt(body: dict) -> str:
     return "\n".join(parts).strip()
 
 
-def backend_generate(model: str, prompt: str, *, num_predict: int | None = None) -> dict:
+def backend_generate(
+    model: str,
+    prompt: str,
+    *,
+    num_predict: int | None = None,
+    tier: str | None = None,
+) -> dict:
     """Generate via configured backend (ollama default, vllm optional)."""
     backend = os.environ.get("LUMEN_BACKEND", "ollama").lower()
     if backend == "vllm":
@@ -156,7 +166,7 @@ def backend_generate(model: str, prompt: str, *, num_predict: int | None = None)
         vllm_model = os.environ.get("VLLM_MODEL", model)
         return vllm_generate(vllm_model, prompt, base_url=vllm_url)
 
-    raw = ollama_generate(model, prompt, stream=False, num_predict=num_predict)
+    raw = ollama_generate(model, prompt, stream=False, num_predict=num_predict, tier=tier)
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
@@ -173,17 +183,24 @@ def chat_with_routing(
     t0 = time.time()
     plan = lumen_route(prompt, force_tier=force_tier)
     plan["backend"] = os.environ.get("LUMEN_BACKEND", "ollama")
-    cap = num_predict if num_predict is not None else resolve_num_predict({}, plan.get("tier"))
+    tier = plan.get("tier")
+    cap = num_predict if num_predict is not None else resolve_num_predict({}, tier)
     plan["num_predict"] = cap
+    if plan.get("options"):
+        pass
+    else:
+        from lumen_router import generation_options_for_tier
+
+        plan["options"] = generation_options_for_tier(tier or "balanced", num_predict=cap)
     try:
-        backend_resp = backend_generate(plan["model"], prompt, num_predict=cap)
+        backend_resp = backend_generate(plan["model"], prompt, num_predict=cap, tier=tier)
     except RuntimeError as e:
         if plan.get("tier") != "fast":
             plan = lumen_route(prompt, force_tier="fast")
             plan["backend"] = os.environ.get("LUMEN_BACKEND", "ollama")
             cap = num_predict if num_predict is not None else resolve_num_predict({}, "fast")
             plan["num_predict"] = cap
-            backend_resp = backend_generate(plan["model"], prompt, num_predict=cap)
+            backend_resp = backend_generate(plan["model"], prompt, num_predict=cap, tier="fast")
         else:
             raise e
     latency_ms = int((time.time() - t0) * 1000)

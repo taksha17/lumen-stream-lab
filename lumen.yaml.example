@@ -26,6 +26,11 @@ routing:
   quality_min_words: 50     # on 24GB+ you may lower this or add quality_keywords
   experimental:
     code_tier: false        # same as LUMEN_CODE_TIER; keep false until benches pass
+  # Code-tier Ollama knobs (also: LUMEN_CODE_TEMPERATURE, LUMEN_CODE_NUM_CTX, LUMEN_CODE_NUM_BATCH)
+  code_options:
+    temperature: 0.1
+    num_ctx: 2048
+    num_batch: 512
 
 speed_stack:
   speculative:

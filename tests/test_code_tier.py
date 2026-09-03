@@ -32,6 +32,9 @@ class CodeTierTests(unittest.TestCase):
         d = route_decision("hello", "code")
         self.assertEqual(d["tier"], "code")
         self.assertEqual(d["model"], "qwen2.5-coder:3b")
+        self.assertIn("options", d)
+        self.assertLessEqual(d["options"]["temperature"], 0.2)
+        self.assertIn("system_prompt", d)
 
 
 if __name__ == "__main__":

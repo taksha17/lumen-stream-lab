@@ -173,6 +173,8 @@ def cmd_route(args: argparse.Namespace) -> int:
     }
     if decision.get("system_prompt"):
         plan["system_prompt"] = decision["system_prompt"]
+    if decision.get("options"):
+        plan["options"] = decision["options"]
     print(json.dumps(plan, indent=2))
     return 0
 

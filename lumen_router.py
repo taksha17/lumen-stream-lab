@@ -100,6 +100,75 @@ def is_domain_model(model: str) -> bool:
     return model == MODELS["balanced_domain"]
 
 
+def is_code_model(model: str) -> bool:
+    return model == MODELS["code"]
+
+
+# Tuned for 4GB resident decode (reference lab). Override via LUMEN_CODE_* env.
+CODE_DEFAULT_OPTIONS: dict[str, Any] = {
+    "temperature": 0.1,
+    "top_p": 0.9,
+    "top_k": 40,
+    "repeat_penalty": 1.1,
+    "num_ctx": 2048,
+    "num_batch": 512,
+}
+
+CODE_SYSTEM_PROMPT = (
+    "You are a concise coding assistant. Prefer correct, runnable code with minimal "
+    "prose. Use fenced code blocks. Do not invent APIs."
+)
+
+
+def _env_float(name: str, default: float) -> float:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def generation_options_for_tier(
+    tier: str,
+    *,
+    num_predict: int | None = None,
+    extra: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Ollama options per tier. Code defaults favor low temperature + modest ctx."""
+    if tier == "code":
+        opts: dict[str, Any] = {
+            "temperature": _env_float("LUMEN_CODE_TEMPERATURE", float(CODE_DEFAULT_OPTIONS["temperature"])),
+            "top_p": float(CODE_DEFAULT_OPTIONS["top_p"]),
+            "top_k": int(CODE_DEFAULT_OPTIONS["top_k"]),
+            "repeat_penalty": float(CODE_DEFAULT_OPTIONS["repeat_penalty"]),
+            "num_ctx": _env_int("LUMEN_CODE_NUM_CTX", int(CODE_DEFAULT_OPTIONS["num_ctx"])),
+            "num_batch": _env_int("LUMEN_CODE_NUM_BATCH", int(CODE_DEFAULT_OPTIONS["num_batch"])),
+        }
+    elif tier == "fast":
+        opts = {"temperature": 0.5, "num_ctx": 1024}
+    elif tier == "quality":
+        opts = {"temperature": 0.7, "num_ctx": 4096}
+    else:
+        opts = {"temperature": 0.7}
+    if num_predict is not None:
+        opts["num_predict"] = max(1, int(num_predict))
+    if extra:
+        opts.update(extra)
+    return opts
+
+
 def domain_context_prefix() -> str:
     return (
         "[Lumen Stream Lab = open-source local LLM orchestration research project. "
@@ -134,16 +203,27 @@ def ollama_generate_payload(
     *,
     stream: bool = False,
     options: dict[str, Any] | None = None,
+    tier: str | None = None,
 ) -> dict[str, Any]:
     user_prompt = wrap_domain_prompt(prompt) if is_domain_model(model) else prompt
+    resolved = dict(options or {})
+    if not resolved and tier:
+        resolved = generation_options_for_tier(tier)
+    elif tier == "code" and "temperature" not in resolved:
+        # Merge code defaults under any partial options from callers.
+        base = generation_options_for_tier("code")
+        base.update(resolved)
+        resolved = base
     payload: dict[str, Any] = {
         "model": model,
         "prompt": user_prompt,
         "stream": stream,
-        "options": options or {},
+        "options": resolved,
     }
     if is_domain_model(model):
         payload["system"] = domain_system_prompt()
+    elif is_code_model(model):
+        payload["system"] = CODE_SYSTEM_PROMPT
     return payload
 
 
@@ -177,6 +257,9 @@ def route_decision(prompt: str, tier_pref: str = "auto") -> dict[str, Any]:
         out: dict[str, Any] = {"tier": tier, "model": model, "reason": reason}
         if is_domain_model(model):
             out["system_prompt"] = domain_system_prompt()
+        if tier == "code" or is_code_model(model):
+            out["system_prompt"] = CODE_SYSTEM_PROMPT
+            out["options"] = generation_options_for_tier("code")
         return out
 
     if tier_pref != "auto":
