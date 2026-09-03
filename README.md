@@ -165,6 +165,7 @@ python3 lumen.py
 # One-shot CLI
 python3 lumen.py probe
 python3 lumen.py route --prompt "Explain TCP vs UDP"
+python3 lumen.py gpu --model llama3.2:3b    # nvidia-smi during generate
 ```
 
 **Full terminal UI walkthrough:** [docs/TERMINAL-UI.md](./docs/TERMINAL-UI.md) — prerequisites, every menu option, chat commands, troubleshooting.

@@ -25,7 +25,7 @@ MENU = """
   1) Setup check        (Ollama, GPU probe, models)
   2) Chat               (route + generate in a loop)
   3) Route one prompt   (plan JSON only)
-  4) Bench a model      (decode tok/s)
+  4) Bench a model      (decode tok/s + GPU util samples)
   5) +40% compare       (baseline vs orchestration mean)
   6) HTTP gateway       (local :8080)
   7) Backend shootout   (Ollama vs llama.cpp)
@@ -144,6 +144,17 @@ def action_setup() -> None:
     print("  7B: publish with deploy/publish-hf-remote.sh (after HF upload)")
     print("  Install: hf download USER/qwen2.5-3b-lumen --local-dir ./qwen-lumen")
     print("           ollama create qwen2.5-3b-lumen -f qwen-lumen/Modelfile")
+
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        from gpu_metrics import snapshot, summarize_for_humans
+
+        print("\n--- GPU (nvidia-smi) ---")
+        print(summarize_for_humans(snapshot()))
+        print("During benches: python3 lumen.py gpu --model llama3.2:3b")
+        print("Windows Task Manager 'GPU' often stays at 0% (3D engine). Use nvidia-smi CUDA util.")
+    except Exception as exc:
+        print(f"\nGPU probe skipped: {exc}")
 
 
 def action_chat() -> None:

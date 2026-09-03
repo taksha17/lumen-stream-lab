@@ -16,6 +16,7 @@ import json
 import platform
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -62,36 +63,68 @@ def cmd_probe(_: argparse.Namespace) -> int:
 
 
 def cmd_bench(args: argparse.Namespace) -> int:
-    """Run Ollama benchmark via subprocess if available."""
+    """Ollama generate + nvidia-smi samples during decode."""
     model = args.model
-    prompt = args.prompt or "Explain quantum computing in simple terms."
+    prompt = args.prompt or "Explain quantum computing in simple terms with enough tokens to load the GPU."
 
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from gpu_check import ollama_generate, ollama_ps  # noqa: WPS433
+    from gpu_metrics import GpuSampler, snapshot, summarize_for_humans  # noqa: WPS433
+
+    idle = snapshot()
+    sampler = GpuSampler(interval_s=0.2)
+    sampler.start()
+    t0 = time.perf_counter()
     try:
-        proc = subprocess.run(
-            ["ollama", "run", model, prompt, "--verbose"],
-            capture_output=True,
-            text=True,
-            timeout=300,
-        )
-    except FileNotFoundError:
-        print("ollama not in PATH", file=sys.stderr)
+        data = ollama_generate(model, prompt, int(getattr(args, "num_predict", 128)))
+    except Exception as exc:  # urllib errors
+        sampler.stop()
+        print(f"Ollama generate failed: {exc}", file=sys.stderr)
+        print("Start ollama serve and pull the model.", file=sys.stderr)
         return 1
+    wall = time.perf_counter() - t0
+    during = sampler.stop()
 
-    out = proc.stdout + proc.stderr
-    decode_rate = None
-    for line in out.splitlines():
-        if "eval rate:" in line and "prompt" not in line:
-            parts = line.split("eval rate:")[-1].strip().split()
-            if parts:
-                decode_rate = float(parts[0])
+    eval_count = int(data.get("eval_count") or 0)
+    eval_ns = float(data.get("eval_duration") or 0)
+    decode_rate = eval_count / (eval_ns / 1e9) if eval_ns > 0 else None
 
-    result = {"model": model, "decode_tok_s": decode_rate, "raw_tail": out[-500:]}
+    result = {
+        "model": model,
+        "decode_tok_s": round(decode_rate, 2) if decode_rate else None,
+        "wall_s": round(wall, 3),
+        "eval_count": eval_count,
+        "gpu_idle": idle,
+        "gpu_during": {k: v for k, v in during.items() if k != "samples"},
+        "ollama_ps": ollama_ps(),
+    }
     results_dir = ROOT / "results"
     results_dir.mkdir(exist_ok=True)
     path = results_dir / "bench-last.json"
     path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result, indent=2))
+    print()
+    print(summarize_for_humans(idle, during))
+    print(f"Wrote {path}")
     return 0 if decode_rate else 1
+
+
+def cmd_gpu(args: argparse.Namespace) -> int:
+    """Dedicated GPU+Ollama check (same as scripts/gpu_check.py)."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from gpu_check import main as gpu_main  # noqa: WPS433
+
+    argv = ["gpu_check.py", "--model", args.model, "--num-predict", str(args.num_predict)]
+    if args.prompt:
+        argv.extend(["--prompt", args.prompt])
+    if args.out:
+        argv.extend(["--out", args.out])
+    old = sys.argv
+    try:
+        sys.argv = argv
+        return gpu_main()
+    finally:
+        sys.argv = old
 
 
 def cmd_compare(args: argparse.Namespace) -> int:
@@ -160,10 +193,18 @@ def main() -> int:
     p_probe = sub.add_parser("probe", help="Write hardware.json")
     p_probe.set_defaults(func=cmd_probe)
 
-    p_bench = sub.add_parser("bench", help="Quick Ollama benchmark")
+    p_bench = sub.add_parser("bench", help="Ollama generate + GPU util samples")
     p_bench.add_argument("--model", default="llama3.2:3b")
     p_bench.add_argument("--prompt", default=None)
+    p_bench.add_argument("--num-predict", type=int, default=128)
     p_bench.set_defaults(func=cmd_bench)
+
+    p_gpu = sub.add_parser("gpu", help="Sample nvidia-smi during one Ollama generate")
+    p_gpu.add_argument("--model", default="llama3.2:3b")
+    p_gpu.add_argument("--prompt", default=None)
+    p_gpu.add_argument("--num-predict", type=int, default=128)
+    p_gpu.add_argument("--out", default="", help="Optional JSON path under results/")
+    p_gpu.set_defaults(func=cmd_gpu)
 
     p_cmp = sub.add_parser("compare", help="Check +40% target")
     p_cmp.add_argument("--baseline", type=float, required=True)

@@ -55,6 +55,12 @@ Format per entry:
 
 ## In progress
 
+### 2026-09-03 — GPU util in benches (`nvidia-smi`)
+- **Type:** capability
+- **Reason:** Windows Task Manager often shows RAM/CPU spikes and 0% GPU because it graphs the **3D** engine, not CUDA compute. Ollama uses CUDA.
+- **Change:** `python3 lumen.py bench` and `python3 lumen.py gpu` sample `utilization.gpu` + VRAM during generate. Portable `deploy/win-gpu-check.ps1` (no hardcoded machine paths).
+- **Status:** in-progress (confirm on the NVIDIA box with `lumen.py gpu`)
+
 ### 2026-09-03 — Experimental `code` tier (opt-in)
 - **Type:** capability
 - **Tier:** `code` → `qwen2.5-coder:3b` (Ollama tag; pull before using)

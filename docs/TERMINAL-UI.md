@@ -113,7 +113,9 @@ python3 lumen.py route --prompt "Explain TCP vs UDP"
 
 ### 4) Bench a model
 
-Runs a quick **decode tok/s** benchmark for one Ollama model (default `llama3.2:3b`). Results are written to `results/bench-last.json`.
+Runs one Ollama **generate** and samples **nvidia-smi** CUDA util + VRAM during decode (default `llama3.2:3b`, `num_predict=128`). Writes `results/bench-last.json` (gitignored).
+
+Windows Task Manager **GPU 3D** often stays at 0% while CUDA is busy. Use this bench, `python3 lumen.py gpu`, or `deploy/win-gpu-check.ps1`.
 
 Use this to establish your machine's baseline before claiming +40% orchestration gains.
 

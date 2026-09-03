@@ -29,6 +29,7 @@ Profile file: [`hardware/reference-lab.json`](../hardware/reference-lab.json)
 | Soup 7B/3B train on 4GB (`stream_layers`) | **Proven** | S05–S07 |
 | Ollama as default resident backend | **Proven** | ~49 vs ~17 tok/s vs llama.cpp |
 | Portable CLI / gateway / menu | **Proven** | `lumen.py`, `lumen_gateway.py` |
+| GPU util during generate | **Measure locally** | `python3 lumen.py gpu` — Task Manager 3D ≠ CUDA |
 | Open-source contributor path | **Proven** | docs, CI, no server IP required |
 
 ---
@@ -58,6 +59,27 @@ Profile file: [`hardware/reference-lab.json`](../hardware/reference-lab.json)
 | `cpu_only` | — | — | Routing logic still valid; document CPU tok/s |
 
 Set `vram_class` in `lumen.yaml` — see `lumen.yaml.example`.
+
+---
+
+## Why Task Manager shows CPU/RAM but not GPU
+
+Ollama inference uses the NVIDIA **CUDA** engine. Windows Task Manager's default GPU graph is often **3D** (games/desktop), which stays near 0% during LLM decode while:
+
+- RAM rises (model weights + KV cache also sit in system RAM on some loads)
+- CPU shows activity (tokenizer, Ollama process, sampler)
+
+**Measure CUDA instead:**
+
+```bash
+python3 lumen.py gpu --model llama3.2:3b
+# or menu → 4 Bench
+# Windows: powershell -File deploy\win-gpu-check.ps1
+```
+
+Look at `util_gpu_pct_max` and `size_vram` from `ollama ps`. If util stays ~0% and `size_vram` is 0, Ollama fell back to **CPU** (driver, `OLLAMA_NUM_GPU=0`, or the process started before the NVIDIA driver was ready).
+
+In Task Manager: GPU graph dropdown → **CUDA** or **Compute_0**, not 3D.
 
 ---
 
