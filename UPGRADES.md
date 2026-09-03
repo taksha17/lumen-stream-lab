@@ -62,7 +62,11 @@ Format per entry:
   | balanced | `lfm-balanced` | 65.2 | keep |
   | domain | `qwen2.5-3b-lumen` | 55.2 | tok/s ≈ stock; **quality smoke next** |
   | domain baseline | `qwen2.5:3b-instruct-q4_K_M` | 55.5 | baseline for S07 delta |
-- **Status:** in-progress — production-payload domain smoke (`scripts/domain_quality_smoke.py`)
+- **Domain quality (production payload):**
+  - `qwen2.5-3b-lumen`: correctly describes Lumen as local LLM orchestration / hybrid router
+  - stock `qwen2.5:3b-instruct`: does not know the project
+  - **Keep domain model** — quality win, not tok/s win
+- **Status:** shipped (no default swaps; keep `llama3.2:1b` + `qwen2.5-3b-lumen`)
 
 ---
 

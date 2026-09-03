@@ -13,10 +13,10 @@ Social / HN / Reddit: **paused**. Focus is measurable product gains on the refer
 
 | Priority | Work | Why |
 |----------|------|-----|
-| **P0** | Probe **fast** swap: `llama3.2:1b` vs `qwen3:1.7b` | Higher floor tok/s lifts hybrid mean |
-| **P0** | Domain **delta**: stock `qwen2.5:3b-instruct` vs `qwen2.5-3b-lumen` | Prove S07 still earns its slot |
-| **P1** | Re-run orchestration / regression on lab after any swap | Gate before shipping defaults |
-| **P1** | Reduce tier-switch thrash (`keep_alive`, unload policy) | Wall time when chatting across tiers |
+| **P0** | Probe **fast** swap: `llama3.2:1b` vs `qwen3:1.7b` | **Done** — keep 1B (96 vs 86 tok/s) |
+| **P0** | Domain **delta**: stock 3B vs `qwen2.5-3b-lumen` | **Done** — keep lumen (quality); tok/s tied |
+| **P1** | Re-run orchestration / regression on lab | Confirm +40% still holds after tooling churn |
+| **P1** | Reduce tier-switch thrash (`keep_alive`) | Wall time when chatting across tiers |
 
 ## Next (after P0/P1)
 
